@@ -80,7 +80,7 @@ int main()
         if (!flag)
         {
             if (WEXITSTATUS(system(s))==0)
-                foreground(green),puts(" Accepted");
+                foreground(green),puts(" Accepted"),ans++;
             else
                 puts(" Wrong Answer");
         }
