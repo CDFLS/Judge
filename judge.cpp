@@ -27,9 +27,19 @@ void CheckRun(int number)
     {
         tle++;
         flag=1;
-        printf("Terminated.");
+        for (int i=0;i<8;i++)
+            fscanf(fp,"%c",&ch);
+        if (ch=='t')
+            printf("Terminated.");
+        else
+        {
+            while (ch!='T')
+                fscanf(fp,"%c",&ch);
+            goto A;
+        }
         return ;
     }
+    A:
     double t;int m;
     fscanf(fp,"ime:%lfs Memory:%dKB",&t,&m);
     if (t>1.0)
@@ -72,7 +82,7 @@ int main()
         if (!exist(i))
             continue;
         sprintf(s,"%s%d.in",str,i);
-        sprintf(s1,"/bin/time -f \"Time:%%es Memory:%%MKB\" ./%s < %s > your_output 2>.run",str,s);
+        sprintf(s1,"/bin/time -f \"Time:%%es Memory:%%MKB\" timeout 1s ./%s < %s > your_output 2>.run",str,s);
         system(s1);
         flag=flagmle=0;
         CheckRun(i);
