@@ -59,13 +59,13 @@ int main()
     char s[512],s1[512];
     printf("Compiling...\n");
     sprintf(s,"g++ %s.cpp -o %s -Wall",str,str);
-    printf("done.\n");
     if (WEXITSTATUS(system(s)))
     {
         color(red,white);
         puts("Compile Error");
         return 0;
     }
+    printf("done.\n");
     for (int i=0;i<21;i++)
     {
         if (!exist(i))
