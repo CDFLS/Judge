@@ -18,7 +18,7 @@ bool exist(int x)
 void CheckRun(int number)
 {
     foreground(blue);
-    printf("    Test%d:",number);
+    printf("    Test%2d:",number);
     foreground(yellow);
     FILE *fp=fopen(".run","r");
     char ch;
