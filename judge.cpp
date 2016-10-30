@@ -43,7 +43,7 @@ void CheckRun(int number)
         flag=flagmle=1;
     }
     fclose(fp);
-    printf(" Time:%.2lfs Memory:%dKB",t,m);
+    printf(" Time:%5.2lfs Memory:%7dKB",t,m);
 }
 int main()
 {
