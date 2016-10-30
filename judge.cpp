@@ -58,7 +58,7 @@ int main()
             break;
     char s[512],s1[512];
     printf("Compiling...\n");
-    sprintf(s,"g++ %s.cpp -o %s -Wall",str,str);
+    sprintf(s,"g++ %s.cpp -o %s -Wall -Wno-sign-compare",str,str);
     if (WEXITSTATUS(system(s)))
     {
         color(red,white);
