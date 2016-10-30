@@ -87,9 +87,9 @@ int main()
         else
         {
             if (flagmle)
-                puts("Memory Limit Exceeded");
+                puts(" Memory Limit Exceeded");
             else
-                puts("Time Limit Exceeded");
+                puts(" Time Limit Exceeded");
         }
         tot++;
     }
