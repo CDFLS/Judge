@@ -63,6 +63,7 @@ int main()
     {
         color(red,white);
         puts("Compile Error\033[0m");
+        system("rm your_output");
         return 0;
     }
     printf("done.\n");
