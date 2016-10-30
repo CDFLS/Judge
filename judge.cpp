@@ -4,7 +4,7 @@
 #include <ctime>
 #include "Conio+.h"
 char str[256];
-int ans=0,tot=0,tle=0,flag;
+int ans=0,tot=0,tle=0,flag,mle=0,flagmle;
 bool exist(int x)
 {
     char s[512];
@@ -36,8 +36,11 @@ void CheckRun(int number)
     {
         tle++;
         flag=1;
-        printf(" Time:%.2lfs Memory:%dKB",t,m);
-        return ;
+    }
+    if (m>128000)
+    {
+        mle++;
+        flag=flagmle=1;
     }
     fclose(fp);
     printf(" Time:%.2lfs Memory:%dKB",t,m);
@@ -70,7 +73,7 @@ int main()
         sprintf(s,"%s%d.in",str,i);
         sprintf(s1,"/bin/time -f \"Time:%%es Memory:%%MKB\" ./%s < %s > your_output 2>.run",str,s);
         system(s1);
-        flag=0;
+        flag=flagmle=0;
         CheckRun(i);
         sprintf(s,"diff -w -B your_output %s%d.out > /dev/null",str,i);
         foreground(red);
@@ -82,7 +85,12 @@ int main()
                 puts(" Wrong Answer");
         }
         else
-            puts("Time Limit Exceeded");
+        {
+            if (flagmle)
+                puts("Memory Limit Exceeded");
+            else
+                puts("Time Limit Exceeded");
+        }
         tot++;
     }
     foreground(red);
@@ -98,6 +106,8 @@ int main()
     color(red,white);
     if (tle>0)
         puts("Time Limit Exceeded");
+    else if (mle>0)
+        puts("Memory Limit Exceeded");
     else if (ans==tot)
         puts("Accepted");
     else
