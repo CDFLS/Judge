@@ -112,5 +112,6 @@ int main()
         puts("Accepted");
     else
         puts("Wrong Answer");
+    puts("\033[0m\n");
     return 0;
 }
