@@ -27,7 +27,7 @@ void CheckRun(int number)
     {
         tle++;
         flag=1;
-        puts("Terminated.Time Limit Exceeded.");
+        printf("Terminated.");
         return ;
     }
     double t;int m;
