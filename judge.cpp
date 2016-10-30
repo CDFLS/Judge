@@ -62,7 +62,7 @@ int main()
     if (WEXITSTATUS(system(s)))
     {
         color(red,white);
-        puts("Compile Error");
+        puts("Compile Error\033[0m");
         return 0;
     }
     printf("done.\n");
@@ -98,7 +98,7 @@ int main()
     system("rm .run 2>/dev/null");
     if (tot==0)
     {
-        puts("Input file not found.");
+        puts("Input file not found.\033[0m");
         return 0;
     }
     else
@@ -112,6 +112,6 @@ int main()
         puts("Accepted");
     else
         puts("Wrong Answer");
-    puts("\033[0m\n");
+    puts("\033[0m");
     return 0;
 }
