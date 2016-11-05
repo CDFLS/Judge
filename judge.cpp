@@ -167,7 +167,7 @@ bool SafetyCheck()
                         foreground(red);
                         printf("Error:");
                         ClearColor();
-                        printf("invalid words found at line %d:%s\n",line,Dict[k]);
+                        printf("invalid word found at line %d:%s\n",line,Dict[k]);
                         r=true;
                     }
     }
