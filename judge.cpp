@@ -258,6 +258,8 @@ int main(int argc,char *argv[])
         }
         tot++;
         foreground(yellow);
+        if (i<10)
+            putchar(' ');
         printf("    %s: ",in);
         result tmp=judge(in,out);
         PrintResult(tmp);
