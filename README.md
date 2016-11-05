@@ -2,4 +2,4 @@
 A simple judge for oi test running on linux only. 
 It needs package 'time' (not the shell reserved word but /usr/bin/time)
 Screenshot:
-![](./screenshot/judge-demo.png)
+![](./screenshot/demo.png)
