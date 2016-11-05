@@ -1,128 +1,274 @@
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
-#include <ctime>
+#include <cstdlib>
+#include <iostream>
 #include "Conio+.h"
-char str[256];
-int ans=0,tot=0,tle=0,flag,mle=0,flagmle;
-bool exist(int x)
+using namespace std;
+
+#define AC 0
+#define WA 1
+#define CE 2
+#define TLE 3
+#define MLE 4
+#define RE 5
+
+struct result{
+    int s,memo;
+    double time;
+};
+
+const char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
+const char Status_Color[]={green,red,yellow,red,red,yellow};
+char Dict[100][20]={"windows.h","system(","freopen(","fopen(","<con>","!"};//the symbol '!' indicates the end of this array
+
+double timelimit=1.0;
+int memorylimit=128000;
+char name[512];
+
+inline void ClearColor()
 {
-    char s[512];
-    sprintf(s,"%s%d.in",str,x);
-    FILE *fp=fopen(s,"r");
+    printf("\033[0m");
+}
+
+inline void ClearFile()
+{
+    system("rm ./.ejudge.*");
+}
+
+void print(int st)
+{
+    color(Status_Color[st],white);
+    puts(Status[st]);
+    ClearColor();
+}
+
+void PrintResult(result x)
+{
+    foreground(green);
+    printf("Time:");
+    foreground(yellow);
+    printf("%5.2lfs",x.time);
+    foreground(green);
+    printf(" Memory:");
+    foreground(yellow);
+    printf("%6dKB ",x.memo);
+    print(x.s);
+}
+
+void GetName()
+{
+    system("basename $PWD > .ejudge.tmp");
+    FILE *fp=fopen(".ejudge.tmp","r");
+    fscanf(fp,"%s",name);
+    for (int i=strlen(name)-1;i>=0;i--)
+        if ((name[i]=='\n')||(name[i]=='\r'))
+            name[i]=0;
+        else
+            return ;
+}
+
+void Args(int c,char *v[])
+{
+    for (int i=1;i<c;i++)
+        if (v[i][0]=='-')
+        {
+            i++;
+            if (v[i-1][1]=='t')
+                sscanf(v[i],"%lf",&timelimit);
+            if (v[i-1][1]=='m')
+                sscanf(v[i],"%d",&memorylimit);
+            if (v[i-1][1]=='w')
+            {
+                int last,t;
+                for (last=0;Dict[last][0]!='!';last++) ;
+                sscanf(v[i-1],"-w%d",&t);
+                for (int k=0;k<t;k++)
+                    sprintf(Dict[last+k],"%s",v[i]),i++;
+                Dict[last+t][0]='!';
+            }
+        }
+        else
+            sprintf(name,"%s",v[i]);
+}
+
+bool exist(char * filename)
+{
+    FILE *fp=fopen(filename,"r");
     if (fp==NULL)
         return false;
     fclose(fp);
     return true;
 }
-void CheckRun(int number)
+
+bool cmp(char *str,int s,char *word)
 {
-    foreground(blue);
-    printf("    Test%2d:",number);
-    foreground(yellow);
-    FILE *fp=fopen(".run","r");
+    if (strlen(str)-s<strlen(word))
+        return false;
+    for (int i=0;i<strlen(word);i++)
+        if (str[s+i]!=word[i])
+            return false;
+    return true;
+}
+
+bool SafetyCheck()
+{
+    int r=false;
+    char str[2048];
+    sprintf(str,"%s.cpp",name);
+    FILE *fp=fopen(str,"r");
+    int line=0,ifdef=0;
+    while (fgets(str,2000,fp)!=NULL)
+    {
+        if (str[strlen(str)-1]=='\n')
+            str[strlen(str)-1]=0;
+        line++;
+        int flag=0,include=0;
+        for (int i=0;i<strlen(str);i++)
+            if ((str[i]=='/')&&(str[i+1]=='/'))
+                break;
+            else if ((str[i]=='*')&&(str[i+1]=='/'))
+                flag=0;
+            else if ((str[i]=='#')&&(str[i+1]=='i')&&(str[i+2]=='f'))
+                ifdef=1;
+            else if ((str[i]=='#')&&(str[i+1]=='e')&&(str[i+2]=='n'))
+                ifdef=0;
+            else if (flag||ifdef)
+                continue;
+            else if ((str[i]=='/')&&(str[i+1]=='*'))
+                flag=1;
+            else if ((str[i]=='#')&&(str[i+1]=='i')&&(str[i+2]=='n')&&(str[i+3]=='c'))
+                include=1;
+            else if (str[i]=='"'&&include)
+            {
+                foreground(red);
+                printf("Error:");
+                ClearColor();
+                printf("invalid head file at line %d:%s\n",line,str);
+                r=true;
+            }
+            else
+                for (int k=0;Dict[k][0]!='!';k++)
+                    if (cmp(str,i,Dict[k]))
+                    {
+                        foreground(red);
+                        printf("Error:");
+                        ClearColor();
+                        printf("invalid words found at line %d:%s\n",line,Dict[k]);
+                        r=true;
+                    }
+    }
+    fclose(fp);
+    return r;
+}
+
+bool Compile()
+{
+    puts("Compiling...");
+    if (SafetyCheck())
+    {
+        ClearFile();
+        print(CE);
+        return true;
+    }
+    char str[512];
+    sprintf(str,"g++ %s.cpp -o %s -O2 -DEJUDGE",name,name);
+    if (WEXITSTATUS(system(str)))
+    {
+        print(CE);
+        ClearFile();
+        return true;
+    }
+    puts("done.");
+    return false;
+}
+
+result judge(char *in,char *out)
+{
+    int s=AC,memo;
+    double time;
+    char str[512];
+    sprintf(str,"/bin/time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);
+    system(str);
+    FILE *fp=fopen(".ejudge.run","r");
     char ch;
     fscanf(fp,"%c",&ch);
     if (ch=='C')
     {
-        tle++;
-        flag=1;
-        for (int i=0;i<8;i++)
+        s=TLE;
+        while (ch!='T')
             fscanf(fp,"%c",&ch);
-        if (ch=='t')
-            printf("Terminated.");
-        else
-        {
-            while (ch!='T')
-                fscanf(fp,"%c",&ch);
-            goto A;
-        }
-        return ;
     }
-    A:
-    double t;int m;
-    fscanf(fp,"ime:%lfs Memory:%dKB",&t,&m);
-    if (t>1.0)
-    {
-        tle++;
-        flag=1;
-    }
-    if (m>128000)
-    {
-        mle++;
-        flag=flagmle=1;
-    }
+    fscanf(fp,"ime:%lfs Memory:%dKB",&time,&memo);
     fclose(fp);
-    printf(" Time:%5.2lfs Memory:%7dKB",t,m);
+    if (s==TLE)
+        return (result){TLE,memo,time};
+    if (memo>128000)
+        return (result){MLE,memo,time};
+    if (memo==0)
+        return (result){RE,memo,time};
+    sprintf(str,"diff -w -B -Z --strip-trailing-cr .ejudge.tmp %s > /dev/null",out);
+    if (WEXITSTATUS(system(str))==1)
+        return (result){WA,memo,time};
+    else
+        return (result){AC,memo,time};
 }
-int main()
+
+int main(int argc,char *argv[])
 {
-    system("basename $PWD>your_output");
-    FILE *fp=fopen("your_output","r");
-    fscanf(fp,"%s",str);
-    fclose(fp);
-    for (int i=strlen(str)-1;i>=0;i--)
-        if ((str[i]=='\n')||(str[i]=='\r'))
-            str[i]=0;
-        else
-            break;
-    char s[512],s1[512];
-    printf("Compiling...\n");
-    sprintf(s,"g++ %s.cpp -o %s -Wall -Wno-sign-compare",str,str);
-    if (WEXITSTATUS(system(s)))
-    {
-        color(red,white);
-        puts("Compile Error\033[0m");
-        system("rm your_output");
+    GetName();
+    Args(argc,argv);
+    if (Compile())
         return 0;
-    }
-    printf("done.\n");
-    for (int i=0;i<21;i++)
+    int score=0,tot=0,st=0,maxmemo=0;
+    double maxtime=0;
+    for (int i=0;i<=20;i++)
     {
-        if (!exist(i))
+        char in[512],out[512];
+        sprintf(in,"%s%d.in",name,i);
+        sprintf(out,"%s%d.out",name,i);
+        if (!exist(in))
             continue;
-        sprintf(s,"%s%d.in",str,i);
-        sprintf(s1,"/bin/time -f \"Time:%%es Memory:%%MKB\" timeout 1s ./%s < %s > your_output 2>.run",str,s);
-        system(s1);
-        flag=flagmle=0;
-        CheckRun(i);
-        sprintf(s,"diff -w -B your_output %s%d.out > /dev/null",str,i);
-        foreground(red);
-        if (!flag)
+        if (!exist(out))
         {
-            if (WEXITSTATUS(system(s))==0)
-                foreground(green),puts(" Accepted"),ans++;
-            else
-                puts(" Wrong Answer");
-        }
-        else
-        {
-            if (flagmle)
-                puts(" Memory Limit Exceeded");
-            else
-                puts(" Time Limit Exceeded");
+            sprintf(out,"%s%d.ans",name,i);
+            if (!exist(out))
+                continue;
         }
         tot++;
+        foreground(yellow);
+        printf("    %s: ",in);
+        result tmp=judge(in,out);
+        PrintResult(tmp);
+        if (tmp.s==AC)
+            score++;
+        else if (st==AC)
+            st=tmp.s;
+        maxtime=max(maxtime,tmp.time);
+        maxmemo=max(maxmemo,tmp.memo);
     }
-    foreground(red);
-    system("rm your_output");
-    system("rm .run 2>/dev/null");
     if (tot==0)
     {
-        puts("Input file not found.\033[0m");
+        foreground(red);
+        printf("Error:");
+        ClearColor();
+        puts("no input file found.");
+        ClearFile();
         return 0;
     }
-    else
-        printf("Score: %d\n",ans*100/tot);
-    color(red,white);
-    if (tle>0)
-        puts("Time Limit Exceeded");
-    else if (mle>0)
-        puts("Memory Limit Exceeded");
-    else if (ans==tot)
-        puts("Accepted");
-    else
-        puts("Wrong Answer");
-    puts("\033[0m");
+    foreground(green);
+    printf("Time: ");
+    foreground(blue);
+    printf("%4.2lfs",maxtime);
+    foreground(green);
+    printf(" Memory:");
+    foreground(blue);
+    printf("%6dKB ",maxmemo);
+    foreground(green);
+    printf("Score: ");
+    foreground(yellow);
+    printf("%d\n",score*100/tot);
+    print(st);
+    ClearColor();
+    ClearFile();
     return 0;
 }
