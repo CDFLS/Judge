@@ -1,5 +1,6 @@
 DEFAULT:
 	g++ judge.cpp -o judge
+	sudo make install
 install:
 	cp ./judge /usr/bin/judge
 uninstall:

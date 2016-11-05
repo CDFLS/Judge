@@ -32,7 +32,7 @@ inline void ClearColor()
 
 inline void ClearFile()
 {
-    system("rm ./.ejudge.*");
+//    system("rm ./.ejudge.*");
 }
 
 void print(int st)
@@ -81,15 +81,20 @@ void Args(int c,char *v[])
             {
                 int last,t;
                 for (last=0;Dict[last][0]!='!';last++) ;
-                if (sscanf(v[i-1],"-w%d",&t)==0)
+                if (sscanf(v[i-1],"-w%d",&t)==-1)
                     t=1;
                 for (int k=0;k<t;k++)
                     sprintf(Dict[last+k],"%s",v[i]),i++;
                 Dict[last+t][0]='!';
             }
-        }
-        else
+        }else{
             sprintf(name,"%s",v[i]);
+            for (int k=strlen(name)-1;k>=0;k--)
+                if ((name[k]=='\n')||(name[k]=='\r'))
+                    name[k]=0;
+                else
+                    break;
+        }
 }
 
 bool exist(char * filename)
@@ -117,6 +122,14 @@ bool SafetyCheck()
     char str[2048];
     sprintf(str,"%s.cpp",name);
     FILE *fp=fopen(str,"r");
+    if (fp==NULL)
+    {
+        foreground(red);
+        printf("Error:");
+        ClearColor();
+        puts("source file not found.");
+        return true;
+    }
     int line=0,ifdef=0;
     while (fgets(str,2000,fp)!=NULL)
     {
@@ -199,10 +212,18 @@ result judge(char *in,char *out)
         while (ch!='T')
             fscanf(fp,"%c",&ch);
     }
+    if (ch=='t')
+    {
+        s=RE;
+        while (ch!='T')
+            fscanf(fp,"%c",&ch);
+    }
     fscanf(fp,"ime:%lfs Memory:%dKB",&time,&memo);
     fclose(fp);
     if (s==TLE)
         return (result){TLE,memo,time};
+    if (s==RE)
+        return (result){RE,0,0};
     if (memo>128000)
         return (result){MLE,memo,time};
     if (memo==0)
