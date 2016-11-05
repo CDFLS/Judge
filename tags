@@ -1,0 +1,61 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AC	judge.cpp	8;"	d	file:
+Args	judge.cpp	/^void Args(int c,char *v[])$/;"	f
+CE	judge.cpp	10;"	d	file:
+ClearColor	judge.cpp	/^inline void ClearColor()$/;"	f
+ClearFile	judge.cpp	/^inline void ClearFile()$/;"	f
+Compile	judge.cpp	/^bool Compile()$/;"	f
+Dict	judge.cpp	/^char Dict[100][20]={"windows.h","system(","freopen(","fopen(","<con>","!"};\/\/the symbol '!' indicates the end of this array$/;"	v
+GetName	judge.cpp	/^void GetName()$/;"	f
+Hblack	Conio+.h	5;"	d
+Hblue	Conio+.h	6;"	d
+Hcyan	Conio+.h	8;"	d
+Hgreen	Conio+.h	7;"	d
+HideCursor	Conio+.h	/^inline void HideCursor()$/;"	f
+Hpurple	Conio+.h	10;"	d
+Hred	Conio+.h	9;"	d
+Hwhite	Conio+.h	12;"	d
+Hyellow	Conio+.h	11;"	d
+MLE	judge.cpp	12;"	d	file:
+PrintResult	judge.cpp	/^void PrintResult(result x)$/;"	f
+RE	judge.cpp	13;"	d	file:
+SafetyCheck	judge.cpp	/^bool SafetyCheck()$/;"	f
+Status	judge.cpp	/^const char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};$/;"	v
+Status_Color	judge.cpp	/^const char Status_Color[]={green,red,yellow,red,red,yellow};$/;"	v
+TLE	judge.cpp	11;"	d	file:
+UnHideCursor	Conio+.h	/^inline void UnHideCursor()$/;"	f
+WA	judge.cpp	9;"	d	file:
+background	Conio+.h	/^inline void background(int a)$/;"	f
+black	Conio+.h	14;"	d
+blue	Conio+.h	15;"	d
+cmp	judge.cpp	/^bool cmp(char *str,int s,char *word)$/;"	f
+color	Conio+.h	/^inline void color(int a,int b)$/;"	f
+cyan	Conio+.h	17;"	d
+exist	judge.cpp	/^bool exist(char * filename)$/;"	f
+foreground	Conio+.h	/^inline void foreground(int a)$/;"	f
+getch	Conio+.h	/^int getch(void)$/;"	f
+gotoxy	Conio+.h	/^inline void gotoxy(int x,int y)$/;"	f
+green	Conio+.h	16;"	d
+judge	judge.cpp	/^result judge(char *in,char *out)$/;"	f
+kbhit	Conio+.h	/^int kbhit(void)$/;"	f
+main	judge.cpp	/^int main(int argc,char *argv[])$/;"	f
+memo	judge.cpp	/^    int s,memo;$/;"	m	struct:result	file:
+memorylimit	judge.cpp	/^int memorylimit=128000;$/;"	v
+name	judge.cpp	/^char name[512];$/;"	v
+print	judge.cpp	/^void print(int st)$/;"	f
+pro_time	Conio+.h	/^double pro_time()$/;"	f
+purple	Conio+.h	19;"	d
+random	Conio+.h	/^inline int random(int m)$/;"	f
+readkey	Conio+.h	/^int readkey(double _time__)$/;"	f
+red	Conio+.h	18;"	d
+result	judge.cpp	/^struct result{$/;"	s	file:
+s	judge.cpp	/^    int s,memo;$/;"	m	struct:result	file:
+time	judge.cpp	/^    double time;$/;"	m	struct:result	file:
+timelimit	judge.cpp	/^double timelimit=1.0;$/;"	v
+white	Conio+.h	21;"	d
+yellow	Conio+.h	20;"	d
