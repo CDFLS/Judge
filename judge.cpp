@@ -81,7 +81,8 @@ void Args(int c,char *v[])
             {
                 int last,t;
                 for (last=0;Dict[last][0]!='!';last++) ;
-                sscanf(v[i-1],"-w%d",&t);
+                if (sscanf(v[i-1],"-w%d",&t)==0)
+                    t=1;
                 for (int k=0;k<t;k++)
                     sprintf(Dict[last+k],"%s",v[i]),i++;
                 Dict[last+t][0]='!';
