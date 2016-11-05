@@ -224,7 +224,7 @@ result judge(char *in,char *out)
         return (result){TLE,memo,time};
     if (s==RE)
         return (result){RE,0,0};
-    if (memo>128000)
+    if (memo>memorylimit)
         return (result){MLE,memo,time};
     if (memo==0)
         return (result){RE,memo,time};
