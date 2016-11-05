@@ -262,7 +262,7 @@ int main(int argc,char *argv[])
     foreground(green);
     printf(" Memory:");
     foreground(blue);
-    printf("%6dKB ",maxmemo);
+    printf("%6dKB\n",maxmemo);
     foreground(green);
     printf("Score: ");
     foreground(yellow);
