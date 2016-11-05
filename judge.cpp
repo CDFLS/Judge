@@ -32,7 +32,7 @@ inline void ClearColor()
 
 inline void ClearFile()
 {
-//    system("rm ./.ejudge.*");
+    system("rm ./.ejudge.*");
 }
 
 void print(int st)
