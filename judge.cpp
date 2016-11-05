@@ -51,7 +51,7 @@ void PrintResult(result x)
     foreground(green);
     printf(" Memory:");
     foreground(yellow);
-    printf("%6dKB ",x.memo);
+    printf("%7dKB ",x.memo);
     print(x.s);
 }
 
