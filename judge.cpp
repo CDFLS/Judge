@@ -130,13 +130,13 @@ bool SafetyCheck()
         puts("source file not found.");
         return true;
     }
-    int line=0,ifdef=0;
+    int line=0,ifdef=0,flag=0;
     while (fgets(str,2000,fp)!=NULL)
     {
         if (str[strlen(str)-1]=='\n')
             str[strlen(str)-1]=0;
         line++;
-        int flag=0,include=0;
+        int include=0;
         for (int i=0;i<strlen(str);i++)
             if ((str[i]=='/')&&(str[i+1]=='/'))
                 break;
