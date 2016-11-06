@@ -67,15 +67,24 @@ void GetName() {//获取当前目录名
             return ;
 }
 
-void Args(int c,char *v[]) {//解析命令行参数
+bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和word的第1个字符开始比较
+    if (strlen(str)-s<strlen(word))
+        return false;
+    for (int i=0;i<strlen(word);i++)
+        if (str[s+i]!=word[i])
+            return false;
+    return true;
+}
+
+int Args(int c,char *v[]) {//解析命令行参数
     for (int i=1;i<c;i++)
         if (v[i][0]=='-') {
             i++;
             if (v[i-1][1]=='t')//时间
                 sscanf(v[i],"%lf",&timelimit);
-            if (v[i-1][1]=='m')//内存
+            else if (v[i-1][1]=='m')//内存
                 sscanf(v[i],"%d",&memorylimit);
-            if (v[i-1][1]=='w') {//添加禁用单词，如-w3表示添加接下的的三个单词，-w与-w1等效
+            else if (v[i-1][1]=='w') {//添加禁用单词，如-w3表示添加接下的的三个单词，-w与-w1等效
                 int last,t;
                 for (last=0;Dict[last][0]!='!';last++) ;
                 if (sscanf(v[i-1],"-w%d",&t)==-1)
@@ -83,6 +92,23 @@ void Args(int c,char *v[]) {//解析命令行参数
                 for (int k=0;k<t;k++)
                     sprintf(Dict[last+k],"%s",v[i]),i++;
                 Dict[last+t][0]='!';
+            }
+            else if ((v[i-1][1]=='h')||cmp(v[i-1],0,(char *)"--help")) {
+                cout<< "用法：judge [选项]... [文件前缀]" << endl
+                    << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用相同前缀的已标号的输入输出文件评测(如：demo0.in,demo0.out,demo1.in,demo1.out...)。源文件请以.cpp作为后缀，输入文件请使用.in作为后缀，输出文件请使用.out或.ans作为后缀。" << endl
+                    << endl
+                    << "    -w [STRING]               禁止源文件中出现该字符串" << endl
+                    << "    -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个字符串" << endl
+                    << "    -t [TIME]                 限定程序运行时间(未指定时为" << timelimit << "s)" << endl
+                    << "    -m [MEMORY]               限制程序使用内存(为指定时为" << memorylimit << "KB)" << endl
+                    << "    -h, --help                显示本帮助" << endl
+                    << endl
+                    << "当程序超出限定时间时会被强制结束，但超出限定内存时并不会，因此有可能出现MLE的程序被判定为RE的情况。" << endl;
+                return 1;
+            }
+            else{
+                printf("judge: 未知的选项 '%s'\n请尝试 \"judge --help\"，以获得更多信息。\n",v[i-1]);
+                return 1;
             }
         }
         else{
@@ -93,6 +119,7 @@ void Args(int c,char *v[]) {//解析命令行参数
                 else
                     break;
         }
+    return 0;
 }
 
 bool exist(char * filename) {//检测文件是否存在
@@ -100,15 +127,6 @@ bool exist(char * filename) {//检测文件是否存在
     if (fp==NULL)
         return false;
     fclose(fp);
-    return true;
-}
-
-bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和word的第1个字符开始比较
-    if (strlen(str)-s<strlen(word))
-        return false;
-    for (int i=0;i<strlen(word);i++)
-        if (str[s+i]!=word[i])
-            return false;
     return true;
 }
 
@@ -242,8 +260,7 @@ result judge(char *in,char *out) {//评测单个测试点
 int main(int argc,char *argv[])
 {
     GetName();
-    Args(argc,argv);
-    if (Compile())
+    if (Args(argc,argv)||Compile())
         return 0;
     int score=0,tot=0,st=0,maxmemo=0;
     double maxtime=0;
