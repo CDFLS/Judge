@@ -44,6 +44,7 @@ inline void ClearFile()
 void print(int st)
 {
     color(Status_Color[st],white);
+    HighLight();
     puts(Status[st]);
     ClearColor();
 }
