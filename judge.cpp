@@ -15,34 +15,35 @@ using namespace std;
 struct result{
     int s,memo;
     double time;
-};
+};//Judge的结果
 
+//输出格式。
 const char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
 const char Status_Color[]={green,red,yellow,red,red,yellow};
-char Dict[100][20]={"windows.h","system(","freopen(","fopen(","<con>","!"};//the symbol '!' indicates the end of this array
+char Dict[100][20]={"windows.h","system(","freopen(","fopen(","<con>","!"};
+//禁用单词。"!"标志数组的结束。
 
 double timelimit=1.0;
 int memorylimit=128000;
 char name[512];
 
 void HighLight()
-{
-//This function is not available on windows.
+{//高亮显示。
     printf("\033[1m");
 }
 
 inline void ClearColor()
-{
+{//清除颜色。
     printf("\033[0m");
 }
 
 inline void ClearFile()
-{
+{//清理文件。
     system("rm ./.ejudge.*");
 }
 
 void print(int st)
-{
+{//输出Accepted等提示。高亮+彩显
     color(Status_Color[st],black);
     HighLight();
     puts(Status[st]);
@@ -50,7 +51,7 @@ void print(int st)
 }
 
 void PrintResult(result x)
-{
+{//输出Judge结果
     foreground(green);
     printf("Time:");
     foreground(yellow);
@@ -63,7 +64,7 @@ void PrintResult(result x)
 }
 
 void GetName()
-{
+{//获取当前目录名
     system("basename $PWD > .ejudge.tmp");
     FILE *fp=fopen(".ejudge.tmp","r");
     fscanf(fp,"%s",name);
@@ -75,16 +76,16 @@ void GetName()
 }
 
 void Args(int c,char *v[])
-{
+{//解析命令行参数
     for (int i=1;i<c;i++)
         if (v[i][0]=='-')
         {
             i++;
-            if (v[i-1][1]=='t')
+            if (v[i-1][1]=='t')//时间
                 sscanf(v[i],"%lf",&timelimit);
-            if (v[i-1][1]=='m')
+            if (v[i-1][1]=='m')//内存
                 sscanf(v[i],"%d",&memorylimit);
-            if (v[i-1][1]=='w')
+            if (v[i-1][1]=='w')//添加禁用单词，如-w3表示添加接下的的三个单词，-w与-w1等效。
             {
                 int last,t;
                 for (last=0;Dict[last][0]!='!';last++) ;
@@ -105,7 +106,7 @@ void Args(int c,char *v[])
 }
 
 bool exist(char * filename)
-{
+{//检测文件是否存在
     FILE *fp=fopen(filename,"r");
     if (fp==NULL)
         return false;
@@ -114,7 +115,7 @@ bool exist(char * filename)
 }
 
 bool cmp(char *str,int s,char *word)
-{
+{//比较字符串，从str的第s个和word的第1个字符开始比较
     if (strlen(str)-s<strlen(word))
         return false;
     for (int i=0;i<strlen(word);i++)
@@ -124,7 +125,7 @@ bool cmp(char *str,int s,char *word)
 }
 
 bool SafetyCheck()
-{
+{//检测是否有禁用单词
     int r=false;
     char str[2048];
     sprintf(str,"%s.cpp",name);
@@ -138,7 +139,7 @@ bool SafetyCheck()
         puts("source file not found.");
         return true;
     }
-    int line=0,ifdef=0,flag=0;
+    int line=0,ifdef=0,flag=0;//忽略在注释和#ifndef EJUDGE中的单词
     while (fgets(str,2000,fp)!=NULL)
     {
         if (str[strlen(str)-1]=='\n')
@@ -150,17 +151,17 @@ bool SafetyCheck()
                 break;
             else if ((str[i]=='*')&&(str[i+1]=='/'))
                 flag=0;
-            else if ((str[i]=='#')&&(str[i+1]=='i')&&(str[i+2]=='f'))
+            else if (cmp(str,i,(char *)"#ifndef EJUDGE"))
                 ifdef=1;
-            else if ((str[i]=='#')&&(str[i+1]=='e')&&(str[i+2]=='n'))
+            else if (cmp(str,i,(char *)"#endif")||cmp(str,i,(char *)"#else"))
                 ifdef=0;
             else if (flag||ifdef)
                 continue;
             else if ((str[i]=='/')&&(str[i+1]=='*'))
                 flag=1;
-            else if ((str[i]=='#')&&(str[i+1]=='i')&&(str[i+2]=='n')&&(str[i+3]=='c'))
+            else if (cmp(str,i,(char *)"#include"))
                 include=1;
-            else if (str[i]=='"'&&include)
+            else if (str[i]=='"'&&include)//不允许调用自定义头文件
             {
                 foreground(red);
                 HighLight();
@@ -186,7 +187,7 @@ bool SafetyCheck()
 }
 
 bool Compile()
-{
+{//编译程序
     puts("Compiling...");
     if (SafetyCheck())
     {
@@ -207,14 +208,23 @@ bool Compile()
 }
 
 result judge(char *in,char *out)
-{
+{//评测单个测试点
     int s=AC,memo;
     double time;
     char str[512];
-    sprintf(str,"/bin/time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);
+    sprintf(str,"/bin/time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
     system(str);
     FILE *fp=fopen(".ejudge.run","r");
     char ch;
+//解析输出。
+//当程序超时，timeout终结进程时，输出如下：
+//      Command exited with non-zero status 124
+//      Time:1.00s Memory:1732KB
+//当程序运行错误时，输出如下：
+//      timeout: the monitored command dumped core
+//      Command terminated by signal 11
+//      Time:0.02s Memory:1924KB
+//故有如下解析代码：
     fscanf(fp,"%c",&ch);
     if (ch=='C')
     {
@@ -238,7 +248,7 @@ result judge(char *in,char *out)
         return (result){MLE,memo,time};
     if (memo==0)
         return (result){RE,memo,time};
-    sprintf(str,"diff -b -B -Z --strip-trailing-cr .ejudge.tmp %s > /dev/null",out);
+    sprintf(str,"diff -b -B -Z .ejudge.tmp %s > /dev/null",out);//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
     if (WEXITSTATUS(system(str))==1)
         return (result){WA,memo,time};
     else
@@ -262,7 +272,7 @@ int main(int argc,char *argv[])
             continue;
         if (!exist(out))
         {
-            sprintf(out,"%s%d.ans",name,i);
+            sprintf(out,"%s%d.ans",name,i);//如果不存在.out文件，尝试.ans后缀。
             if (!exist(out))
                 continue;
         }
