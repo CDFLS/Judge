@@ -25,6 +25,12 @@ double timelimit=1.0;
 int memorylimit=128000;
 char name[512];
 
+void HighLight()
+{
+//This function is not available on windows.
+    printf("\033[1m");
+}
+
 inline void ClearColor()
 {
     printf("\033[0m");
@@ -125,6 +131,7 @@ bool SafetyCheck()
     if (fp==NULL)
     {
         foreground(red);
+        HighLight();
         printf("Error:");
         ClearColor();
         puts("source file not found.");
@@ -155,6 +162,7 @@ bool SafetyCheck()
             else if (str[i]=='"'&&include)
             {
                 foreground(red);
+                HighLight();
                 printf("Error:");
                 ClearColor();
                 printf("invalid head file at line %d:%s\n",line,str);
@@ -165,6 +173,7 @@ bool SafetyCheck()
                     if (cmp(str,i,Dict[k]))
                     {
                         foreground(red);
+                        HighLight();
                         printf("Error:");
                         ClearColor();
                         printf("invalid word found at line %d:%s\n",line,Dict[k]);
@@ -273,6 +282,7 @@ int main(int argc,char *argv[])
     if (tot==0)
     {
         foreground(red);
+        HighLight();
         printf("Error:");
         ClearColor();
         puts("no input file found.");
