@@ -20,6 +20,7 @@ struct result{
 const char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
 const char Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
 char Dict[100][20]={"windows.h","system(","freopen(","fopen(","<con>","!"};//禁用单词。"!"标志数组的结束
+int Arg_c=0;//-c选项标志
 
 double timelimit=1.0;
 int memorylimit=128000;
@@ -93,15 +94,19 @@ int Args(int c,char *v[]) {//解析命令行参数
                     sprintf(Dict[last+k],"%s",v[i]),i++;
                 Dict[last+t][0]='!';
             }
+            else if (v[i-1][1]=='c')
+                Arg_c=1;
             else if ((v[i-1][1]=='h')||cmp(v[i-1],0,(char *)"--help")) {
                 cout<< "用法：judge [选项]... [文件前缀]" << endl
                     << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用相同前缀的已标号的输入输出文件评测(如：demo0.in,demo0.out,demo1.in,demo1.out...)。源文件请以.cpp作为后缀，输入文件请使用.in作为后缀，输出文件请使用.out或.ans作为后缀。" << endl
+                    << "编译命令:g++ [FILENAME].cpp -o [FILENAME] -DEJUDGE" << endl
                     << endl
                     << "    -w [STRING]               禁止源文件中出现该字符串" << endl
                     << "    -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个字符串" << endl
                     << "    -t [TIME]                 限定程序运行时间(未指定时为" << timelimit << "s)" << endl
                     << "    -m [MEMORY]               限制程序使用内存(为指定时为" << memorylimit << "KB)" << endl
                     << "    -h, --help                显示本帮助" << endl
+                    << "    -c                        只编译，不测试" <<endl
                     << endl
                     << "当程序超出限定时间时会被强制结束，但超出限定内存时并不会，因此有可能出现MLE的程序被判定为RE的情况。" << endl;
                 return 1;
@@ -209,7 +214,7 @@ bool Compile() {//编译程序
         return true;
     }
     puts("done.");
-    return false;
+    return Arg_c==1;
 }
 
 result judge(char *in,char *out) {//评测单个测试点
