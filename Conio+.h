@@ -4,7 +4,7 @@
 
 #define Hblack 0
 #define Hblue 4
-#define Hgreen 6
+#define Hgreen 9
 #define Hcyan 2
 #define Hred 1
 #define Hpurple 5
@@ -13,7 +13,7 @@
 
 #define black 0
 #define blue 4
-#define green 6
+#define green 9
 #define cyan 2
 #define red 1
 #define purple 5
