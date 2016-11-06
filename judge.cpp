@@ -139,7 +139,7 @@ bool SafetyCheck()
         puts("source file not found.");
         return true;
     }
-    int line=0,ifdef=0,flag=0;//忽略在注释和#ifndef EJUDGE中的单词
+    int line=0,ifndef=0,flag=0,ifdef=0;//忽略在注释和#ifndef EJUDGE和#ifdef EJUDGE #else中的单词
     while (fgets(str,2000,fp)!=NULL)
     {
         if (str[strlen(str)-1]=='\n')
@@ -151,14 +151,21 @@ bool SafetyCheck()
                 break;
             else if ((str[i]=='*')&&(str[i+1]=='/'))
                 flag=0;
-            else if (cmp(str,i,(char *)"#ifndef EJUDGE"))
-                ifdef=1;
-            else if (cmp(str,i,(char *)"#endif")||cmp(str,i,(char *)"#else"))
-                ifdef=0;
-            else if (flag||ifdef)
-                continue;
             else if ((str[i]=='/')&&(str[i+1]=='*'))
                 flag=1;
+            else if (cmp(str,i,(char *)"#ifndef EJUDGE"))
+                ifndef=1;
+            else if (cmp(str,i,(char *)"#ifdef EJUDGE"))
+                ifdef=1;
+            else if (cmp(str,i,(char *)"#endif"))
+                ifndef=0,ifdef=0;
+            else if (cmp(str,i,(char *)"#else")) {
+                ifndef=0;
+                if (ifdef==1)
+                    ifdef=2;
+            }
+            else if (flag||ifndef||(ifdef==2))
+                continue;
             else if (cmp(str,i,(char *)"#include"))
                 include=1;
             else if (str[i]=='"'&&include)//不允许调用自定义头文件
