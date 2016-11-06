@@ -228,7 +228,7 @@ result judge(char *in,char *out)
         return (result){MLE,memo,time};
     if (memo==0)
         return (result){RE,memo,time};
-    sprintf(str,"diff -w -B -Z --strip-trailing-cr .ejudge.tmp %s > /dev/null",out);
+    sprintf(str,"diff -b -B -Z --strip-trailing-cr .ejudge.tmp %s > /dev/null",out);
     if (WEXITSTATUS(system(str))==1)
         return (result){WA,memo,time};
     else
