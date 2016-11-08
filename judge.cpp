@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "Conio+.h"
+#include "judge_test.h"
 using namespace std;
 
 #define AC 0
@@ -81,22 +82,28 @@ int Args(int c,char *v[]) {//解析命令行参数
     for (int i=1;i<c;i++)
         if (v[i][0]=='-') {
             i++;
-            if (v[i-1][1]=='t')//时间
+            if (cmp(v[i-1],0,(char *)"-t")&&(strlen(v[i-1])==2)&&(i<c))//时间
                 sscanf(v[i],"%lf",&timelimit);
-            else if (v[i-1][1]=='m')//内存
+            else if (cmp(v[i-1],0,(char *)"-m")&&(strlen(v[i-1])==2)&&(i<c))//内存
                 sscanf(v[i],"%d",&memorylimit);
-            else if (v[i-1][1]=='w') {//添加禁用单词，如-w3表示添加接下的的三个单词，-w与-w1等效
+            else if (cmp(v[i-1],0,(char *)"-w")&&(strlen(v[i-1])==2)&&(i<c)) {//添加禁用单词，如-w3表示添加接下的的三个单词，-w与-w1等效
                 int last,t;
                 for (last=0;Dict[last][0]!='!';last++) ;
                 if (sscanf(v[i-1],"-w%d",&t)==-1)
                     t=1;
-                for (int k=0;k<t;k++)
+                for (int k=0;(k<t)&&(i<c);k++)
                     sprintf(Dict[last+k],"%s",v[i]),i++;
                 Dict[last+t][0]='!';
             }
-            else if (v[i-1][1]=='c')
+            else if (cmp(v[i-1],0,(char *)"-c")&&(strlen(v[i-1])==2))
                 Arg_c=1;
-            else if ((v[i-1][1]=='h')||cmp(v[i-1],0,(char *)"--help")) {
+            else if ((cmp(v[i-1],0,(char *)"-a")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--all")&&(strlen(v[i-1])==5))) {
+                if (i!=2)
+                    continue;
+                judge_test(c,v);
+                return 1;
+            }
+            else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
                 cout<< "用法：judge [选项]... [文件前缀]" << endl
                     << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用相同前缀的已标号的输入输出文件评测(如：demo0.in,demo0.out,demo1.in,demo1.out...)。源文件请以.cpp作为后缀，输入文件请使用.in作为后缀，输出文件请使用.out或.ans作为后缀。" << endl
                     << "编译命令:g++ [FILENAME].cpp -o [FILENAME] -DEJUDGE" << endl
@@ -106,13 +113,14 @@ int Args(int c,char *v[]) {//解析命令行参数
                     << "    -t [TIME]                 限定程序运行时间(未指定时为" << timelimit << "s)" << endl
                     << "    -m [MEMORY]               限制程序使用内存(为指定时为" << memorylimit << "KB)" << endl
                     << "    -h, --help                显示本帮助" << endl
-                    << "    -c                        只编译，不测试" <<endl
+                    << "    -c                        只编译，不测试" << endl
+                    << "    -a, --all                 评测一次考试，必须作为第一个参数，更多用法使用judge --all --help查看" << endl
                     << endl
                     << "当程序超出限定时间时会被强制结束，但超出限定内存时并不会，因此有可能出现MLE的程序被判定为RE的情况。" << endl;
                 return 1;
             }
             else{
-                printf("judge: 未知的选项 '%s'\n请尝试 \"judge --help\"，以获得更多信息。\n",v[i-1]);
+                printf("judge: 未知的选项或不足的参数 '%s'\n请尝试 \"judge --help\"，以获得更多信息。\n",v[i-1]);
                 return 1;
             }
         }
@@ -200,6 +208,7 @@ bool SafetyCheck() {//检测是否有禁用单词
 }
 
 bool Compile() {//编译程序
+    puts(name);
     puts("Compiling...");
     if (SafetyCheck()) {
         ClearFile();
