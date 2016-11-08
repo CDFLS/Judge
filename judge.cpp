@@ -77,7 +77,7 @@ int Args(int c,char *v[]) {//解析命令行参数
             }
             else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
                 cout<< "用法：judge [选项]... [文件前缀]" << endl
-                    << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用相同前缀的已标号的输入输出文件评测(如：demo0.in,demo0.out,demo1.in,demo1.out...)。源文件请以.cpp作为后缀，输入文件请使用.in作为后缀，输出文件请使用.out或.ans作为后缀。" << endl
+                    << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用前缀相同的输入输出文件评测。" << endl
                     << "编译命令:g++ [FILENAME].cpp -o [FILENAME] -DEJUDGE" << endl
                     << endl
                     << "    -w [STRING]               禁止源文件中出现该字符串" << endl
@@ -250,22 +250,29 @@ int main(int argc,char *argv[])
         return 0;
     int score=0,tot=0,st=0,maxmemo=0;
     double maxtime=0;
-    for (int i=0;i<=20;i++) {
-        char in[512],out[512];
-        sprintf(in,"%s%d.in",name,i);
-        sprintf(out,"%s%d.out",name,i);
-        if (!exist(in))
-            continue;
+    InitFile();
+    FILE *infile=fopen(".ejudge.input","r");
+    char in[512],out[512],temp[512];
+    int length=-1;
+    while (fgets(in,500,infile)!=NULL) {
+        for (int i=strlen(in)-1;in[i]=='\n';i--)
+            in[i]=0;
+        int k;
+        for (k=0;(k<strlen(in))&&(in[k]!='.');k++)
+            temp[k]=in[k];
+        temp[k]=0;
+        sprintf(out,"%s.out",temp);
         if (!exist(out)) {
-            sprintf(out,"%s%d.ans",name,i);//如果不存在.out文件，尝试.ans后缀。
+            sprintf(out,"%s.ans",temp);
             if (!exist(out))
                 continue;
         }
+        if (length==-1)
+            length=strlen(in);
         tot++;
         foreground(yellow);
-        if (i<10)
-            putchar(' ');
-        printf("    %s: ",in);
+        sprintf(temp,"%%%ds: ",length+3);
+        printf(temp,in);
         result tmp=judge(in,out);
         PrintResult(tmp);
         if (tmp.s==AC)

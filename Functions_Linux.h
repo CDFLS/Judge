@@ -10,6 +10,10 @@ inline void ClearFile() {//清理文件
     system("rm ./.ejudge.*");
 }
 
+void InitFile() {
+    system("ls|grep .in > .ejudge.input");
+}
+
 void GetName(char *name) {//获取当前目录名
     system("basename $PWD > .ejudge.tmp");
     FILE *fp=fopen(".ejudge.tmp","r");
