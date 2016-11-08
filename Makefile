@@ -1,5 +1,5 @@
 DEFAULT:
-	g++ judge.cpp -o judge
+	g++ judge.cpp -o judge -DLINUX
 	sudo make install
 install:
 	cp ./judge /usr/bin/judge

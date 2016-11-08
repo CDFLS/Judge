@@ -1,9 +1,4 @@
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
-#include <iostream>
-#include "Conio+.h"
-#include "judge_test.h"
+#include "Heads.h"
 using namespace std;
 
 #define AC 0
@@ -27,18 +22,6 @@ double timelimit=1.0;
 int memorylimit=128000;
 char name[512];
 
-void HighLight() {//高亮显示
-    printf("\033[1m");
-}
-
-inline void ClearColor() {//清除颜色
-    printf("\033[0m");
-}
-
-inline void ClearFile() {//清理文件
-    system("rm ./.ejudge.*");
-}
-
 void print(int st) {//输出Accepted等提示。高亮+彩显
     color(Status_Color[st],black);
     HighLight();
@@ -56,17 +39,6 @@ void PrintResult(result x) {//输出Judge结果
     foreground(yellow);
     printf("%7dKB ",x.memo);
     print(x.s);
-}
-
-void GetName() {//获取当前目录名
-    system("basename $PWD > .ejudge.tmp");
-    FILE *fp=fopen(".ejudge.tmp","r");
-    fscanf(fp,"%s",name);
-    for (int i=strlen(name)-1;i>=0;i--)
-        if ((name[i]=='\n')||(name[i]=='\r'))
-            name[i]=0;
-        else
-            return ;
 }
 
 bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和word的第1个字符开始比较
@@ -153,7 +125,7 @@ bool SafetyCheck() {//检测是否有禁用单词
         HighLight();
         printf("Error:");
         ClearColor();
-        puts("source file not found.");
+        puts("source not found.");
         return true;
     }
     int line=0,ifndef=0,flag=0,ifdef=0;//忽略在注释和#ifndef EJUDGE和#ifdef EJUDGE #else中的单词
@@ -230,7 +202,7 @@ result judge(char *in,char *out) {//评测单个测试点
     int s=AC,memo;
     double time;
     char str[512];
-    sprintf(str,"/bin/time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
+    sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
     system(str);
     FILE *fp=fopen(".ejudge.run","r");
     char ch;
@@ -273,7 +245,7 @@ result judge(char *in,char *out) {//评测单个测试点
 
 int main(int argc,char *argv[])
 {
-    GetName();
+    GetName(name);
     if (Args(argc,argv)||Compile())
         return 0;
     int score=0,tot=0,st=0,maxmemo=0;
