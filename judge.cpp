@@ -180,7 +180,6 @@ bool SafetyCheck() {//检测是否有禁用单词
 }
 
 bool Compile() {//编译程序
-    puts(name);
     puts("Compiling...");
     if (SafetyCheck()) {
         ClearFile();
@@ -282,6 +281,7 @@ int main(int argc,char *argv[])
         maxtime=max(maxtime,tmp.time);
         maxmemo=max(maxmemo,tmp.memo);
     }
+    fclose(infile);
     if (tot==0) {
         foreground(red);
         HighLight();
