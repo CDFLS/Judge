@@ -77,7 +77,7 @@ int Args(int c,char *v[]) {//解析命令行参数
             }
             else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
                 cout<< "用法：judge [选项]... [文件前缀]" << endl
-                    << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用前缀相同的输入输出文件评测。" << endl
+                    << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用前缀相同的输入输出文件(自动查找)评测。" << endl
                     << "编译命令:g++ [FILENAME].cpp -o [FILENAME] -DEJUDGE" << endl
                     << endl
                     << "    -w [STRING]               禁止源文件中出现该字符串" << endl
