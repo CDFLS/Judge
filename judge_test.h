@@ -10,7 +10,7 @@ struct Judge_Result {
     bool operator < (Judge_Result x) {
         for (int i=0;i<=number;i++)
             if (score[i]!=x.score[i])
-                return score[i]<x.score[i];
+                return score[i]>x.score[i];
         return false;
     }
 }List[30];
@@ -39,12 +39,14 @@ void judge_test(int c,char *v[]) {
         sprintf(List[N++].name,"%s",oier);
         for (int i=0;i<number;i++) {
             char tmp[512];
-            printf("Testing oier '%s' for problem '%s'\n",oier,problem[i]);
-            sprintf(tmp,"cp ./source/%s/%s.cpp ./data/%s/",oier,problem[i],problem[i]);
+            printf("Testing '%s' for problem '%s'\n",oier,problem[i]);
+            sprintf(tmp,"cp ./source/%s/%s.cpp ./data/%s/ 2>/dev/null",oier,problem[i],problem[i]);
             system(tmp);
             sprintf(tmp,"cd ./data/%s&&judge",problem[i]);
             List[N-1].score[i+1]=WEXITSTATUS(system(tmp));
             system("cd ../..");
+            sprintf(tmp,"rm ./data/%s/*.cpp",problem[i]);
+            system(tmp);
         }
         List[N-1].sumup();
     }
