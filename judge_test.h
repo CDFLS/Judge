@@ -45,7 +45,7 @@ void judge_test(int c,char *v[]) {
             sprintf(tmp,"cd ./data/%s&&judge",problem[i]);
             List[N-1].score[i+1]=WEXITSTATUS(system(tmp));
             system("cd ../..");
-            sprintf(tmp,"rm ./data/%s/*.cpp",problem[i]);
+            sprintf(tmp,"rm ./data/%s/*.cpp 2>/dev/null",problem[i]);
             system(tmp);
         }
         List[N-1].sumup();
