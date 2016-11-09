@@ -18,7 +18,6 @@ const char Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等�
 char Dict[100][20]={"windows.h","system(","fopen(","<con>","!"};//禁用单词。"!"标志数组的结束
 int Arg_c=0;//-c选项标志
 int Flag_Freopen=0;//文件输入输出
-int Score_Output=0;//输出分数到文件，供-a选项调用
 
 double timelimit=1.0;
 int memorylimit=128000;
@@ -77,8 +76,6 @@ int Args(int c,char *v[]) {//解析命令行参数
                 judge_test(c,v);
                 return 1;
             }
-            else if (cmp(v[i-1],0,(char *)"-f")&&(strlen(v[i-1])==2))
-                Score_Output=1;
             else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
                 cout<< "用法：judge [选项]... [文件前缀]" << endl
                     << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用前缀相同的输入输出文件(自动查找)评测。文件操作自动检测，但仅允许freopen。" << endl
@@ -326,20 +323,15 @@ int judge_single()
     foreground(yellow);
     printf("%d\n",score*100/tot);
     print(st);
-    ClearColor();
-    ClearFile();
     return score*100/tot;
 }
 
 int main(int argc,char *argv[]) {
     GetName(name);
-    if (Args(argc,argv)||Compile())
-        return 0;
-    int score=judge_single();
-    if (Score_Output) {
-        FILE *fp=fopen(".ejudge.score","w");
-        fprintf(fp,"%d\n",score);
-        fclose(fp);
-    }
-    return 0;
+    int score=0;
+    if (!(Args(argc,argv)||Compile()))
+        score=judge_single();
+    ClearColor();
+    ClearFile();
+    return score;
 }

@@ -7,7 +7,7 @@ inline void ClearColor() {//清除颜色
 }
 
 inline void ClearFile() {//清理文件
-    system("rm ./.ejudge.*");
+    system("rm ./.ejudge.* 2>/dev/null");
 }
 
 void InitFile() {
