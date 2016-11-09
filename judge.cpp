@@ -15,8 +15,10 @@ struct result{
 
 const char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
 const char Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
-char Dict[100][20]={"windows.h","system(","freopen(","fopen(","<con>","!"};//禁用单词。"!"标志数组的结束
+char Dict[100][20]={"windows.h","system(","fopen(","<con>","!"};//禁用单词。"!"标志数组的结束
 int Arg_c=0;//-c选项标志
+int Flag_Freopen=0;//文件输入输出
+int Score_Output=0;//输出分数到文件，供-a选项调用
 
 double timelimit=1.0;
 int memorylimit=128000;
@@ -75,9 +77,11 @@ int Args(int c,char *v[]) {//解析命令行参数
                 judge_test(c,v);
                 return 1;
             }
+            else if (cmp(v[i-1],0,(char *)"-f")&&(strlen(v[i-1])==2))
+                Score_Output=1;
             else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
                 cout<< "用法：judge [选项]... [文件前缀]" << endl
-                    << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用前缀相同的输入输出文件(自动查找)评测。" << endl
+                    << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用前缀相同的输入输出文件(自动查找)评测。文件操作自动检测，但仅允许freopen。" << endl
                     << "编译命令:g++ [FILENAME].cpp -o [FILENAME] -DEJUDGE" << endl
                     << endl
                     << "    -w [STRING]               禁止源文件中出现该字符串" << endl
@@ -164,6 +168,8 @@ bool SafetyCheck() {//检测是否有禁用单词
                 printf("invalid head file at line %d:%s\n",line,str);
                 r=true;
             }
+            else if (cmp(str,i,(char *)"freopen("))
+                Flag_Freopen=1;
             else
                 for (int k=0;Dict[k][0]!='!';k++)
                     if (cmp(str,i,Dict[k])) {
@@ -201,8 +207,27 @@ result judge(char *in,char *out) {//评测单个测试点
     int s=AC,memo;
     double time;
     char str[512];
-    sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
-    system(str);
+    if (Flag_Freopen) {
+        sprintf(str,"%s.in",name);
+        if (exist(str)) {
+            sprintf(str,"cp %s.in %s.in.bak",name,name);
+            system(str);
+        }
+        sprintf(str,"%s.out",name);
+        if (exist(str)) {
+            sprintf(str,"cp %s.out %s.out.bak",name,name);
+            system(str);
+        }
+        sprintf(str,"cp %s %s.in",in,name);
+        system(str);
+        sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s 2>.ejudge.run",timelimit,name);
+        system(str);
+        sprintf(str,"mv %s.out .ejudge.tmp",name);
+        system(str);
+    } else {
+        sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
+        system(str);
+    }
     FILE *fp=fopen(".ejudge.run","r");
     char ch;
 //解析输出。
@@ -242,11 +267,8 @@ result judge(char *in,char *out) {//评测单个测试点
         return (result){AC,memo,time};
 }
 
-int main(int argc,char *argv[])
+int judge_single()
 {
-    GetName(name);
-    if (Args(argc,argv)||Compile())
-        return 0;
     int score=0,tot=0,st=0,maxmemo=0;
     double maxtime=0;
     InitFile();
@@ -306,5 +328,18 @@ int main(int argc,char *argv[])
     print(st);
     ClearColor();
     ClearFile();
+    return score*100/tot;
+}
+
+int main(int argc,char *argv[]) {
+    GetName(name);
+    if (Args(argc,argv)||Compile())
+        return 0;
+    int score=judge_single();
+    if (Score_Output) {
+        FILE *fp=fopen(".ejudge.score","w");
+        fprintf(fp,"%d\n",score);
+        fclose(fp);
+    }
     return 0;
 }
