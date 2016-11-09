@@ -87,7 +87,7 @@ int Args(int c,char *v[]) {//解析命令行参数
                     << "    -m [MEMORY]               限制程序使用内存(为指定时为" << memorylimit << "KB)" << endl
                     << "    -h, --help                显示本帮助" << endl
                     << "    -c                        只编译，不测试" << endl
-                    << "    -a, --all                 评测一次考试，必须作为第一个参数，更多用法使用judge --all --help查看" << endl
+                    << "    -a, --all                 评测一次考试，必须作为第一个参数。" << endl
                     << endl
                     << "当程序超出限定时间时会被强制结束，但超出限定内存时并不会，因此有可能出现MLE的程序被判定为RE的情况。" << endl;
                 return 1;
