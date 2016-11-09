@@ -221,6 +221,9 @@ result judge(char *in,char *out) {//评测单个测试点
         system(str);
         sprintf(str,"mv %s.out .ejudge.tmp",name);
         system(str);
+        sprintf(str,"cp %s.in.bak %s.in 2>/dev/null",name,name);
+        system(str);
+        sprintf(str,"cp %s.out.bak %s.out 2>/dev/null",name,name);
     } else {
         sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
         system(str);
