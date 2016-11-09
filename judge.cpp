@@ -205,25 +205,14 @@ result judge(char *in,char *out) {//评测单个测试点
     double time;
     char str[512];
     if (Flag_Freopen) {
-        sprintf(str,"%s.in",name);
-        if (exist(str)) {
-            sprintf(str,"cp %s.in %s.in.bak",name,name);
-            system(str);
-        }
-        sprintf(str,"%s.out",name);
-        if (exist(str)) {
-            sprintf(str,"cp %s.out %s.out.bak",name,name);
-            system(str);
-        }
         sprintf(str,"cp %s %s.in",in,name);
         system(str);
         sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s 2>.ejudge.run",timelimit,name);
         system(str);
         sprintf(str,"mv %s.out .ejudge.tmp",name);
         system(str);
-        sprintf(str,"cp %s.in.bak %s.in 2>/dev/null",name,name);
+        sprintf(str,"rm %s.in",name);
         system(str);
-        sprintf(str,"cp %s.out.bak %s.out 2>/dev/null",name,name);
     } else {
         sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
         system(str);
@@ -269,12 +258,20 @@ result judge(char *in,char *out) {//评测单个测试点
 
 int judge_single()
 {
+    int length=-1,FileChanged=0;
+    char in[512],out[512],temp[512];
+    if (Flag_Freopen) {
+        sprintf(temp,"%s.in",name);
+        if (exist(temp)) {
+            FileChanged=1;
+            sprintf(temp,"mv %s.in %s_.in&&mv %s.out %s_.out",name,name,name,name);
+            system(temp);
+        }
+    }
     int score=0,tot=0,st=0,maxmemo=0;
     double maxtime=0;
     InitFile();
     FILE *infile=fopen(".ejudge.input","r");
-    char in[512],out[512],temp[512];
-    int length=-1;
     while (fgets(in,500,infile)!=NULL) {
         for (int i=strlen(in)-1;in[i]=='\n';i--)
             in[i]=0;
@@ -302,6 +299,10 @@ int judge_single()
             st=tmp.s;
         maxtime=max(maxtime,tmp.time);
         maxmemo=max(maxmemo,tmp.memo);
+    }
+    if (FileChanged) {
+        sprintf(temp,"mv %s_.in %s.in&&mv %s_.out %s.out",name,name,name,name);
+        system(temp);
     }
     fclose(infile);
     if (tot==0) {
