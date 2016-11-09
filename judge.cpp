@@ -207,21 +207,21 @@ result judge(char *in,char *out) {//评测单个测试点
     if (Flag_Freopen) {
         sprintf(str,"cp %s %s.in",in,name);
         system(str);
-        sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s 2>.ejudge.run",timelimit,name);
+        sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./%s 2>.ejudge.run",timelimit,name);
         system(str);
         sprintf(str,"mv %s.out .ejudge.tmp",name);
         system(str);
         sprintf(str,"rm %s.in",name);
         system(str);
     } else {
-        sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
+        sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,name,in);//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
         system(str);
     }
     FILE *fp=fopen(".ejudge.run","r");
     char ch;
 //解析输出。
 //当程序超时，timeout终结进程时，输出如下：
-//      Command exited with non-zero status 124
+//      Command terminated by signal 9
 //      Time:1.00s Memory:1732KB
 //当程序运行错误时，输出如下：
 //      timeout: the monitored command dumped core
@@ -249,8 +249,8 @@ result judge(char *in,char *out) {//评测单个测试点
         return (result){MLE,memo,time};
     if (memo==0)
         return (result){RE,memo,time};
-    sprintf(str,"diff -b -B -Z .ejudge.tmp %s > /dev/null",out);//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
-    if (WEXITSTATUS(system(str))==1)
+    sprintf(str,"timeout 1s diff -b -B -Z .ejudge.tmp %s > /dev/null 2>/dev/null",out);//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
+    if (WEXITSTATUS(system(str))!=0)
         return (result){WA,memo,time};
     else
         return (result){AC,memo,time};
