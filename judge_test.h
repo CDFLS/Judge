@@ -51,14 +51,14 @@ void judge_test(int c,char *v[]) {
         List[N-1].sumup();
     }
     std::sort(List,List+N);
-    printf("      ");
+    printf("    ");
     for (int i=0;i<number;i++)
-        printf("    %s",problem[i]);
+        printf("    %10s",problem[i]);
     puts("");
     for (int i=0;i<N;i++) {
-        printf("%s:",List[i].name);
+        printf("%6s:",List[i].name);
         for (int j=0;j<number;j++)
-            printf("    %d",List[i].score[j+1]);
+            printf("    %7d",List[i].score[j+1]);
         puts("");
     }
     fclose(fp);
