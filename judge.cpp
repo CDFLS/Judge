@@ -15,7 +15,7 @@ struct result{
 
 const char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
 const char Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
-char Dict[100][20]={"windows.h","system(","fopen(","<con>","!"};//禁用单词。"!"标志数组的结束
+char Dict[100][20]={"windows.h","system(","fopen(","<con>","rand()","!"};//禁用单词。"!"标志数组的结束
 int Arg_c=0;//-c选项标志
 int Flag_Freopen=0;//文件输入输出
 
