@@ -268,8 +268,8 @@ int judge_single()
             system(temp);
         }
     }
-    int score=0,tot=0,st=0,maxmemo=0;
-    double maxtime=0;
+    int score=0,tot=0,st=0,memotot=0;
+    double timetot=0;
     InitFile();
     FILE *infile=fopen(".ejudge.input","r");
     while (fgets(in,500,infile)!=NULL) {
@@ -297,8 +297,8 @@ int judge_single()
             score++;
         else if (st==AC)
             st=tmp.s;
-        maxtime=max(maxtime,tmp.time);
-        maxmemo=max(maxmemo,tmp.memo);
+        timetot+=tmp.time;
+        memotot+=tmp.memo;
     }
     if (FileChanged) {
         sprintf(temp,"mv %s_.in %s.in&&mv %s_.out %s.out",name,name,name,name);
@@ -317,11 +317,11 @@ int judge_single()
     foreground(green);
     printf("Time: ");
     foreground(blue);
-    printf("%4.2lfs",maxtime);
+    printf("%4.2lfs",timetot);
     foreground(green);
     printf(" Memory:");
     foreground(blue);
-    printf("%6dKB\n",maxmemo);
+    printf("%6dKB\n",memotot);
     foreground(green);
     printf("Score: ");
     foreground(yellow);
