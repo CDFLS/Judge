@@ -51,6 +51,7 @@ void judge_test(int c,char *v[]) {
         List[N-1].sumup();
     }
     std::sort(List,List+N);
+    printf("      ");
     for (int i=0;i<number;i++)
         printf("    %s",problem[i]);
     puts("");
