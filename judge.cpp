@@ -209,7 +209,7 @@ result judge(char *in,char *out) {//评测单个测试点
         system(str);
         sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./%s 2>.ejudge.run",timelimit,name);
         system(str);
-        sprintf(str,"mv %s.out .ejudge.tmp",name);
+        sprintf(str,"mv %s.out .ejudge.tmp 2>/dev/null",name);
         system(str);
         sprintf(str,"rm %s.in",name);
         system(str);
@@ -264,10 +264,11 @@ int judge_single()
         sprintf(temp,"%s.in",name);
         if (exist(temp)) {
             FileChanged=1;
-            sprintf(temp,"mv %s.in %s_.in&&mv %s.out %s_.out",name,name,name,name);
+            sprintf(temp,"mv %s.in %s_.in&&mv %s.out %s_.out 2>/dev/null",name,name,name,name);
             system(temp);
         }
     }
+
     int score=0,tot=0,st=0,memotot=0;
     double timetot=0;
     InitFile();
@@ -301,7 +302,7 @@ int judge_single()
         memotot+=tmp.memo;
     }
     if (FileChanged) {
-        sprintf(temp,"mv %s_.in %s.in&&mv %s_.out %s.out",name,name,name,name);
+        sprintf(temp,"mv %s_.in %s.in&&mv %s_.out %s.out 2>/dev/null",name,name,name,name);
         system(temp);
     }
     fclose(infile);
