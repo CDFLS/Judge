@@ -20,7 +20,9 @@ void PrintName(char *str) {//修复输出问题
         if (str[i]<0)
             l++;
     l/=3;
-    if (l==2)
+    if (l==0)
+        printf("%6s",str);
+    else if (l==2)
         printf("%c%c%c  %c%c%c",str[0],str[1],str[2],str[3],str[4],str[5]);
     else
         printf("%s",str);
