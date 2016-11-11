@@ -14,6 +14,17 @@ struct Judge_Result {
         return false;
     }
 }List[30];
+void PrintName(char *str) {//修复输出问题
+    int l=0;
+    for (int i=0;i<strlen(str);i++)
+        if (str[i]<0)
+            l++;
+    l/=3;
+    if (l==2)
+        printf("%c%c%c  %c%c%c",str[0],str[1],str[2],str[3],str[4],str[5]);
+    else
+        printf("%s",str);
+}
 void judge_test(int c,char *v[]) {
     system("ls ./source > .ejudge.test.oier");
     system("ls ./data > .ejudge.test.problem");
@@ -56,7 +67,8 @@ void judge_test(int c,char *v[]) {
         printf("    %10s",problem[i]);
     puts("");
     for (int i=0;i<N;i++) {
-        printf("%6s:",List[i].name);
+        PrintName(List[i].name);
+        putchar(':');
         for (int j=0;j<number;j++)
             printf("    %7d",List[i].score[j+1]);
         puts("");
