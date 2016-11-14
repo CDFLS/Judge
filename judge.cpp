@@ -15,7 +15,8 @@ struct result{
 
 const char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
 const char Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
-char Dict[100][20]={"windows.h","system(","fopen(","<con>","rand()","!"};//禁用单词。"!"标志数组的结束
+char Dict[100][20]={"system(","fopen(","rand()","!"};//禁用单词。"!"标志数组的结束
+char InvalidHeads[100][20]={"windows.h","con","/dev/tty","!"};
 int Arg_c=0;//-c选项标志
 int Flag_Freopen=0;//文件输入输出
 
@@ -27,6 +28,13 @@ void print(int st) {//输出Accepted等提示。高亮+彩显
     color(Status_Color[st],black);
     HighLight();
     puts(Status[st]);
+    ClearColor();
+}
+
+inline void PrintError() {
+    foreground(red);
+    HighLight();
+    printf("Error:");
     ClearColor();
 }
 
@@ -51,6 +59,33 @@ bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和wor
     return true;
 }
 
+bool HeadsCheck(char *str,int line) {//检查一行include是否包含非法头文件
+    char head[256],l=0;
+    int flag=0;
+    for (int i=0;i<strlen(str);i++) {
+        if (str[i]=='>')
+            flag=0;
+        if (flag&&str[i]!=' ') {
+            head[l++]=str[i];
+            continue;
+        }
+        if (str[i]=='<')
+            flag=1;
+    }
+    head[l]=0;
+    for (int i=0;InvalidHeads[i][0]!='!';i++)
+        if (cmp(InvalidHeads[i],0,head)&&strlen(InvalidHeads[i])==strlen(head)) {
+            PrintError();
+            printf("invalid head file at line %d:%s\n",line,head);
+#ifdef DEBUG
+            puts("B");
+            printf("%d\n",i);
+#endif
+            return true;
+        }
+    return false;
+}
+
 int Args(int c,char *v[]) {//解析命令行参数
     for (int i=1;i<c;i++)
         if (v[i][0]=='-') {
@@ -59,7 +94,7 @@ int Args(int c,char *v[]) {//解析命令行参数
                 sscanf(v[i],"%lf",&timelimit);
             else if (cmp(v[i-1],0,(char *)"-m")&&(strlen(v[i-1])==2)&&(i<c))//内存
                 sscanf(v[i],"%d",&memorylimit);
-            else if (cmp(v[i-1],0,(char *)"-w")&&(strlen(v[i-1])==2)&&(i<c)) {//添加禁用单词，如-w3表示添加接下的的三个单词，-w与-w1等效
+            else if (cmp(v[i-1],0,(char *)"-w")&&(strlen(v[i-1])>=2)&&(i<c)) {//添加禁用单词，如-w3表示添加接下的的三个单词，-w与-w1等效
                 int last,t;
                 for (last=0;Dict[last][0]!='!';last++) ;
                 if (sscanf(v[i-1],"-w%d",&t)==-1)
@@ -67,6 +102,17 @@ int Args(int c,char *v[]) {//解析命令行参数
                 for (int k=0;(k<t)&&(i<c);k++)
                     sprintf(Dict[last+k],"%s",v[i]),i++;
                 Dict[last+t][0]='!';
+                i--;
+            }
+            else if (cmp(v[i-1],0,(char *)"-s")&&(strlen(v[i-1])>=2)&&(i<c)) {//添加禁用头文件，如-s3表示添加接下的的三个头文件，-s与-s1等效
+                int last,t;
+                for (last=0;InvalidHeads[last][0]!='!';last++) ;
+                if (sscanf(v[i-1],"-s%d",&t)==-1)
+                    t=1;
+                for (int k=0;(k<t)&&(i<c);k++)
+                    sprintf(InvalidHeads[last+k],"%s",v[i]),i++;
+                InvalidHeads[last+t][0]='!';
+                i--;
             }
             else if (cmp(v[i-1],0,(char *)"-c")&&(strlen(v[i-1])==2))
                 Arg_c=1;
@@ -83,11 +129,13 @@ int Args(int c,char *v[]) {//解析命令行参数
                     << endl
                     << "    -w [STRING]               禁止源文件中出现该字符串" << endl
                     << "    -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个字符串" << endl
+                    << "    -s [STRING]               禁止源文件中出现该头文件" << endl
+                    << "    -s[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个头文件" << endl
                     << "    -t [TIME]                 限定程序运行时间(未指定时为" << timelimit << "s)" << endl
                     << "    -m [MEMORY]               限制程序使用内存(为指定时为" << memorylimit << "KB)" << endl
-                    << "    -h, --help                显示本帮助" << endl
                     << "    -c                        只编译，不测试" << endl
                     << "    -a, --all                 评测一次考试，必须作为第一个参数。" << endl
+                    << "    -h, --help                显示本帮助" << endl
                     << endl
                     << "当程序超出限定时间时会被强制结束，但超出限定内存时并不会，因此有可能出现MLE的程序被判定为RE的情况。" << endl;
                 return 1;
@@ -116,16 +164,20 @@ bool exist(char * filename) {//检测文件是否存在
     return true;
 }
 
+inline char FirstChar(char *str) {
+    for (int i=0;i<strlen(str);i++)
+        if ((str[i]!=' ')&&(str[i]!='\t'))
+            return str[i];
+    return 0;
+}
+
 bool SafetyCheck() {//检测是否有禁用单词
     int r=false;
     char str[2048];
     sprintf(str,"%s.cpp",name);
     FILE *fp=fopen(str,"r");
     if (fp==NULL) {
-        foreground(red);
-        HighLight();
-        printf("Error:");
-        ClearColor();
+        PrintError();
         puts("source not found.");
         return true;
     }
@@ -134,7 +186,7 @@ bool SafetyCheck() {//检测是否有禁用单词
         if (str[strlen(str)-1]=='\n')
             str[strlen(str)-1]=0;
         line++;
-        int include=0;
+        int include=0,First=1;
         for (int i=0;i<strlen(str);i++)
             if ((str[i]=='/')&&(str[i+1]=='/'))
                 break;
@@ -155,14 +207,18 @@ bool SafetyCheck() {//检测是否有禁用单词
             }
             else if (flag||ifndef||(ifdef==2))
                 continue;
-            else if (cmp(str,i,(char *)"#include"))
+            else if (cmp(str,i,(char *)"#include")&&FirstChar(str)=='#') {
+                if (HeadsCheck(str,line))
+                    r=true;
                 include=1;
-            else if (str[i]=='"'&&include) {//不允许调用自定义头文件
-                foreground(red);
-                HighLight();
-                printf("Error:");
-                ClearColor();
+            }
+            else if (str[i]=='"'&&include&&First) {//不允许调用自定义头文件
+                PrintError();
+                First=0;
                 printf("invalid head file at line %d:%s\n",line,str);
+#ifdef DEBUG
+                puts("A");
+#endif
                 r=true;
             }
             else if (cmp(str,i,(char *)"freopen("))
@@ -170,10 +226,7 @@ bool SafetyCheck() {//检测是否有禁用单词
             else
                 for (int k=0;Dict[k][0]!='!';k++)
                     if (cmp(str,i,Dict[k])) {
-                        foreground(red);
-                        HighLight();
-                        printf("Error:");
-                        ClearColor();
+                        PrintError();
                         printf("invalid word found at line %d:%s\n",line,Dict[k]);
                         r=true;
                     }

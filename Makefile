@@ -13,3 +13,6 @@ dev:
 	git add .
 	git commit -a -m "Commit"
 	git push origin master
+debug:
+	g++ judge.cpp -o judge -DLINUX -DDEBUG
+	sudo make install
