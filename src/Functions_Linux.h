@@ -1,20 +1,25 @@
-void HighLight() {//高亮显示
+#ifndef FUNCTIONSLINUX_H
+#define FUNCTIONSLINUX_H 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+static void HighLight() {//高亮显示
     printf("\033[1m");
 }
 
-inline void ClearColor() {//清除颜色
+static inline void ClearColor() {//清除颜色
     printf("\033[0m");
 }
 
-inline void ClearFile() {//清理文件
+static inline void ClearFile() {//清理文件
     system("rm ./.ejudge.* 2>/dev/null");
 }
 
-void InitFile() {
+static void InitFile() {
     system("ls|grep .in > .ejudge.input");
 }
 
-void GetName(char *name) {//获取当前目录名
+static void GetName(char *name) {//获取当前目录名
     system("basename $PWD > .ejudge.tmp");
     FILE *fp=fopen(".ejudge.tmp","r");
     fscanf(fp,"%s",name);
@@ -24,4 +29,4 @@ void GetName(char *name) {//获取当前目录名
         else
             return ;
 }
-
+#endif

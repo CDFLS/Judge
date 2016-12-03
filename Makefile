@@ -1,15 +1,13 @@
 DEFAULT:
-	g++ judge.cpp -o judge -DLINUX
-	sudo make install
+	cd src&&make
 install:
-	cp ./judge /usr/bin/judge
+	cd src&&make install
 uninstall:
 	rm /usr/bin/judge
 dev:
 	make
 	sudo make install
-	rm ./judge
-	rm ./.idea -rf
+	rm ./src/judge
 	git add .
 	git commit -a -m "Commit"
 	git push origin master

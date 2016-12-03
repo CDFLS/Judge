@@ -1,3 +1,5 @@
+#ifndef CONIO_H
+#define CONIO_H 
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -20,8 +22,7 @@
 #define yellow 3
 #define white 7
 
-int kbhit(void)
-{
+static int kbhit(void) {
 	struct termios oldt, newt;
 	int ch;
 	int oldf;
@@ -34,79 +35,64 @@ int kbhit(void)
 	ch = getchar();
 	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 	fcntl(STDIN_FILENO, F_SETFL, oldf);
-	if(ch != EOF)
-	{
+	if(ch != EOF) {
 		ungetc(ch, stdin);
 		return 1;
 	}
 	return 0;
 }
 
-int getch(void)
-{
+static int getch(void) {
      struct termios tm, tm_old;
      int fd = 0, ch;
-
      if (tcgetattr(fd, &tm) < 0) {//保存现在的终端设置
           return -1;
      }
-
      tm_old = tm;
      cfmakeraw(&tm);//更改终端设置为原始模式，该模式下所有的输入数据以字节为单位被处理
      if (tcsetattr(fd, TCSANOW, &tm) < 0) {//设置上更改之后的设置
           return -1;
      }
-
      ch = getchar();
      if (tcsetattr(fd, TCSANOW, &tm_old) < 0) {//更改设置为最初的样子
           return -1;
      }
-
      return ch;
 }
 
-inline void gotoxy(int x,int y)
-{
+static inline void gotoxy(int x,int y) {
 	printf("\033[%d;%dH",y,x);
 }
 
-inline void HideCursor()
-{
+static inline void HideCursor() {
 	printf("\033[?25l");
 }
 
-inline void UnHideCursor()
-{
+static inline void UnHideCursor() {
 	printf("\033[?25h");
 }
 
-inline void color(int a,int b)
-{
+static inline void color(int a,int b) {
 	printf("\033[%dm\033[%dm",b+40,a+30);
 }
 
-inline void foreground(int a)
-{
+static inline void foreground(int a) {
     printf("\033[%dm",a+30);
 }
 
-inline void background(int a)
-{
+static inline void background(int a) {
     printf("\033[%dm",a+40);
 }
 
-inline int random(int m)
-{
+static inline int random(int m) {
 	return (int)((double)rand()/RAND_MAX*(m-1)+0.5);
 }
 
-double pro_time()
-{
+static double pro_time() {
 	return (double)clock()/CLOCKS_PER_SEC;
 }
 
-int readkey(double _time__)
-{
+static int readkey(double _time__) {
 	double time_last=pro_time();
 	while (!kbhit()&&(pro_time()-time_last<_time__))  ;
 	if (!kbhit()) return 0;
@@ -115,3 +101,4 @@ int readkey(double _time__)
 	return (return_==224)?getch():return_;
 }
 
+#endif

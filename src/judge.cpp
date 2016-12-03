@@ -1,24 +1,19 @@
-#include "Heads.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+#include "judge_test.h"
+#include "Conio.h"
+#include "Functions_Linux.h"
+#include "judge.h"
 using namespace std;
-
-#define AC 0
-#define WA 1
-#define CE 2
-#define TLE 3
-#define MLE 4
-#define RE 5
-
-struct result{
-    int s,memo;
-    double time;
-};//Judge的结果
 
 const char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
 const char Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
 char Dict[100][20]={"windows.h","system(","fopen(","<con>","rand()","!"};//禁用单词。"!"标志数组的结束
 int Arg_c=0;//-c选项标志
 int Flag_Freopen=0;//文件输入输出
-
 double timelimit=1.0;
 int memorylimit=128000;
 char name[512];
@@ -329,14 +324,4 @@ int judge_single()
     printf("%d\n",score*100/tot);
     print(st);
     return score*100/tot;
-}
-
-int main(int argc,char *argv[]) {
-    GetName(name);
-    int score=0;
-    if (!(Args(argc,argv)||Compile()))
-        score=judge_single();
-    ClearColor();
-    ClearFile();
-    return score;
 }
