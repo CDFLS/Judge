@@ -16,7 +16,7 @@ static inline void ClearFile() {//清理文件
 }
 
 static void InitFile() {
-    system("ls|grep .in > .ejudge.input");
+    system("ls|grep \"\\.in$\" > .ejudge.input");
 }
 
 static void GetName(char *name) {//获取当前目录名

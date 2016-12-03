@@ -1,12 +1,12 @@
-DEFAULT:
+compile:
 	cd src&&make
 install:
 	cd src&&make install
 uninstall:
 	rm /usr/bin/judge
+remove:
+	make uninstall
 dev:
-	make
-	sudo make install
 	rm ./src/judge
 	git add .
 	git commit -a -m "Commit"
