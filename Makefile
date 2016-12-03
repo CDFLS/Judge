@@ -7,9 +7,6 @@ uninstall:
 remove:
 	make uninstall
 dev:
-	make
-	make install
-	rm ./src/judge
 	git add .
 	git commit -a -m "Commit"
 	git push origin master
