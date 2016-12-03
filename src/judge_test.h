@@ -1,4 +1,4 @@
-int number=0;
+int number=0,len=6;
 struct Judge_Result {
     char name[512];
     int score[10];
@@ -14,18 +14,27 @@ struct Judge_Result {
         return false;
     }
 }List[30];
-void PrintName(char *str) {//修复输出问题
+void PrintName(char *str,int len) {//修复输出问题
     int l=0;
     for (int i=0;i<strlen(str);i++)
         if (str[i]<0)
             l++;
     l/=3;
-    if (l==0)
-        printf("%6s",str);
-    else if (l==2)
-        printf("%c%c%c  %c%c%c",str[0],str[1],str[2],str[3],str[4],str[5]);
-    else
-        printf("%s",str);
+	char tmp[512];
+    if (l==0) {
+		sprintf(tmp,"%%%ds",len);
+        printf(tmp,str);
+	}
+    else if (l==2) {
+        sprintf(tmp,"%c%c%c  %c%c%c",str[0],str[1],str[2],str[3],str[4],str[5]);
+		char tmp2[512];
+		sprintf(tmp2,"%%%ds",len+2);
+		printf(tmp2,tmp);
+	}
+    else {
+		sprintf(tmp,"%%%ds",len+l);
+        printf(tmp,str);
+	}
 }
 void judge_test(int c,char *v[]) {
     system("ls ./source > .ejudge.test.oier");
@@ -64,12 +73,15 @@ void judge_test(int c,char *v[]) {
         List[N-1].sumup();
     }
     std::sort(List,List+N);
-    printf("       ");
+	for (int i=0;i<N;i++)
+		len=std::max(len,(int)strlen(List[i].name));
+	for (int i=0;i<len+1;i++)
+		putchar(' ');
     for (int i=0;i<number;i++)
         printf("%11s",problem[i]);
     puts("");
     for (int i=0;i<N;i++) {
-        PrintName(List[i].name);
+        PrintName(List[i].name,len);
         putchar(':');
         for (int j=0;j<number;j++)
             printf("    %7d",List[i].score[j+1]);
