@@ -20,7 +20,7 @@ static void InitFile() {
 }
 
 static void GetName(char *name) {//获取当前目录名
-    system("basename $PWD > .ejudge.tmp");
+    system("basename \"$PWD\" > .ejudge.tmp");
     FILE *fp=fopen(".ejudge.tmp","r");
     fscanf(fp,"%s",name);
     for (int i=strlen(name)-1;i>=0;i--)
