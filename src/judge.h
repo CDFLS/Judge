@@ -20,10 +20,11 @@ namespace JudgeSettings {
 	static char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
 	static int Status_Backround=white;
 	static int Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
-	static int use_freopen=0;
+	static int use_freopen=0,Terminal=1;
 	static vector<string> InvalidWords={"system(","fopen(","rand()"},InvalidHeads={"windows.h","con","/dev/tty"};
 	static double Default_timelimit=1;
 	static int Default_memorylimit=128000;
+	static string PrintDevice;
 	int ConverttoInt(string colorname);
 	void ReadSettings(const char *settingsfile);
 	int ReadFromArgv(int c,char *v[]);

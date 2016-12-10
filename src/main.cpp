@@ -13,7 +13,6 @@ int main(int argc,char *argv[]) {
 	JudgeSettings::ReadSettings("judgerc");
 	x.JudgeContest();
 	ClearFile();
-	ClearColor();
 	JudgeOutput::OutputContest(x);
     return 0;
 }

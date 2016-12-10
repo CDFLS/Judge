@@ -321,6 +321,10 @@ bool Problem::SafetyCheck(string filename) {
 }
 
 void Problem::InitProblem() {
+	if (exist(name+(string)".in")) {
+		system(((string)"mv "+name+(string)".in"+" "+name+(string)"_.in").c_str());
+		system(((string)"mv "+name+(string)".out"+" "+name+(string)"_.out").c_str());
+	}
 	vector<string> filelist=GetFile(name,(string)"\\.in");
 	for (int i=0;i<filelist.size();i++) {
 		TestPoint tmp;
@@ -339,12 +343,22 @@ void Problem::InitProblem() {
 JudgeResult Problem::JudgeProblem(Contestant oier){
 	JudgeResult tot,tmpresult;
 	tot.score=0;
-	puts("Compiling...");
-	if (SafetyCheck(oier.name+name_to_print+".cpp")||(WEXITSTATUS(system(("g++ "+oier.name+name_to_print+".cpp -DEJUDGE -o ./"+name_to_print).c_str())))) {
-		JudgeOutput::PrintStatus(CE);
-		return JudgeResult{};
+	tot.st=AC;
+	tot.memo=-1;
+	tot.time=-1;
+	putchar('\n');
+	if (SafetyCheck(oier.name+name_to_print+".cpp")||(WEXITSTATUS(system(("g++ "+oier.name+name_to_print+".cpp -DEJUDGE -o ./"+name_to_print+((JudgeSettings::Terminal==0)?(string)" 2>.ejudge.tmp":(string)"")).c_str())))) {
+		if (!JudgeSettings::Terminal) {
+			fstream fin;
+			fin.open(".ejudge.tmp");
+			string line;
+			while (getline(fin,line,'\n'))
+				cout << line << endl;
+			fin.close();
+		}
+		//JudgeOutput::PrintStatus(CE);
+		return (JudgeResult){CE,0,0,0};
 	}
-	puts("done.");
 	int maxlength=-(1<<30);
 	for (int i=0;i<point.size();i++)
 		if ((int)point[i].stdInput.size()>maxlength)
@@ -355,6 +369,10 @@ JudgeResult Problem::JudgeProblem(Contestant oier){
 		printf(tmp,point[i].stdInput.c_str());
 		JudgeOutput::PrintResult(tmpresult=(point[i].JudgePoint("./"+name_to_print,timelimit,memorylimit)));
 		tot.score+=tmpresult.score;
+		if ((tot.st==AC)&&(tmpresult.st!=AC))
+			tot.st=tmpresult.st;
+		tot.memo=max(tot.memo,tmpresult.memo);
+		tot.time=max(tot.time,tmpresult.time);
 	}
 	return tot;
 }
@@ -363,6 +381,8 @@ void Contest::InitSPJ() {
 }
 
 void Contest::InitContest() {
+	if (!PrinttoTerminal(JudgeSettings::PrintDevice))
+		JudgeSettings::Terminal=0;
 	vector<string> filelist=GetFile((string)".",(string)"\\.cpp");
 	if (filelist.size()) {
 		Contestant user;
@@ -404,12 +424,19 @@ void Contest::InitContest() {
 void Contest::JudgeContest() {
 	for (int i=0;i<oier.size();i++) {
 		for (int j=0;j<problem.size();j++) {
-			foreground(yellow);
-			cout << "Contestant " << i+1 << ':' << oier[i].name_to_print << endl << "	Problem " << j+1 << ':' << problem[j].name_to_print << endl;
-			ClearColor();
+			if (JudgeSettings::Terminal)
+				foreground(yellow);
+			else
+				cout << "Contestant " << i+1 << ':' << oier[i].name_to_print << "	Problem " << j+1 << ':' << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']' << endl;
+			cerr << "Contestant " << i+1 << ':' << oier[i].name_to_print << "	Problem " << j+1 << ':' << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']' << endl;
+			if (JudgeSettings::Terminal)
+				ClearColor();
 			while (oier[i].problem.size()<=j)
 				oier[i].problem.push_back((JudgeResult){0,0,0,0});
-			oier[i].problem[j].score=problem[j].JudgeProblem(oier[i]).score;
+			oier[i].problem[j]=problem[j].JudgeProblem(oier[i]);
+			printf("\n%s ",oier[i].name_to_print.c_str());
+			JudgeOutput::PrintResult(oier[i].problem[j]);
+			printf("Score:%d\n\n",oier[i].problem[j].score);
 		}
 		oier[i].sumup();
 	}
@@ -417,29 +444,43 @@ void Contest::JudgeContest() {
 
 void JudgeOutput::PrintStatus(int st) {
     //color(Status_Color[st],black);
-	color(JudgeSettings::Status_Color[st],JudgeSettings::Status_Backround);
-    HighLight();
-    puts(JudgeSettings::Status[st]);
-    ClearColor();
+	if (JudgeSettings::Terminal) {	
+		color(JudgeSettings::Status_Color[st],JudgeSettings::Status_Backround);
+	    HighLight();
+	    puts(JudgeSettings::Status[st]);
+	    ClearColor();
+	}
+	else
+		puts(JudgeSettings::Status[st]);
 }
 
 void JudgeOutput::PrintError() {
-    foreground(red);
-    HighLight();
-    printf("Error:");
-    ClearColor();
+	if (JudgeSettings::Terminal) {
+	    foreground(red);
+	    HighLight();
+	    printf("Error:");
+	    ClearColor();
+	}
+	else
+		printf("Error:");
 }
 
 void JudgeOutput::PrintResult(JudgeResult x) {
-    foreground(green);
-    printf("Time:");
-    foreground(yellow);
-    printf("%5.2lfs",x.time);
-    foreground(green);
-    printf(" Memory:");
-    foreground(yellow);
-    printf("%7dKB ",x.memo);
-    PrintStatus(x.st);
+	if (JudgeSettings::Terminal) {
+	    foreground(green);
+	    printf("Time:");
+	    foreground(yellow);
+	    printf("%5.2lfs",x.time);
+	    foreground(green);
+	    printf(" Memory:");
+	    foreground(yellow);
+	    printf("%7dKB ",x.memo);
+    	PrintStatus(x.st);
+	}
+	else {
+		printf("Time:%5.2lfs Memory:%7dKB ",x.time,x.memo);
+		PrintStatus(x.st);
+	}
 }
 
 void JudgeOutput::PrintName(string str,int len) {//修复输出问题

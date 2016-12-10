@@ -7,6 +7,9 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <sys/types.h>
+#include <unistd.h>
+
 using namespace std;
 static void HighLight() {//高亮显示
     printf("\033[1m");
@@ -62,5 +65,25 @@ static string GetJudgerc() {
 	getline(fin,filename,'\n');
 	fin.close();
 	return filename;
+}
+
+static bool STRCMP(char *str) {
+	const char s[]="/dev/";
+	for (int i=0;i<min(strlen(s),strlen(str));i++)
+		if (str[i]!=s[i])
+			return true;
+	return false;
+}
+
+static bool PrinttoTerminal(string &x) {
+        int fd = fileno(stdout);
+        char s[256] = {0}, name[256] = {0};
+        snprintf(s, 255, "/proc/%d/fd/%d", getpid(), fd);
+        readlink(s, name, 255);
+		x=name;
+		if (STRCMP(name))
+			return false;
+		else
+			return true;
 }
 #endif
