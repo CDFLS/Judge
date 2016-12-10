@@ -3,6 +3,10 @@
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 #define Hblack 0
 #define Hblue 4
@@ -15,7 +19,7 @@
 
 #define black 0
 #define blue 4
-#define green 9
+#define green 6
 #define cyan 2
 #define red 1
 #define purple 5
@@ -101,4 +105,12 @@ static int readkey(double _time__) {
 	return (return_==224)?getch():return_;
 }
 
+static bool exist(string str) {
+	fstream fin;
+	fin.open(str);
+	if (!fin)
+		return false;
+	fin.close();
+	return true;
+}
 #endif

@@ -4,7 +4,10 @@
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
+#include <string>
+#include <vector>
 #include "Conio.h"
+using namespace std;
 
 #define AC 0
 #define WA 1
@@ -13,27 +16,69 @@
 #define MLE 4
 #define RE 5
 
-extern const char Status[][40];
-extern const char Status_Color[];
-extern char Dict[100][20];
-extern int Arg_c;
-extern int Flag_Freopen;
-extern double timelimit;
-extern int memorylimit;
-extern char name[512];
+namespace JudgeSettings {
+	static char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
+	static int Status_Backround=white;
+	static int Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
+	static int use_freopen=0;
+	static vector<string> InvalidWords={"system(","fopen(","rand()"},InvalidHeads;
+	static double Default_timelimit=1;
+	static int Default_memorylimit=128000;
+	int ConverttoInt(string colorname);
+	void ReadSettings(const char *settingsfile);
+	int ReadFromArgv(int c,char *v[]);
+};
 
-struct result{
-    int s,memo;
-    double time;
-};//Judge的结果
+class JudgeResult{
+	public:
+	    int st,memo;
+	    double time;
+		int score;
+};
 
-extern void print(int st);
-extern void PrintResult(result x);
-extern bool cmp(char *str,int s,char *word);
-extern int Args(int c,char *v[]);
-extern bool exist(char * filename);
-extern bool SafetyCheck();
-extern bool Compile();
-extern result judge(char *in,char *out);
-extern int judge_single();
+class TestPoint {
+	public:
+		string stdInput,stdOutput;
+		int MaxScore;
+		JudgeResult JudgePoint(string bin,double timelimit,int memorylimit);
+		JudgeResult JudgePointSPJ(string bin,string spj,double timelimit,int memorylimit);
+};
+
+class Contestant {
+	public:
+		string name,name_to_print;
+		vector<JudgeResult> problem;
+		int sum;
+		void sumup();
+		bool operator < (Contestant x);
+};
+
+class Problem {
+	public:
+		string name,name_to_print;
+		vector<TestPoint> point;
+		int memorylimit=128000;
+		double timelimit=1;
+		void InitProblem();
+		bool SafetyCheck(string filename);
+		JudgeResult JudgeProblem(Contestant oier);
+};
+
+class Contest {
+	public:
+		vector<Contestant> oier;
+		vector<Problem> problem;
+		void InitSPJ();
+		void InitContest();
+		void JudgeContest();
+};
+
+namespace JudgeOutput {
+	void PrintStatus(int st);
+	void PrintResult(JudgeResult x);
+	void PrintError();
+	void PrintName(string str,int len);
+	void OutputContest(Contest test);
+};
+
 #endif
