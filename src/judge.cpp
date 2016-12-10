@@ -87,10 +87,6 @@ bool HeadsCheck(char *str,int line) {//检查一行include是否包含非法头�
         if (cmp(JudgeSettings::InvalidHeads[i],0,head)&&(JudgeSettings::InvalidHeads[i].length())==strlen(head)) {
 			JudgeOutput::PrintError();
             printf("invalid head file at line %d:%s\n",line,head);
-#ifdef DEBUG
-            puts("B");
-            printf("%d\n",i);
-#endif
             return true;
         }
     return false;
@@ -100,12 +96,29 @@ void JudgeSettings::ReadSettings(const char *settingsfile) {
 	ifstream fin;
 	fin.open(settingsfile);
 	string l;
+	int InvalidWordsNumber=1,InvalidHeadsNumber=1;
 	while (getline(fin,l,'=')) {
-		if (l=="freopen"||l=="f")
-			fin >> use_freopen;
-		else if (l=="background"||l=="bg") {
+		if (l=="background"||l=="bg") {
 			fin >> l;
 			JudgeSettings::Status_Backround=ConverttoInt(l);
+		}
+		else if (l=="InvalidWords"||l=="iw") {
+			for (int i=0;i<InvalidWordsNumber;i++) {
+				getline(fin,l,' ');
+				JudgeSettings::InvalidWords.push_back(l);
+			}
+		}
+		else if (l=="InvalidWordsNumber"||l=="iwn") {
+			fin >> InvalidWordsNumber;
+		}
+		else if (l=="InvalidHeads"||l=="ih") {
+			for (int i=0;i<InvalidHeadsNumber;i++) {
+				getline(fin,l,' ');
+				JudgeSettings::InvalidHeads.push_back(l);
+			}
+		}
+		else if (l=="InvalidHeadsNumber"||l=="ihn") {
+			fin >> InvalidHeadsNumber;
 		}
 		getline(fin,l,'\n');
 	}
@@ -157,7 +170,13 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
                     << "    -m [MEMORY]               限制程序使用内存(为指定时为" << JudgeSettings::Default_memorylimit << "KB)" << endl
                     << "    -h, --help                显示本帮助" << endl
                     << endl
-                    << "当程序超出限定时间时会被强制结束，但超出限定内存时并不会，因此有可能出现MLE的程序被判定为RE的情况。" << endl;
+                    << "当程序超出限定时间时会被强制结束，但超出限定内存时并不会，因此有可能出现MLE的程序被判定为RE的情况。" << endl
+					<< "程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值]。目前支持以下选项：" << endl
+					<< "	background, bg			  设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple" << endl
+					<< "	InvalidWordsNumber, iwn   设置InvalidWords选项的值数量" << endl
+					<< "	InvalidWords, iw		  将接下来的InvalidWordsNumber个字符串加入禁用单词列表" << endl
+					<< "	InvalidHeadsNumber, ihn   设置InvalidHeads选项的值数量" << endl
+					<< "	InvalidHeads, ih		  将接下来的InvalidHeadsNumber个字符串加入禁用单词列表" << endl;
                 return 1;
             }
             else{
