@@ -21,7 +21,7 @@ namespace JudgeSettings {
 	static int Status_Backround=white;
 	static int Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
 	static int use_freopen=0;
-	static vector<string> InvalidWords={"system(","fopen(","rand()"},InvalidHeads;
+	static vector<string> InvalidWords={"system(","fopen(","rand()"},InvalidHeads={"windows.h","con","/dev/tty"};
 	static double Default_timelimit=1;
 	static int Default_memorylimit=128000;
 	int ConverttoInt(string colorname);

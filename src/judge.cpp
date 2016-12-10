@@ -70,6 +70,8 @@ int JudgeSettings::ConverttoInt(string colorname) {
 }
 
 bool HeadsCheck(char *str,int line) {//检查一行include是否包含非法头文件
+	for (int i=0;i<JudgeSettings::InvalidHeads.size();i++)
+		cout << JudgeSettings::InvalidHeads[i] << endl;
     char head[256],l=0;
     int flag=0;
     for (int i=0;i<strlen(str);i++) {
@@ -104,7 +106,7 @@ void JudgeSettings::ReadSettings(const char *settingsfile) {
 		}
 		else if (l=="InvalidWords"||l=="iw") {
 			for (int i=0;i<InvalidWordsNumber;i++) {
-				getline(fin,l,' ');
+				fin >> l;
 				JudgeSettings::InvalidWords.push_back(l);
 			}
 		}
@@ -113,7 +115,7 @@ void JudgeSettings::ReadSettings(const char *settingsfile) {
 		}
 		else if (l=="InvalidHeads"||l=="ih") {
 			for (int i=0;i<InvalidHeadsNumber;i++) {
-				getline(fin,l,' ');
+				fin >> l;
 				JudgeSettings::InvalidHeads.push_back(l);
 			}
 		}
@@ -174,9 +176,9 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 					<< "程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值]。目前支持以下选项：" << endl
 					<< "	background, bg			  设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple" << endl
 					<< "	InvalidWordsNumber, iwn   设置InvalidWords选项的值数量" << endl
-					<< "	InvalidWords, iw		  将接下来的InvalidWordsNumber个字符串加入禁用单词列表" << endl
+					<< "	InvalidWords, iw		  将接下来的InvalidWordsNumber个字符串加入禁用单词列表，以空格分割" << endl
 					<< "	InvalidHeadsNumber, ihn   设置InvalidHeads选项的值数量" << endl
-					<< "	InvalidHeads, ih		  将接下来的InvalidHeadsNumber个字符串加入禁用单词列表" << endl;
+					<< "	InvalidHeads, ih		  将接下来的InvalidHeadsNumber个字符串加入禁用单词列表，以空格分割" << endl;
                 return 1;
             }
             else{
