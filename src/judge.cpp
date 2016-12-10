@@ -365,10 +365,13 @@ JudgeResult Problem::JudgeProblem(Contestant oier){
 			maxlength=point[i].stdInput.size();
 	char tmp[256];
 	sprintf(tmp,"%%%ds ",maxlength+3);
+	vector<int> record;
+	oier.result.push_back(record);
 	for (int i=0;i<point.size();i++) {
 		printf(tmp,point[i].stdInput.c_str());
 		JudgeOutput::PrintResult(tmpresult=(point[i].JudgePoint("./"+name_to_print,timelimit,memorylimit)));
 		tot.score+=tmpresult.score;
+		oier.result[oier.result.size()-1].push_back(tmpresult.st);
 		if ((tot.st==AC)&&(tmpresult.st!=AC))
 			tot.st=tmpresult.st;
 		tot.memo=max(tot.memo,tmpresult.memo);
@@ -523,4 +526,23 @@ void JudgeOutput::OutputContest(Contest test) {
             printf("    %7d",test.oier[i].problem[j].score);
         puts("");
     }
+}
+
+void JudgeOutput::ConverttoCSV(Contest test,string csv) {
+	ofstream fout;
+	fout.open(csv.c_str());
+	sort(test.oier.begin(),test.oier.end());
+	fout << ',';
+	for (int i=0;i<test.problem.size();i++)
+		fout << "\"" << test.problem[i].name_to_print << "\",";
+	fout << endl;
+	for (int i=0;i<test.oier.size();i++) {
+		fout << test.oier[i].name_to_print << ',';
+		for (int j=0;j<test.problem.size();j++) {
+			//for (int k=0;k<test.oier[i].result[j].size();k++)
+				//fout << JudgeSettings::Status_Short[test.oier[i].result[j][k]];
+			fout << test.oier[i].problem[j].score << ',';
+		}
+		fout << endl;
+	}
 }

@@ -14,5 +14,6 @@ int main(int argc,char *argv[]) {
 	x.JudgeContest();
 	ClearFile();
 	JudgeOutput::OutputContest(x);
+	JudgeOutput::ConverttoCSV(x,"result.csv");
     return 0;
 }

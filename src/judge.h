@@ -18,6 +18,7 @@ using namespace std;
 
 namespace JudgeSettings {
 	static char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
+	static char Status_Short[]="AWCTMR";
 	static int Status_Backround=white;
 	static int Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
 	static int use_freopen=0,Terminal=1;
@@ -49,6 +50,7 @@ class Contestant {
 	public:
 		string name,name_to_print;
 		vector<JudgeResult> problem;
+		vector<vector<int>> result;
 		int sum;
 		void sumup();
 		bool operator < (Contestant x);
@@ -80,6 +82,7 @@ namespace JudgeOutput {
 	void PrintError();
 	void PrintName(string str,int len);
 	void OutputContest(Contest test);
+	void ConverttoCSV(Contest test,string csv);
 };
 
 #endif
