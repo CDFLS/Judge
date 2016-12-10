@@ -537,7 +537,7 @@ void JudgeOutput::ConverttoCSV(Contest test,string csv) {
 		fout << "\"" << test.problem[i].name_to_print << "\",";
 	fout << endl;
 	for (int i=0;i<test.oier.size();i++) {
-		fout << test.oier[i].name_to_print << ',';
+		fout << "\"" << test.oier[i].name_to_print << '\",';
 		for (int j=0;j<test.problem.size();j++) {
 			//for (int k=0;k<test.oier[i].result[j].size();k++)
 				//fout << JudgeSettings::Status_Short[test.oier[i].result[j][k]];
