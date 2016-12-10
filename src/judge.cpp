@@ -70,8 +70,8 @@ int JudgeSettings::ConverttoInt(string colorname) {
 }
 
 bool HeadsCheck(char *str,int line) {//检查一行include是否包含非法头文件
-	for (int i=0;i<JudgeSettings::InvalidHeads.size();i++)
-		cout << JudgeSettings::InvalidHeads[i] << endl;
+	//for (int i=0;i<JudgeSettings::InvalidHeads.size();i++)
+		//cout << JudgeSettings::InvalidHeads[i] << endl;
     char head[256],l=0;
     int flag=0;
     for (int i=0;i<strlen(str);i++) {
