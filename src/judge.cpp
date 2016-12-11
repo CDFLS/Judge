@@ -488,7 +488,7 @@ void JudgeOutput::PrintResult(JudgeResult x) {
 	}
 }
 
-void JudgeOutput::PrintName(string str,int len) {//修复输出问题
+void JudgeOutput::Print_zh_CN(string str,int len) {//修复输出问题
 	int l=0;
 	for (int i=0;i<str.length();i++)
 		if (str[i]<0)
@@ -518,14 +518,16 @@ void JudgeOutput::OutputContest(Contest test) {
 		len=max(len,(int)test.oier[i].name_to_print.length());
 	for (int i=0;i<len+1;i++)
 		putchar(' ');
+	Print_zh_CN(Context::TotalScore.c_str(),11);
 	for (int i=0;i<test.problem.size();i++)
 		printf("%11s",test.problem[i].name_to_print.c_str());
 	puts("");
 	for (int i=0;i<test.oier.size();i++) {
-		JudgeOutput::PrintName(test.oier[i].name_to_print,len);
+		JudgeOutput::Print_zh_CN(test.oier[i].name_to_print,len);
 		putchar(':');
+		printf("%11d",test.oier[i].sum);
 		for (int j=0;j<test.problem.size();j++)
-			printf("	%7d",test.oier[i].problem[j].score);
+			printf("%11d",test.oier[i].problem[j].score);
 		puts("");
 	}
 #ifndef DEBUG
@@ -554,7 +556,7 @@ void JudgeOutput::ConverttoCSV(Contest test,string csv) {
 	fout << ',' << endl;
 	for (int i=0;i<3+test.problem.size()*2;i++)
 		fout << ',';
-	fout << "\"" << Context::SymbolExplanation << "\"" << endl;
+	fout << "\"" << Context::SymbolExplanation << endl;
 	for (int i=0;i<6;i++)
 		fout << JudgeSettings::Status_Short[i] << ":" << JudgeSettings::Status[i] << endl;
 	fout << "\"," << endl;

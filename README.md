@@ -2,6 +2,7 @@
 一个简单的OI程序评测系统，目前只支持Linux。</br>
 需要安装软件包'time'(/usr/bin/time而非shell保留字)</br>
 运行 'judge --help' 查看帮助</br>
+运行make构建，运行make en构建英文版。
 截图:</br>
 ![](./screenshot/demo.png)
 

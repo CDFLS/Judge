@@ -80,7 +80,7 @@ namespace JudgeOutput {
 	void PrintStatus(int st);
 	void PrintResult(JudgeResult x);
 	void PrintError();
-	void PrintName(string str,int len);
+	void Print_zh_CN(string str,int len);
 	void OutputContest(Contest test);
 	void ConverttoCSV(Contest test,string csv);
 };

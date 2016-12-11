@@ -35,6 +35,6 @@ namespace Context {
 	const string Contestant="选手";
 	const string Problem="题目";
 	const string Error="错误：";
-	const string TotalScore="总分";
+	const string TotalScore="总分数";
 	const string SymbolExplanation="符号说明：";
 }
