@@ -159,6 +159,8 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 				}
                 i--;
             }
+			else if ((string)v[i-1]==(string)"--csv")
+				JudgeSettings::PrinttoCSV=1;
             else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
                 cout<< "用法：judge [选项]... [文件前缀]" << endl
                     << "评测OI程序，编译指定文件前缀(若未指定则使用当前目录名)，并使用前缀相同的输入输出文件(自动查找)评测。文件操作自动检测，但仅允许freopen。" << endl
@@ -170,15 +172,16 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
                     << "    -s[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个头文件" << endl
                     << "    -t [TIME]                 限定程序运行时间(未指定时为" << JudgeSettings::Default_timelimit << "s)" << endl
                     << "    -m [MEMORY]               限制程序使用内存(为指定时为" << JudgeSettings::Default_memorylimit << "KB)" << endl
+					<< "    --csv                     输出结果到result.csv" << endl
                     << "    -h, --help                显示本帮助" << endl
                     << endl
                     << "当程序超出限定时间时会被强制结束，但超出限定内存时并不会，因此有可能出现MLE的程序被判定为RE的情况。" << endl
 					<< "程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值]。目前支持以下选项：" << endl
-					<< "	background, bg			  设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple" << endl
-					<< "	InvalidWordsNumber, iwn   设置InvalidWords选项的值数量" << endl
-					<< "	InvalidWords, iw		  将接下来的InvalidWordsNumber个字符串加入禁用单词列表，以空格分割" << endl
-					<< "	InvalidHeadsNumber, ihn   设置InvalidHeads选项的值数量" << endl
-					<< "	InvalidHeads, ih		  将接下来的InvalidHeadsNumber个字符串加入禁用单词列表，以空格分割" << endl;
+					<< "    background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple" << endl
+					<< "    InvalidWordsNumber, iwn   设置InvalidWords选项的值数量" << endl
+					<< "    InvalidWords, iw          将接下来的InvalidWordsNumber个字符串加入禁用单词列表，以空格分割" << endl
+					<< "    InvalidHeadsNumber, ihn   设置InvalidHeads选项的值数量" << endl
+					<< "    InvalidHeads, ih          将接下来的InvalidHeadsNumber个字符串加入禁用单词列表，以空格分割" << endl;
                 return 1;
             }
             else{
@@ -526,6 +529,8 @@ void JudgeOutput::OutputContest(Contest test) {
             printf("    %7d",test.oier[i].problem[j].score);
         puts("");
     }
+	if (JudgeSettings::PrinttoCSV)
+		ConverttoCSV(test,(string)"result.csv");
 }
 
 void JudgeOutput::ConverttoCSV(Contest test,string csv) {
@@ -537,7 +542,7 @@ void JudgeOutput::ConverttoCSV(Contest test,string csv) {
 		fout << "\"" << test.problem[i].name_to_print << "\",";
 	fout << endl;
 	for (int i=0;i<test.oier.size();i++) {
-		fout << "\"" << test.oier[i].name_to_print << '\",';
+		fout << "\"" << test.oier[i].name_to_print << "\",";
 		for (int j=0;j<test.problem.size();j++) {
 			//for (int k=0;k<test.oier[i].result[j].size();k++)
 				//fout << JudgeSettings::Status_Short[test.oier[i].result[j][k]];
