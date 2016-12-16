@@ -22,6 +22,7 @@
 - [ ] 对Windows的支持
 
 #Help
+```
 用法：judge [选项]...
 评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测，但仅允许freopen。
 编译使用命令:g++ [FILENAME].cpp -o [FILENAME] -DEJUDGE
@@ -44,3 +45,4 @@
     InvalidHeaders, ih          将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割
 CUI模式：
     tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择
+```
