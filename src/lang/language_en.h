@@ -26,7 +26,7 @@ This program will read settings from ~/.judgerc and ./judgerc. The format is :[O
     InvalidHeadersNumber, ihn Set the number of values in option 'InvalidHeaders'\n\
     InvalidHeaders, ih        Add [InvalidHeadersNumber] strings to the list of forbidden headers, seperated by spaces\n\
 CUI mode:\n\
-    tab to switch(rejudge or view history),'w''s' to move,enter to choose\n\
+    tab to switch(rejudge or view history), 'w''s' to choose, 'a''d' to turn page, enter to confirm\n\
 ";
     static void WrongArgument(char *str) {
 		printf("judge: Unknown argument '%s'\nMore info with 'judge -h'\n",str);
