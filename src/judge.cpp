@@ -168,6 +168,8 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 			}
 			else if ((string)v[i-1]==(string)"--csv")
 				JudgeSettings::PrinttoCSV=1;
+			else if (((string)v[i-1]==(string)"-c")||((string)v[i-1]==(string)"--cui"))
+				JudgeSettings::UseCUI=1;
 			else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
 				cout << Context::help ;
 				return 1;
@@ -246,7 +248,7 @@ void Contestant::sumup() {
 		sum+=problem[i].score;
 }
 
-bool Contestant::operator<(Contestant x) {
+bool Contestant::operator<(Contestant &x) {
 	return sum>x.sum;
 }
 
@@ -341,7 +343,7 @@ void Problem::InitProblem() {
 	timelimit=JudgeSettings::Default_timelimit;
 }
 
-JudgeResult Problem::JudgeProblem(Contestant oier){
+JudgeResult Problem::JudgeProblem(Contestant &oier){
 	JudgeResult tot,tmpresult;
 	tot.score=0;
 	tot.st=AC;
@@ -358,10 +360,10 @@ JudgeResult Problem::JudgeProblem(Contestant oier){
 			fin.close();
 		}
 		//JudgeOutput::PrintStatus(CE);
-		vector<int> stat;
+		vector<JudgeResult> sub;
 		for (int i=0;i<point.size();i++)
-			stat.push_back(CE);
-		return (JudgeResult){CE,0,0,0,stat};
+			sub.push_back((JudgeResult){CE,0,0,0});
+		return (JudgeResult){CE,0,0,0,sub};
 	}
 	int maxlength=-(1<<30);
 	for (int i=0;i<point.size();i++)
@@ -375,7 +377,7 @@ JudgeResult Problem::JudgeProblem(Contestant oier){
 		tot.score+=tmpresult.score;
 		if ((tot.st==AC)&&(tmpresult.st!=AC))
 			tot.st=tmpresult.st;
-		tot.stat.push_back(tmpresult.st);
+		tot.subresult.push_back(tmpresult);
 		tot.memo=max(tot.memo,tmpresult.memo);
 		tot.time=max(tot.time,tmpresult.time);
 	}
@@ -427,6 +429,36 @@ void Contest::InitContest() {
 }
 
 void Contest::JudgeContest() {
+	if (JudgeSettings::UseCUI&&exist("judgelog")) {
+		ifstream fin;
+		fin.open("judgelog");
+		string name;
+		for (int loop=0;loop<oier.size();loop++) {
+			getline(fin,name,'\n');
+			int i;
+			for (int k=0;k<oier.size();k++)
+				if (oier[k].name_to_print==name||(' '+oier[k].name_to_print==name)) {
+					i=k;
+					break;
+				}
+			fin >> oier[i].sum;
+			for (int j=0;j<problem.size();j++) {
+				while (oier[i].problem.size()<=j)
+					oier[i].problem.push_back((JudgeResult){});
+				JudgeResult *p=&oier[i].problem[j];
+				fin >> p->st >> p->time >> p->memo >> p->score;
+				for (int k=0;k<problem[j].point.size();k++) {
+					while (p->subresult.size()<=k)
+						p->subresult.push_back((JudgeResult){});
+					fin >> p->subresult[k].st >> p->subresult[k].time >> p->subresult[k].memo >> p->subresult[k].score;
+				}
+			}
+		}
+		fin.close();
+		Judge_CUI();
+		return ;
+	}
+
 	for (int i=0;i<oier.size();i++) {
 		for (int j=0;j<problem.size();j++) {
 			if (JudgeSettings::Terminal)
@@ -437,7 +469,7 @@ void Contest::JudgeContest() {
 			if (JudgeSettings::Terminal)
 				ClearColor();
 			while (oier[i].problem.size()<=j)
-				oier[i].problem.push_back((JudgeResult){0,0,0,0});
+				oier[i].problem.push_back((JudgeResult){});
 			oier[i].problem[j]=problem[j].JudgeProblem(oier[i]);
 			printf("\n%s ",oier[i].name_to_print.c_str());
 			JudgeOutput::PrintResult(oier[i].problem[j]);
@@ -445,6 +477,25 @@ void Contest::JudgeContest() {
 		}
 		oier[i].sumup();
 	}
+
+	ofstream fout;
+	fout.open("judgelog");
+	char dot=' ';
+	for (int i=0;i<oier.size();i++) {
+		//if (i)
+			//fout << endl;
+		fout << oier[i].name_to_print << endl << oier[i].sum << dot;
+		for (int j=0;j<oier[i].problem.size();j++) {
+			JudgeResult *p=&oier[i].problem[j];
+			fout << p->st << dot << p->time << dot << p->memo << dot << p->score << dot;
+			for (int k=0;k<p->subresult.size();k++)
+				fout << p->subresult[k].st << dot << p->subresult[k].time << dot << p->subresult[k].memo << dot << p->subresult[k].score << dot;
+		}
+	}
+	fout.close();
+
+	if (JudgeSettings::UseCUI)
+		Contest::Judge_CUI();
 }
 
 void JudgeOutput::PrintStatus(int st) {
@@ -470,7 +521,7 @@ void JudgeOutput::PrintError() {
 		cout << Context::Error;
 }
 
-void JudgeOutput::PrintResult(JudgeResult x) {
+void JudgeOutput::PrintResult(JudgeResult &x) {
 	if (JudgeSettings::Terminal) {
 		foreground(green);
 		printf("%s:",Context::Time);
@@ -511,7 +562,9 @@ void JudgeOutput::Print_zh_CN(string str,int len) {//修复输出问题
 	}
 }
 
-void JudgeOutput::OutputContest(Contest test) {
+void JudgeOutput::OutputContest(Contest &test) {
+	if (JudgeSettings::UseCUI)
+		return ;
 	sort(test.oier.begin(),test.oier.end());
 	int len=6;
 	for (int i=0;i<test.oier.size();i++)
@@ -536,7 +589,7 @@ void JudgeOutput::OutputContest(Contest test) {
 		ConverttoCSV(test,(string)"result.csv");
 }
 
-void JudgeOutput::ConverttoCSV(Contest test,string csv) {
+void JudgeOutput::ConverttoCSV(Contest &test,string csv) {
 	ofstream fout;
 	fout.open(csv.c_str());
 	sort(test.oier.begin(),test.oier.end());
@@ -547,8 +600,8 @@ void JudgeOutput::ConverttoCSV(Contest test,string csv) {
 	for (int i=0;i<test.oier.size();i++) {
 		fout << "\"" << test.oier[i].name_to_print << "\"," << test.oier[i].sum << ",";
 		for (int j=0;j<test.problem.size();j++) {
-			for (int k=0;k<test.oier[i].problem[j].stat.size();k++)
-				fout << JudgeSettings::Status_Short[test.oier[i].problem[j].stat[k]];
+			for (int k=0;k<test.oier[i].problem[j].subresult.size();k++)
+				fout << JudgeSettings::Status_Short[test.oier[i].problem[j].subresult[k].st];
 			fout << ',' << test.oier[i].problem[j].score << ',';
 		}
 		fout << endl;

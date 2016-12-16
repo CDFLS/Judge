@@ -1,5 +1,7 @@
+#ifndef LANG
+#define LANG
 #include "../judge.h"
-#include "ConverttoString.h"
+#include "../ConverttoString.h"
 #include <sstream>
 namespace Context {
 	const string help=
@@ -14,6 +16,7 @@ namespace Context {
     -t [TIME]                 限定程序运行时间(未指定时为" + CTS::DoubleToString(JudgeSettings::Default_timelimit) + "s)\n\
     -m [MEMORY]               限制程序使用内存(为指定时为" + CTS::IntToString(JudgeSettings::Default_memorylimit) + "KB)\n\
     --csv                     输出结果到result.csv\n\
+    -c, --cui                 使用一个简单的CUI管理一次考试\n\
     -h, --help                显示本帮助\n\
 \n\
 程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值]。目前支持以下选项：\n\
@@ -22,6 +25,8 @@ namespace Context {
     InvalidWords, iw          将接下来的InvalidWordsNumber个字符串加入禁用单词列表，以空格分割\n\
     InvalidHeadersNumber, ihn   设置InvalidHeaders选项的值数量\n\
     InvalidHeaders, ih          将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割\n\
+CUI模式：\n\
+    tab键切换模式(重测和查看记录)，ws移动，enter选择\n\
 ";
     static void WrongArgument(char *str) {
 		printf("judge: 未知的选项或不足的参数 '%s'\n请尝试 \"judge --help\"，以获得更多信息。\n",str);
@@ -37,4 +42,11 @@ namespace Context {
 	const string Error="错误：";
 	const string TotalScore="总分数";
 	const string SymbolExplanation="符号说明：";
+	const string Rejudge="评测";
+	const string View="历史";
+	static void PressToContinue() {
+		puts("按任意键继续……");
+		getch();
+	}
 }
+#endif

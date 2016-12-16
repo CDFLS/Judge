@@ -1,13 +1,17 @@
+#ifndef CONVERT_H
+#define CONVERT_H
 #include <sstream>
+#include <string>
 namespace CTS {
-	static string DoubleToString(double x) {
+	static std::string DoubleToString(double x) {
 		std::ostringstream oss;
 		oss << x;
 		return oss.str();
 	}
-	static string IntToString(int x) {
+	static std::string IntToString(int x) {
 		std::ostringstream oss;
 		oss << x;
 		return oss.str();
 	}
 }
+#endif

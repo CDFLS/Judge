@@ -25,7 +25,7 @@ namespace JudgeSettings {
 	static double Default_timelimit=1;
 	static int Default_memorylimit=128000;
 	static string PrintDevice;
-	static int use_freopen=0,Terminal=1,PrinttoCSV=0;
+	static int use_freopen=0,Terminal=1,PrinttoCSV=0,UseCUI=0;
 	int ConverttoInt(string colorname);
 	void ReadSettings(const char *settingsfile);
 	int ReadFromArgv(int c,char *v[]);
@@ -36,7 +36,7 @@ class JudgeResult{
 	    int st,memo;
 	    double time;
 		int score;
-		vector<int> stat;
+		vector<JudgeResult> subresult;
 };
 
 class TestPoint {
@@ -53,7 +53,7 @@ class Contestant {
 		vector<JudgeResult> problem;
 		int sum;
 		void sumup();
-		bool operator < (Contestant x);
+		bool operator < (Contestant &x);
 };
 
 class Problem {
@@ -64,7 +64,7 @@ class Problem {
 		double timelimit=1;
 		void InitProblem();
 		bool SafetyCheck(string filename);
-		JudgeResult JudgeProblem(Contestant oier);
+		JudgeResult JudgeProblem(Contestant &oier);
 };
 
 class Contest {
@@ -74,15 +74,16 @@ class Contest {
 		void InitSPJ();
 		void InitContest();
 		void JudgeContest();
+		void Judge_CUI();
 };
 
 namespace JudgeOutput {
 	void PrintStatus(int st);
-	void PrintResult(JudgeResult x);
+	void PrintResult(JudgeResult &x);
 	void PrintError();
 	void Print_zh_CN(string str,int len);
-	void OutputContest(Contest test);
-	void ConverttoCSV(Contest test,string csv);
+	void OutputContest(Contest &test);
+	void ConverttoCSV(Contest &test,string csv);
 };
 
 #endif

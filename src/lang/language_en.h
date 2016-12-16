@@ -1,5 +1,7 @@
+#ifndef LANG
+#define LANG
 #include "../judge.h"
-#include "ConverttoString.h"
+#include "../ConverttoString.h"
 #include <sstream>
 namespace Context {
 	const string help=
@@ -14,6 +16,7 @@ It will use this command to compile: g++ [FILENAME].cpp -o [FILENAME] -DEJUDGE\n
     -t [TIME]                 Limit time (" + CTS::DoubleToString(JudgeSettings::Default_timelimit) + "s by default)\n\
     -m [MEMORY]               Limit memory (" + CTS::IntToString(JudgeSettings::Default_memorylimit) + "KB by default)\n\
     --csv                     Output result to result.csv after judging\n\
+    -c, --cui                 Use a simple CUI to manage a contest\n\
     -h, --help                Print this help message and exit\n\
 \n\
 This program will read settings from ~/.judgerc and ./judgerc. The format is :[Option]=[Value]. Options below are supported so far:\n\
@@ -22,6 +25,8 @@ This program will read settings from ~/.judgerc and ./judgerc. The format is :[O
     InvalidWords, iw          Add [InvalidWordsNumber] strings to the list of forbidden words, seperated by spaces\n\
     InvalidHeadersNumber, ihn Set the number of values in option 'InvalidHeaders'\n\
     InvalidHeaders, ih        Add [InvalidHeadersNumber] strings to the list of forbidden headers, seperated by spaces\n\
+CUI mode:\n\
+    tab to switch(rejudge or view history),'w''s' to move,enter to choose\n\
 ";
     static void WrongArgument(char *str) {
 		printf("judge: Unknown argument '%s'\nMore info with 'judge -h'\n",str);
@@ -37,4 +42,11 @@ This program will read settings from ~/.judgerc and ./judgerc. The format is :[O
 	const string Error="Error:";
 	const string TotalScore="Score";
 	const string SymbolExplanation="Key:";
+	const string Rejudge="Rejudge";
+	const string View="History";
+	static void PressToContinue() {
+		puts("Press any key to conyinue ......");
+		getch();
+	}
 }
+#endif
