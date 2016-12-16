@@ -5,7 +5,10 @@
 运行 'judge --help' 查看帮助</br>
 运行make构建，运行make en构建英文版。
 截图:</br>
-![demo](./screenshot/demo.png)
+![demo1](./screenshot/demo1.png)
+![demo2](./screenshot/demo2.png)
+![demo3](./screenshot/demo3.png)
+![demo4](./screenshot/demo4.png)
 ![cui](./screenshot/cui.png)
 
 # Todo
