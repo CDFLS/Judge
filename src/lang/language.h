@@ -7,7 +7,7 @@ namespace Context {
 	const string help=
 "用法：judge [选项]...\n\
 评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测，但仅允许freopen。\n\
-编译使用命令:g++ [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
+编译使用命令:g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
 \n\
     -w [STRING]               禁止源文件中出现该字符串\n\
     -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个字符串\n\

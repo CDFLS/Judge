@@ -7,7 +7,7 @@ namespace Context {
 	const string help=
 "Usage:judge [Options]...\n\
 Judge OI contest. Compile sources in directory ./ and source/[Contestant name], and use the data in directory ./ and data/[Problem name] automatically to judge. Support stdin and freopen only.\n\
-It will use this command to compile: g++ [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
+It will use this command to compile: g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
 \n\
     -w [STRING]               Forbidden words in sources\n\
     -w[NUMBER] [STRING]...    [NUMBER] forbidden words in sources\n\

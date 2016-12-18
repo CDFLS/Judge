@@ -350,7 +350,7 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 	tot.memo=-1;
 	tot.time=-1;
 	putchar('\n');
-	if (SafetyCheck(oier.name+name_to_print+".cpp")||(WEXITSTATUS(system(("g++ "+oier.name+name_to_print+".cpp -DEJUDGE -o ./"+name_to_print+((JudgeSettings::Terminal==0)?(string)" 2>.ejudge.tmp":(string)"")).c_str())))) {
+	if (SafetyCheck(oier.name+name_to_print+".cpp")||(WEXITSTATUS(system(("g++ -static -lm -s "+oier.name+name_to_print+".cpp -DEJUDGE -o ./"+name_to_print+((JudgeSettings::Terminal==0)?(string)" 2>.ejudge.tmp":(string)"")).c_str())))) {
 		if (!JudgeSettings::Terminal) {
 			fstream fin;
 			fin.open(".ejudge.tmp");
