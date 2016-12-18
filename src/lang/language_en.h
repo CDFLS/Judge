@@ -15,7 +15,8 @@ It will use this command to compile: g++ -static -lm -s [FILENAME].cpp -o [FILEN
     -s[NUMBER] [STRING]...    [NUMBER] forbidden headers in sources\n\
     -t [TIME]                 Limit time (" + CTS::DoubleToString(JudgeSettings::Default_timelimit) + "s by default)\n\
     -m [MEMORY]               Limit memory (" + CTS::IntToString(JudgeSettings::Default_memorylimit) + "KB by default)\n\
-    --csv                     Output result to result.csv after judging\n\
+    --csv                     Output result to result.csv after judging. Used by default when there is more than one contestant\n\
+    --nocsv                   Turn off csv output(even if there is more than one contestant)\n\
     -c, --cui                 Use a simple CUI to manage a contest\n\
     -h, --help                Print this help message and exit\n\
 \n\

@@ -168,6 +168,8 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 			}
 			else if ((string)v[i-1]==(string)"--csv")
 				JudgeSettings::PrinttoCSV=1;
+			else if ((string)v[i-1]==(string)"--nocsv")
+				JudgeSettings::PrinttoCSV=0;
 			else if (((string)v[i-1]==(string)"-c")||((string)v[i-1]==(string)"--cui"))
 				JudgeSettings::UseCUI=1;
 			else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
@@ -183,21 +185,21 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 }
 
 JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit) {
-	int s=AC,memo;
+	int s=AC,memo,RuntimeReturn;
 	double time;
 	char str[512];
 	if (JudgeSettings::use_freopen) {
 		sprintf(str,"cp %s %s.in",stdInput.c_str(),bin.c_str());
 		system(str);
 		sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./%s 2>.ejudge.run",timelimit,bin.c_str());
-		system(str);
+		RuntimeReturn=system(str);
 		sprintf(str,"mv %s.out .ejudge.tmp 2>/dev/null",bin.c_str());
 		system(str);
 		sprintf(str,"rm %s.in",bin.c_str());
 		system(str);
 	} else {
 		sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs %s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,bin.c_str(),stdInput.c_str());//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
-		system(str);
+		RuntimeReturn=system(str);
 	}
 	FILE *fp=fopen(".ejudge.run","r");
 	char ch;
@@ -209,14 +211,21 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit) {
 //	  timeout: the monitored command dumped core
 //	  Command terminated by signal 11
 //	  Time:0.02s Memory:1924KB
+//或者：
+//    Command exited with non-zero status 233
+//    Time:0.00s Memory:1988KB
 //故有如下解析代码：
 	fscanf(fp,"%c",&ch);
 	if (ch=='C') {
-		s=TLE;
+		for (int i=0;i<8;i++)
+			fscanf(fp,"%c",&ch);
+		if (ch=='e')
+			s=RE;
+		else
+			s=TLE;
 		while (ch!='T')
 			fscanf(fp,"%c",&ch);
-	}
-	if (ch=='t') {
+	} else if (ch=='t') {
 		s=RE;
 		while (ch!='T')
 			fscanf(fp,"%c",&ch);
@@ -231,7 +240,11 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit) {
 		return (JudgeResult){MLE,memo,time,0};
 	if (memo==0)
 		return (JudgeResult){RE,memo,time,0};
-	sprintf(str,"timeout 1s diff -b -B -Z .ejudge.tmp %s > /dev/null 2>/dev/null",stdOutput.c_str());//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
+	sprintf(str,"timeout 1s diff -b -B -Z .ejudge.tmp %s > /dev/null 2>/dev/null && rm .ejudge.tmp",stdOutput.c_str());//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
+#ifdef DEBUG
+	system(("cat "+stdOutput).c_str());
+	system("cat .ejudge.tmp");
+#endif
 	if (WEXITSTATUS(system(str))!=0)
 		return (JudgeResult){WA,memo,time,0};
 	else
@@ -381,6 +394,7 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 		tot.memo=max(tot.memo,tmpresult.memo);
 		tot.time=max(tot.time,tmpresult.time);
 	}
+	system(("rm ./"+name_to_print).c_str());
 	return tot;
 }
 
@@ -420,6 +434,13 @@ void Contest::InitContest() {
 		tmp.name_to_print=filelist[i];
 		tmp.InitProblem();
 		problem.push_back(tmp);
+	}
+
+	if (JudgeSettings::PrinttoCSV==-1) {
+		if (problem.size()>1)
+			JudgeSettings::PrinttoCSV=1;
+		else
+			JudgeSettings::PrinttoCSV=0;
 	}
 	
 	//for (int i=0;i<oier.size();i++)

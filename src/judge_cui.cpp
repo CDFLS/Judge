@@ -101,13 +101,13 @@ void Contest::Judge_CUI() {
 	char ch;
 	while ((ch=getch())!='q') {
 		int refresh_menu=0,refresh_list=0,lasttab=tab,last=s,pageturned=0,lastpage=page;
-		if (ch=='w')
+		if (ch=='w'||ch=='A')
 			s--,refresh_list=1;
-		if (ch=='s')
+		if (ch=='s'||ch=='B')
 			s++,refresh_list=1;
-		if (ch=='a')
+		if (ch=='a'||ch=='D')
 			page--,pageturned=1;
-		if (ch=='d')
+		if (ch=='d'||ch=='C')
 			page++,pageturned=1;
 		if ((ch=='\n'||ch=='\r')&&(tab==1)) {
 			Contestant *P=window.p[s+page*24].p;

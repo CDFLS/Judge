@@ -15,7 +15,8 @@ namespace Context {
     -s[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个头文件\n\
     -t [TIME]                 限定程序运行时间(未指定时为" + CTS::DoubleToString(JudgeSettings::Default_timelimit) + "s)\n\
     -m [MEMORY]               限制程序使用内存(为指定时为" + CTS::IntToString(JudgeSettings::Default_memorylimit) + "KB)\n\
-    --csv                     输出结果到result.csv\n\
+    --csv                     输出结果到result.csv，当人数大于一时默认开启\n\
+    --nocsv                   禁止输出到result.csv(即使人数大于一)\n\
     -c, --cui                 使用一个简单的CUI管理一次考试\n\
     -h, --help                显示本帮助\n\
 \n\
@@ -45,7 +46,7 @@ CUI模式：\n\
 	const string Rejudge="评测";
 	const string View="历史";
 	static void PressToContinue() {
-		puts("按任意键继续……");
+		puts("按任意键继续......");
 		getch();
 	}
 }
