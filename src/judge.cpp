@@ -184,10 +184,10 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 	return 0;
 }
 
-JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit) {
+JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,string &Directory) {
 	int s=AC,memo,RuntimeReturn;
 	double time;
-	char str[512];
+	char str[1024];
 	if (JudgeSettings::use_freopen) {
 		sprintf(str,"cp %s %s.in",stdInput.c_str(),bin.c_str());
 		system(str);
@@ -240,6 +240,26 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit) {
 		return (JudgeResult){MLE,memo,time,0};
 	if (memo==0)
 		return (JudgeResult){RE,memo,time,0};
+	if (exist(Directory+"spj")) {//SPJ support
+ //		- argv[1]: 标准输入文件
+ //		- argv[2]: 选手输出文件
+ //		- argv[3]: 标准输出文件
+ //		- argv[4]: 本测试点满分
+ //		- argv[5]: 分数输出文件(必须创建),仅一行,包含一个非负整数,表示得分.
+ //		- argv[6]: 额外信息文件(可以不创建)
+		sprintf(str,"%s %s .ejudge.tmp %s %d .ejudge.spj .ejudge.msg",(Directory+"spj").c_str(),stdInput.c_str(),stdOutput.c_str(),TestPoint::MaxScore);
+		system(str);
+		ifstream fin;
+		int score;
+		string extrainfo;
+		fin.open(".ejudge.spj");
+		fin >> score;
+		fin.close();
+		fin.open(".ejudge.msg");
+		fin >> extrainfo;
+		fin.close();
+		return (JudgeResult){((score==MaxScore)?(AC):(WA)),memo,time,score,(vector<JudgeResult>){},extrainfo};
+	}
 	sprintf(str,"timeout 1s diff -b -B -Z .ejudge.tmp %s > /dev/null 2>/dev/null && rm .ejudge.tmp",stdOutput.c_str());//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
 #ifdef DEBUG
 	system(("cat "+stdOutput).c_str());
@@ -249,10 +269,6 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit) {
 		return (JudgeResult){WA,memo,time,0};
 	else
 		return (JudgeResult){AC,memo,time,MaxScore};
-}
-
-JudgeResult TestPoint::JudgePointSPJ(string bin,string spj,double timelimit,int memorylimit) {
-	return (JudgeResult){0,0,0,0};
 }
 
 void Contestant::sumup() {
@@ -386,7 +402,7 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 	sprintf(tmp,"%%%ds ",maxlength+3);
 	for (int i=0;i<point.size();i++) {
 		printf(tmp,point[i].stdInput.c_str());
-		JudgeOutput::PrintResult(tmpresult=(point[i].JudgePoint("./"+name_to_print,timelimit,memorylimit)));
+		JudgeOutput::PrintResult(tmpresult=(point[i].JudgePoint("./"+name_to_print,timelimit,memorylimit,name)));
 		tot.score+=tmpresult.score;
 		if ((tot.st==AC)&&(tmpresult.st!=AC))
 			tot.st=tmpresult.st;

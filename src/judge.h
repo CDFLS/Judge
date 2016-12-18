@@ -37,14 +37,14 @@ class JudgeResult{
 	    double time;
 		int score;
 		vector<JudgeResult> subresult;
+		string ExtraInfo;
 };
 
 class TestPoint {
 	public:
 		string stdInput,stdOutput;
 		int MaxScore;
-		JudgeResult JudgePoint(string bin,double timelimit,int memorylimit);
-		JudgeResult JudgePointSPJ(string bin,string spj,double timelimit,int memorylimit);
+		JudgeResult JudgePoint(string bin,double timelimit,int memorylimit,string &Directory);
 };
 
 class Contestant {
