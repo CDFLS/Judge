@@ -540,11 +540,11 @@ void JudgeOutput::PrintStatus(int st) {
 	if (JudgeSettings::Terminal) {	
 		color(JudgeSettings::Status_Color[st],JudgeSettings::Status_Backround);
 		HighLight();
-		puts(JudgeSettings::Status[st]);
+		printf("%s",JudgeSettings::Status[st]);
 		ClearColor();
 	}
 	else
-		puts(JudgeSettings::Status[st]);
+		printf("%s",JudgeSettings::Status[st]);
 }
 
 void JudgeOutput::PrintError() {
@@ -569,10 +569,13 @@ void JudgeOutput::PrintResult(JudgeResult &x) {
 		foreground(yellow);
 		printf("%7dKB ",x.memo);
 		PrintStatus(x.st);
+		ClearColor();
+		cout << ' ' << x.ExtraInfo << endl;
 	}
 	else {
-		printf("%s:%5.2lfs %s:%7dKB ",Context::Time,x.time,Context::Memory,x.memo);
+		printf("%s:%5.2lfs %s:%7dKB",Context::Time,x.time,Context::Memory,x.memo);
 		PrintStatus(x.st);
+		cout << ' ' << x.ExtraInfo << endl;
 	}
 	ClearColor();
 }
