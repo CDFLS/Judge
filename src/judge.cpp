@@ -247,6 +247,7 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,st
  //		- argv[4]: 本测试点满分
  //		- argv[5]: 分数输出文件(必须创建),仅一行,包含一个非负整数,表示得分.
  //		- argv[6]: 额外信息文件(可以不创建)
+ //		TODO: CUI重现额外信息
 		sprintf(str,"%s %s .ejudge.tmp %s %d .ejudge.spj .ejudge.msg",(Directory+"spj").c_str(),stdInput.c_str(),stdOutput.c_str(),TestPoint::MaxScore);
 		system(str);
 		ifstream fin;
