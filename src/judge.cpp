@@ -537,6 +537,7 @@ void JudgeOutput::PrintResult(JudgeResult &x) {
 		printf("%s:%5.2lfs %s:%7dKB ",Context::Time,x.time,Context::Memory,x.memo);
 		PrintStatus(x.st);
 	}
+	ClearColor();
 }
 
 void JudgeOutput::Print_zh_CN(string str,int len) {//修复输出问题

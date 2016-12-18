@@ -21,6 +21,7 @@ class Bar {
 		Bar(string TEXT,int X,int Y,int LEN,int Foreground,int Background,int style) {
 			init(TEXT,X,Y,LEN,Foreground,Background,style);
 		}
+		Bar() {}
 		string text;
 		int x,y,len,fg,bg,sty;
 		Bar init(string TEXT,int X,int Y,int LEN,int Foreground,int Background,int style) {

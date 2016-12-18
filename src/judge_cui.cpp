@@ -53,8 +53,10 @@ string Ginfo(Contestant *x,int MAXL) {
 	sprintf(tmp,"%%%ds",MAXL+3+zh_CN_exlen(x->name_to_print));
 	sprintf(str,tmp,x->name_to_print.c_str());
 	string info=str;
+	sprintf(str,"%6d",x->sum);
+	info+=str;
 	for (int j=0;j<x->problem.size();j++) {
-		sprintf(str,"%4d",x->problem[j].score);
+		sprintf(str,"%6d",x->problem[j].score);
 		info+=str;
 	}
 	return info;
@@ -66,19 +68,28 @@ void Contest::Judge_CUI() {
 	system("clear");
 	HideCursor();
 	Page window;
-	vector<Bar> menu=(vector<Bar>){(Bar){Context::View,1,1,10,white,yellow,TEXT_MIDDLE},(Bar){Context::Rejudge,1,2,10,white,yellow,TEXT_MIDDLE}};
+	vector<Bar> menu=(vector<Bar>){(Bar){Context::View,1,2,10,white,yellow,TEXT_MIDDLE},(Bar){Context::Rejudge,1,3,10,white,yellow,TEXT_MIDDLE}};
 	vector<Bar> ShowPage;
+	Bar Title(" Total",1,1,80,white,yellow,TEXT_LEFT);
+	for (int i=0;i<problem.size();i++) {
+		char str[256];
+		sprintf(str," %5s",problem[i].name_to_print.c_str());
+		Title.text+=str;
+	}
 	for (int i=0;i<menu.size();i++)
 		menu[i].show();
 	int npage=0;
 	int MAXL=0;
 	for (int i=0;i<oier.size();i++)
 		MAXL=max(MAXL,zh_CN_exlen(oier[i].name_to_print)+(int)oier[i].name_to_print.size());
+	for (int i=0;i<MAXL+8;i++)
+		Title.text=" "+Title.text;
+	Title.text="Judge"+Title.text;
 	for (int i=0;i<oier.size();i++)
-		window.p.push_back((Bar_oier){Ginfo(&oier[i],MAXL),11,i%L+1,W-10,blue,white,TEXT_LEFT,&oier[i]});
+		window.p.push_back((Bar_oier){Ginfo(&oier[i],MAXL),11,i%L+2,W-10,blue,white,TEXT_LEFT,&oier[i]});
 	int tmp=(window.p.size()/24+1-((window.p.size()%24==0)?1:0));
 	for (int i=0;i<tmp;i++)
-		ShowPage.push_back((Bar){CTS::IntToString(i+1),W+1,i+1,9,blue,white,TEXT_MIDDLE});
+		ShowPage.push_back((Bar){CTS::IntToString(i+1),W+1,i+2,9,blue,white,TEXT_MIDDLE});
 	int page=0,s=0,tab=0;
 	menu[tab].rever();
 	window.print(page);
@@ -86,6 +97,7 @@ void Contest::Judge_CUI() {
 	for (int i=0;i<ShowPage.size();i++)
 		ShowPage[i].show();
 	ShowPage[0].rever();
+	Title.show();
 	char ch;
 	while ((ch=getch())!='q') {
 		int refresh_menu=0,refresh_list=0,lasttab=tab,last=s,pageturned=0,lastpage=page;
@@ -113,7 +125,7 @@ void Contest::Judge_CUI() {
 			window.p[s].text=Ginfo(P,MAXL);
 			stable_sort(window.p.begin(),window.p.end());
 			for (int i=0;i<window.p.size();i++)
-				window.p[i].y=(i+1)%L;
+				window.p[i].y=(i+1)%L+1;
 			window.print(page);
 			window.p[s].rever();
 			for (int i=0;i<menu.size();i++)
@@ -122,6 +134,7 @@ void Contest::Judge_CUI() {
 			for (int i=0;i<ShowPage.size();i++)
 				ShowPage[i].show();
 			ShowPage[page].rever();
+			Title.show();
 		}
 		if ((ch=='\n'||ch=='\r')&&(tab==0)) {
 			system("clear");
@@ -153,7 +166,7 @@ void Contest::Judge_CUI() {
 			window.p[s].text=Ginfo(window.p[s].p,MAXL);
 			stable_sort(window.p.begin(),window.p.end());
 			for (int i=0;i<window.p.size();i++)
-				window.p[i].y=(i+1)%L;
+				window.p[i].y=(i+1)%L+1;
 			window.print(page);
 			window.p[s].rever();
 			for (int i=0;i<menu.size();i++)
@@ -162,6 +175,7 @@ void Contest::Judge_CUI() {
 			for (int i=0;i<ShowPage.size();i++)
 				ShowPage[i].show();
 			ShowPage[page].rever();
+			Title.show();
 		}
 		if (ch=='\t')
 			tab++,refresh_menu=1;
@@ -181,6 +195,7 @@ void Contest::Judge_CUI() {
 			ShowPage[page].rever();
 			menu[tab].rever();
 			window.print(page);
+			Title.show();
 			s=0;
 			refresh_list=1;
 		}

@@ -26,7 +26,7 @@ namespace Context {
     InvalidHeadersNumber, ihn   设置InvalidHeaders选项的值数量\n\
     InvalidHeaders, ih          将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割\n\
 CUI模式：\n\
-    tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择\n\
+    tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择,q退出\n\
 ";
     static void WrongArgument(char *str) {
 		printf("judge: 未知的选项或不足的参数 '%s'\n请尝试 \"judge --help\"，以获得更多信息。\n",str);
