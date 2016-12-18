@@ -253,10 +253,10 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,st
 		int score;
 		string extrainfo;
 		fin.open(".ejudge.spj");
-		fin >> score;
+		if (fin) fin >> score;
 		fin.close();
 		fin.open(".ejudge.msg");
-		fin >> extrainfo;
+		if (fin) fin >> extrainfo;
 		fin.close();
 		return (JudgeResult){((score==MaxScore)?(AC):(WA)),memo,time,score,(vector<JudgeResult>){},extrainfo};
 	}

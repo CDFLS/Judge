@@ -28,6 +28,15 @@ This program will read settings from ~/.judgerc and ./judgerc. The format is :[O
     InvalidHeaders, ih        Add [InvalidHeadersNumber] strings to the list of forbidden headers, seperated by spaces\n\
 CUI mode:\n\
     tab to switch(rejudge or view history), 'w''s' to choose, 'a''d' to turn page, enter to confirm, 'q' to quit\n\
+SPJ:\n\
+Put your spj program in the data directory of that problem, rename it as 'spj'\n\
+SPJ arguments：\n\
+    - argv[1]: Standard input file\n\
+    - argv[2]: Contestant output file\n\
+    - argv[3]: Standard output file\n\
+    - argv[4]: Max score of this test point\n\
+    - argv[5]: Score output file(must be created)with only one line, containing the score.\n\
+    - argv[6]: Extra infomation(not necessary)\n\
 ";
     static void WrongArgument(char *str) {
 		printf("judge: Unknown argument '%s'\nMore info with 'judge -h'\n",str);

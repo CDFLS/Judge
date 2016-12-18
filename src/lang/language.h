@@ -28,6 +28,15 @@ namespace Context {
     InvalidHeaders, ih          将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割\n\
 CUI模式：\n\
     tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择,q退出\n\
+SPJ说明：\n\
+将SPJ编译，放在data对应题目目录下，命名为spj\n\
+SPJ参数：\n\
+    - argv[1]: 标准输入文件\n\
+    - argv[2]: 选手输出文件\n\
+    - argv[3]: 标准输出文件\n\
+    - argv[4]: 本测试点满分\n\
+    - argv[5]: 分数输出文件(必须创建),仅一行,包含一个非负整数,表示得分.\n\
+    - argv[6]: 额外信息文件(可以不创建)\n\
 ";
     static void WrongArgument(char *str) {
 		printf("judge: 未知的选项或不足的参数 '%s'\n请尝试 \"judge --help\"，以获得更多信息。\n",str);
