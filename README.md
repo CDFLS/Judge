@@ -19,7 +19,7 @@
 - [x] 设置文件
 - [x] CUI
 - [ ] 调用外部SPJ
-- [x] Sandbox
+- [ ] Sandbox
 - [ ] 对Windows的支持
 
 #Help
