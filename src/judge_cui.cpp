@@ -1,6 +1,7 @@
 #include "judge.h"
 #include "Bar.h"
 #include "ConverttoString.h"
+#include "config_judge.h"
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
@@ -208,20 +209,6 @@ void Contest::Judge_CUI() {
 	}
 	UnHideCursor();
 	system("clear");
-	ofstream fout;
-	fout.open("judgelog");
-	char dot=' ';
-	for (int i=0;i<oier.size();i++) {
-		//if (i)
-			//fout << endl;
-		fout << oier[i].name_to_print << endl << oier[i].sum << dot;
-		for (int j=0;j<oier[i].problem.size();j++) {
-			JudgeResult *p=&oier[i].problem[j];
-			fout << p->st << dot << p->time << dot << p->memo << dot << p->score << dot;
-			for (int k=0;k<p->subresult.size();k++)
-				fout << p->subresult[k].st << dot << p->subresult[k].time << dot << p->subresult[k].memo << dot << p->subresult[k].score << dot;
-		}
-	}
-	fout.close();
+	Config::Saveto(this,"judgelog");
 	return ;
 }

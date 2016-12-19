@@ -7,6 +7,7 @@
 #include "Conio.h"
 #include "Functions_Linux.h"
 #include "judge.h"
+#include "config_judge.h"
 
 #ifdef EN
 #include "lang/language_en.h"
@@ -247,7 +248,6 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,st
  //		- argv[4]: 本测试点满分
  //		- argv[5]: 分数输出文件(必须创建),仅一行,包含一个非负整数,表示得分.
  //		- argv[6]: 额外信息文件(可以不创建)
- //		TODO: CUI重现额外信息
 		sprintf(str,"%s %s .ejudge.tmp %s %d .ejudge.spj .ejudge.msg",(Directory+"spj").c_str(),stdInput.c_str(),stdOutput.c_str(),TestPoint::MaxScore);
 		system(str);
 		ifstream fin;
@@ -259,6 +259,7 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,st
 		fin.open(".ejudge.msg");
 		if (fin) fin >> extrainfo;
 		fin.close();
+		system("rm .ejudge.tmp");
 		return (JudgeResult){((score==MaxScore)?(AC):(WA)),memo,time,score,(vector<JudgeResult>){},extrainfo};
 	}
 	sprintf(str,"timeout 1s diff -b -B -Z .ejudge.tmp %s > /dev/null 2>/dev/null && rm .ejudge.tmp",stdOutput.c_str());//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
@@ -468,31 +469,7 @@ void Contest::InitContest() {
 
 void Contest::JudgeContest() {
 	if (JudgeSettings::UseCUI&&exist("judgelog")) {
-		ifstream fin;
-		fin.open("judgelog");
-		string name;
-		for (int loop=0;loop<oier.size();loop++) {
-			getline(fin,name,'\n');
-			int i;
-			for (int k=0;k<oier.size();k++)
-				if (oier[k].name_to_print==name||(' '+oier[k].name_to_print==name)) {
-					i=k;
-					break;
-				}
-			fin >> oier[i].sum;
-			for (int j=0;j<problem.size();j++) {
-				while (oier[i].problem.size()<=j)
-					oier[i].problem.push_back((JudgeResult){});
-				JudgeResult *p=&oier[i].problem[j];
-				fin >> p->st >> p->time >> p->memo >> p->score;
-				for (int k=0;k<problem[j].point.size();k++) {
-					while (p->subresult.size()<=k)
-						p->subresult.push_back((JudgeResult){});
-					fin >> p->subresult[k].st >> p->subresult[k].time >> p->subresult[k].memo >> p->subresult[k].score;
-				}
-			}
-		}
-		fin.close();
+		Config::Readfrom(this,"judgelog");
 		Judge_CUI();
 		return ;
 	}
@@ -516,22 +493,7 @@ void Contest::JudgeContest() {
 		oier[i].sumup();
 	}
 
-	ofstream fout;
-	fout.open("judgelog");
-	char dot=' ';
-	for (int i=0;i<oier.size();i++) {
-		//if (i)
-			//fout << endl;
-		fout << oier[i].name_to_print << endl << oier[i].sum << dot;
-		for (int j=0;j<oier[i].problem.size();j++) {
-			JudgeResult *p=&oier[i].problem[j];
-			fout << p->st << dot << p->time << dot << p->memo << dot << p->score << dot;
-			for (int k=0;k<p->subresult.size();k++)
-				fout << p->subresult[k].st << dot << p->subresult[k].time << dot << p->subresult[k].memo << dot << p->subresult[k].score << dot;
-		}
-	}
-	fout.close();
-
+	Config::Saveto(this,"judgelog");
 	if (JudgeSettings::UseCUI)
 		Contest::Judge_CUI();
 }
