@@ -18,30 +18,18 @@
 
 using namespace std;
 
-bool cmp(char *str,int s,string word) {//比较字符串，从str的第s个和word的第1个字符开始比较
-	if (strlen(str)-s<word.length())
-		return false;
-	for (int i=0;i<word.length();i++)
-		if (str[s+i]!=word[i])
+bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和word的第1个字符开始比较
+	int pos=0;
+	for (int i=0;i<strlen(word);i++) {
+		if (s+i+pos<=strlen(str))
 			return false;
-	return true;
-}
-
-bool cmp(char *str,int s,char *word) {
-	if (strlen(str)-s<strlen(word))
-		return false;
-	for (int i=0;i<strlen(word);i++)
-		if (str[s+i]!=word[i])
+		if (str[s+i+pos]==' ') {
+			pos++;
+			continue;
+		}
+		if (str[s+i+pos]!=word[i])
 			return false;
-	return true;
-}
-
-bool cmp(string str,int s,char *word) {
-	if (str.length()-s<strlen(word))
-		return false;
-	for (int i=0;i<strlen(word);i++)
-		if (str[s+i]!=word[i])
-			return false;
+	}
 	return true;
 }
 
@@ -90,7 +78,7 @@ bool HeadersCheck(char *str,int line,string filename) {//检查一行include是�
 	}
 	head[l]=0;
 	for (int i=0;i<JudgeSettings::InvalidHeaders.size();i++)
-		if (cmp(JudgeSettings::InvalidHeaders[i],0,head)&&(JudgeSettings::InvalidHeaders[i].length())==strlen(head)) {
+		if (cmp((char *)JudgeSettings::InvalidHeaders[i].c_str(),0,head)&&(JudgeSettings::InvalidHeaders[i].length())==strlen(head)) {
 			if (JudgeSettings::Terminal) {
 				ClearColor();
 				HighLight();
@@ -386,7 +374,7 @@ bool Problem::SafetyCheck(string filename) {
 				JudgeSettings::use_freopen=1;
 			else
 				for (int k=0;k<JudgeSettings::InvalidWords.size();k++)
-					if (cmp(str,i,JudgeSettings::InvalidWords[k])) {
+					if (cmp(str,i,(char *)JudgeSettings::InvalidWords[k].c_str())) {
 						if (JudgeSettings::Terminal) {
 							ClearColor();
 							HighLight();

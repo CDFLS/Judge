@@ -4,12 +4,12 @@
 #include <iostream>
 #include <string>
 using namespace std;
-vector<string> SupportedFile={"cpp","c"};
-vector<string> CompileCommand={
+static vector<string> SupportedFile={"cpp","c"};
+static vector<string> CompileCommand={
 	"g++ -static -lm -s -DEJUDGE %s -o %s",
 	"gcc -static -lm -s -DEJUDGE %s -o %s",
 };
-int Compile(string pathto,string problem,int terminal) {
+static int Compile(string pathto,string problem,int terminal) {
 	int dot;
 	bool found=false;
 	for (int i=0;i<SupportedFile.size();i++)

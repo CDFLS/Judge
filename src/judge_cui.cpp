@@ -1,11 +1,12 @@
-#include "judge.h"
-#include "Bar.h"
-#include "ConverttoString.h"
-#include "config_judge.h"
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
 #include <iostream>
+#include "judge.h"
+#include "Bar.h"
+#include "ConverttoString.h"
+#include "config_judge.h"
+#include "MultiCompiler.h"
 
 #ifdef EN
 #include "lang/language_en.h"
@@ -153,11 +154,8 @@ void Contest::Judge_CUI() {
 						printf(tmp,problem[i].point[j].stdInput.c_str());
 						JudgeOutput::PrintResult(P->problem[i].subresult[j]);
 					}
-				else {
-					if (!problem[i].SafetyCheck(P->name+problem[i].name_to_print+".cpp"))
-						system(("g++ "+P->name+problem[i].name_to_print+".cpp -o .ejudge.tmp").c_str());
-				}
-				printf("\n%s ",P->name_to_print.c_str());
+				else
+					Compile(P->name,problem[i].name_to_print,1);
 				JudgeOutput::PrintResult(P->problem[i]);
 				printf("%s:%d\n\n",Context::Score,P->problem[i].score);
 			}
