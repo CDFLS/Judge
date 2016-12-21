@@ -37,8 +37,27 @@ bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和wor
 	return true;
 }
 
-inline char FirstChar(char *str) {
-	for (int i=0;i<strlen(str);i++)
+bool cmp(string str,int s,char *word) {
+	int pos=0;
+	for (int i=0;i<strlen(word);i++) {
+		if (s+i+pos>=str.length())
+			return false;
+		int bakpos=pos-1;
+		while (pos!=bakpos) {
+			bakpos=pos;
+			while (str[s+i+pos]==' '&&word[i]!=' ')
+				pos++;
+			while ((s+i+pos+1<str.length())&&str[s+i+pos]=='#'&&str[s+i+pos+1]=='#')
+				pos+=2;
+		}
+		if (str[s+i+pos]!=word[i])
+			return false;
+	}
+	return true;
+}
+
+inline char FirstChar(string str) {
+	for (int i=0;i<str.length();i++)
 		if ((str[i]!=' ')&&(str[i]!='\t'))
 			return str[i];
 	return 0;
@@ -65,12 +84,12 @@ int JudgeSettings::ConverttoInt(string colorname) {
 		return black;
 }
 
-bool HeadersCheck(char *str,int line,string filename) {//检查一行include是否包含非法头文件
+bool HeadersCheck(string str,int line,string filename) {//检查一行include是否包含非法头文件
 	//for (int i=0;i<JudgeSettings::InvalidHeaders.size();i++)
 		//cout << JudgeSettings::InvalidHeaders[i] << endl;
 	char head[256],l=0;
 	int flag=0;
-	for (int i=0;i<strlen(str);i++) {
+	for (int i=0;i<str.length();i++) {
 		if (str[i]=='>')
 			flag=0;
 		if (flag&&str[i]!=' ') {
@@ -320,20 +339,19 @@ bool Contestant::operator<(Contestant &x) {
 
 bool Problem::SafetyCheck(string filename) {
 	JudgeSettings::use_freopen=0;
-	FILE *fp=fopen(filename.c_str(),"r");
-	if (fp==NULL) {
+	ifstream fin;
+	fin.open(filename);
+	if (!fin) {
 		JudgeOutput::PrintError();
 		puts(Context::SourceNotFound);
 		return true;
 	}
-	char str[1024];
+	string str;
 	int line=0,ifndef=0,flag=0,ifdef=0;//忽略在注释和#ifndef EJUDGE和#ifdef EJUDGE #else中的单词
-	while (fgets(str,2000,fp)!=NULL) {
-		if (str[strlen(str)-1]=='\n')
-			str[strlen(str)-1]=0;
+	while (getline(fin,str,'\n')) {
 		line++;
 		int include=0,First=1;
-		for (int i=0;i<strlen(str);i++)
+		for (int i=0;i<str.length();i++)
 			if ((str[i]=='/')&&(str[i+1]=='/'))
 				break;
 			else if ((str[i]=='*')&&(str[i+1]=='/'))
@@ -353,7 +371,7 @@ bool Problem::SafetyCheck(string filename) {
 			}
 			else if (cmp(str,i,(char *)"#define")&&FirstChar(str)=='#') {
 				int w=i,cnt=0;
-				for (;w<strlen(str);w++) {
+				for (;w<str.length();w++) {
 					if (str[w]==' ')
 						cnt++;
 					if (cnt==2)
@@ -405,7 +423,7 @@ bool Problem::SafetyCheck(string filename) {
 						return true;
 					}
 	}
-	fclose(fp);
+	fin.close();
 	return false;
 }
 
