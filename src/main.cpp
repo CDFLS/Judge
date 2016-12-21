@@ -9,8 +9,8 @@ int main(int argc,char *argv[]) {
 		return 0;
 	x.InitContest();
 	x.InitSPJ();
-	JudgeSettings::ReadSettings(GetJudgerc().c_str());
-	JudgeSettings::ReadSettings("judgerc");
+	JudgeSettings::ReadSettings(GetJudgerc().c_str(),&x);
+	JudgeSettings::ReadSettings("judgerc",&x);
 	x.JudgeContest();
 	ClearFile();
 	JudgeOutput::OutputContest(x);

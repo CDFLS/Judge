@@ -7,7 +7,9 @@ namespace Context {
 	const string help=
 "用法：judge [选项]...\n\
 评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测，但仅允许freopen。\n\
-编译使用命令:g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
+编译使用命令:\n\
+    g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
+    gcc -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
 \n\
     -w [STRING]               禁止源文件中出现该字符串\n\
     -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个字符串\n\
@@ -20,16 +22,36 @@ namespace Context {
     -c, --cui                 使用一个简单的CUI管理一次考试\n\
     -h, --help                显示本帮助\n\
 \n\
-程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值]。目前支持以下选项：\n\
+程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值1]|[值2]......目前支持以下选项：\n\
+  一个参数：\n\
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple\n\
-    InvalidWordsNumber, iwn   设置InvalidWords选项的值数量\n\
+    InvalidWordsNumber, iwn   设置InvalidWords选项的值数量，默认为1\n\
     InvalidWords, iw          将接下来的InvalidWordsNumber个字符串加入禁用单词列表，以空格分割\n\
-    InvalidHeadersNumber, ihn   设置InvalidHeaders选项的值数量\n\
-    InvalidHeaders, ih          将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割\n\
+    InvalidHeadersNumber, ihn 设置InvalidHeaders选项的值数量，默认为1\n\
+    InvalidHeaders, ih        将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割\n\
+  两个参数：\n\
+    SourceProblem, source, sp 将问题[值1]按照配置文件(详见下一部分)[值2]进行配置\n\
+  示例配置：\n\
+    ./judgerc：\n\
+      ih=fstream\n\
+      source=aplusb|config\n\
+    ./config:\n\
+      time=2.0\n\
+      memo=64000\n\
+      score=10\n\
+\n\
+问题配置文件：\n\
+    三个选项，格式为：[选项]=[值]\n\
+    time, t                   时间\n\
+    memo, memory, m           内存\n\
+    score, s                  单个测试点分数\n\
+  示例同上。\n\
+\n\
 CUI模式：\n\
     tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择,q退出\n\
+\n\
 SPJ说明：\n\
-将SPJ编译，放在data对应题目目录下，命名为spj\n\
+将SPJ编译，放在data对应题目目录下，命名为spj(或者将spj.cpp放在该目录下，将会被自动编译)\n\
 SPJ参数：\n\
     - argv[1]: 标准输入文件\n\
     - argv[2]: 选手输出文件\n\

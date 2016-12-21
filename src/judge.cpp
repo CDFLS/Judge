@@ -8,6 +8,7 @@
 #include "Functions_Linux.h"
 #include "judge.h"
 #include "config_judge.h"
+#include "MultiCompiler.h"
 
 #ifdef EN
 #include "lang/language_en.h"
@@ -102,9 +103,49 @@ bool HeadersCheck(char *str,int line,string filename) {//检查一行include是�
 	return false;
 }
 
-void JudgeSettings::ReadSettings(const char *settingsfile) {
+void JudgeSettings::SourceProblem(string name,string source,Contest *x) {
+	ifstream fin;
+	string bak=source;
+	fin.open(source);
+	if (!fin) {
+		cerr << "Error: config file not found: "+source << endl;
+		return ;
+	}
+	string l;
+	Problem *p=NULL;
+	for (int i=0;i<x->problem.size();i++)
+		if (x->problem[i].name=="./data"+name+"/"||x->problem[i].name=="./data/"+name+"/")
+			p=&x->problem[i];
+	if (p==NULL) {
+		cerr << "Error: problem not found: " << name << endl;
+		return ;
+	}
+	while (getline(fin,l,'=')) {
+		if (l=="time"||l=="t") {
+			double t;
+			fin >> t;
+			p->timelimit=t;
+		}
+		else if (l=="score"||l=="s") {
+			int sc;
+			fin >> sc;
+			p->eachscore=sc;
+		}
+		else if (l=="memo"||l=="memory"||l=="m") {
+			int m;
+			fin >> m;
+			p->memorylimit=m;
+		}
+		getline(fin,l,'\n');
+	}
+	fin.close();
+}
+
+void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 	ifstream fin;
 	fin.open(settingsfile);
+	if (!fin)
+		return ;
 	string l;
 	int InvalidWordsNumber=1,InvalidHeadersNumber=1;
 	while (getline(fin,l,'=')) {
@@ -129,6 +170,12 @@ void JudgeSettings::ReadSettings(const char *settingsfile) {
 		}
 		else if (l=="InvalidHeadersNumber"||l=="ihn") {
 			fin >> InvalidHeadersNumber;
+		}
+		else if (l=="SourceProblem"||l=="source"||l=="sp") {
+			string pathto;
+			getline(fin,l,'|');//problem name
+			fin >> pathto;
+			SourceProblem(l,pathto,x);
 		}
 		getline(fin,l,'\n');
 	}
@@ -185,7 +232,7 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 	return 0;
 }
 
-JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,string &Directory) {
+JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,int MaxScore,string &Directory) {
 	int s=AC,memo,RuntimeReturn;
 	double time;
 	char str[1024];
@@ -248,7 +295,7 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,st
  //		- argv[4]: 本测试点满分
  //		- argv[5]: 分数输出文件(必须创建),仅一行,包含一个非负整数,表示得分.
  //		- argv[6]: 额外信息文件(可以不创建)
-		sprintf(str,"%s %s .ejudge.tmp %s %d .ejudge.spj .ejudge.msg",(Directory+"spj").c_str(),stdInput.c_str(),stdOutput.c_str(),TestPoint::MaxScore);
+		sprintf(str,"%s %s .ejudge.tmp %s %d .ejudge.spj .ejudge.msg",(Directory+"spj").c_str(),stdInput.c_str(),stdOutput.c_str(),MaxScore);
 		system(str);
 		ifstream fin;
 		int score;
@@ -364,7 +411,6 @@ void Problem::InitProblem() {
 		TestPoint tmp;
 		tmp.stdInput=name+filelist[i];
 		tmp.stdOutput=name+filelist[i].replace(filelist[i].length()-3,3,".out");
-		tmp.MaxScore=100/filelist.size();
 		if (!exist(tmp.stdOutput))
 			continue;
 		//cout << tmp.stdInput+" "+tmp.stdOutput << endl;
@@ -372,6 +418,7 @@ void Problem::InitProblem() {
 	}
 	memorylimit=JudgeSettings::Default_memorylimit;
 	timelimit=JudgeSettings::Default_timelimit;
+	eachscore=100/point.size();
 }
 
 JudgeResult Problem::JudgeProblem(Contestant &oier){
@@ -381,7 +428,8 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 	tot.memo=-1;
 	tot.time=-1;
 	putchar('\n');
-	if (SafetyCheck(oier.name+name_to_print+".cpp")||(WEXITSTATUS(system(("g++ -static -lm -s "+oier.name+name_to_print+".cpp -DEJUDGE -o ./"+name_to_print+((JudgeSettings::Terminal==0)?(string)" 2>.ejudge.tmp":(string)"")).c_str())))) {
+	//if (SafetyCheck(oier.name+name_to_print+".cpp")||(WEXITSTATUS(system(("g++ -static -lm -s "+oier.name+name_to_print+".cpp -DEJUDGE -o ./"+name_to_print+((JudgeSettings::Terminal==0)?(string)" 2>.ejudge.tmp":(string)"")).c_str())))) {
+	if (Compile(oier.name,name_to_print,JudgeSettings::Terminal)) {
 		if (!JudgeSettings::Terminal) {
 			fstream fin;
 			fin.open(".ejudge.tmp");
@@ -404,7 +452,7 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 	sprintf(tmp,"%%%ds ",maxlength+3);
 	for (int i=0;i<point.size();i++) {
 		printf(tmp,point[i].stdInput.c_str());
-		JudgeOutput::PrintResult(tmpresult=(point[i].JudgePoint("./"+name_to_print,timelimit,memorylimit,name)));
+		JudgeOutput::PrintResult(tmpresult=(point[i].JudgePoint("./"+name_to_print,timelimit,memorylimit,eachscore,name)));
 		tot.score+=tmpresult.score;
 		if ((tot.st==AC)&&(tmpresult.st!=AC))
 			tot.st=tmpresult.st;
@@ -417,19 +465,32 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 }
 
 void Contest::InitSPJ() {
+	for (int i=0;i<problem.size();i++)
+		if ((exist(problem[i].name+"spj.cpp"))&&(!exist(problem[i].name+"spj")))
+			system(("g++ "+problem[i].name+"spj.cpp -o "+problem[i].name+"spj -O2 2>/dev/null").c_str());
 }
 
 void Contest::InitContest() {
 	if (!PrinttoTerminal(JudgeSettings::PrintDevice))
 		JudgeSettings::Terminal=0;
-	vector<string> filelist=GetFile((string)".",(string)"\\.cpp");
+	if (JudgeSettings::UseCUI&&exist("judgelog")) {
+		Config::Readfrom(this,"judgelog");
+		return ;
+	}
+	vector<string> filelist=GetFile(".","\\.cpp");
+	vector<string> tmp;
+	for (int i=0;i<SupportedFile.size();i++) {
+		tmp=GetFile(".","\\."+SupportedFile[i]);
+		for (int j=0;j<tmp.size();j++)
+			filelist.push_back(tmp[j]);
+	}
 	if (filelist.size()) {
 		Contestant user;
 		user.name="./";
 		user.name_to_print=GetUserName();
 		oier.push_back(user);
 	}
-	filelist=GetFile((string)"./source",(string)"");
+	filelist=GetFile("./source","");
 	for (int i=0;i<filelist.size();i++) {
 		Contestant tmp;
 		tmp.name="./source/"+filelist[i]+"/";
@@ -437,7 +498,7 @@ void Contest::InitContest() {
 		oier.push_back(tmp);
 	}
 
-	filelist=GetFile((string)".",(string)"\\.in");
+	filelist=GetFile(".","\\.in");
 	if (filelist.size()) {
 		Problem Default;
 		Default.name="./";
@@ -445,7 +506,7 @@ void Contest::InitContest() {
 		Default.InitProblem();
 		problem.push_back(Default);
 	}
-	filelist=GetFile((string)"./data",(string)"");
+	filelist=GetFile("./data","");
 	for (int i=0;i<filelist.size();i++) {
 		Problem tmp;
 		tmp.name="./data/"+filelist[i]+"/";
@@ -469,7 +530,6 @@ void Contest::InitContest() {
 
 void Contest::JudgeContest() {
 	if (JudgeSettings::UseCUI&&exist("judgelog")) {
-		Config::Readfrom(this,"judgelog");
 		Judge_CUI();
 		return ;
 	}

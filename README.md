@@ -23,10 +23,13 @@
 - [ ] Sandbox
 
 #Help
+可查看judge --help或查看example目录。
 ```
 用法：judge [选项]...
 评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测，但仅允许freopen。
-编译使用命令:g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE
+编译使用命令:
+    g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE
+    gcc -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE
 
     -w [STRING]               禁止源文件中出现该字符串
     -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个字符串
@@ -39,16 +42,36 @@
     -c, --cui                 使用一个简单的CUI管理一次考试
     -h, --help                显示本帮助
 
-程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值]。目前支持以下选项：
+程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值1]|[值2]......目前支持以下选项：
+  一个参数：
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple
-    InvalidWordsNumber, iwn   设置InvalidWords选项的值数量
+    InvalidWordsNumber, iwn   设置InvalidWords选项的值数量，默认为1
     InvalidWords, iw          将接下来的InvalidWordsNumber个字符串加入禁用单词列表，以空格分割
-    InvalidHeadersNumber, ihn   设置InvalidHeaders选项的值数量
-    InvalidHeaders, ih          将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割
+    InvalidHeadersNumber, ihn 设置InvalidHeaders选项的值数量，默认为1
+    InvalidHeaders, ih        将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割
+  两个参数：
+    SourceProblem, source, sp 将问题[值1]按照配置文件(详见下一部分)[值2]进行配置
+  示例配置：
+    ./judgerc：
+      ih=fstream
+      source=aplusb|config
+    ./config:
+      time=2.0
+      memo=64000
+      score=10
+
+问题配置文件：
+    三个选项，格式为：[选项]=[值]
+    time, t                   时间
+    memo, memory, m           内存
+    score, s                  单个测试点分数
+  示例同上。
+
 CUI模式：
     tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择,q退出
+
 SPJ说明：
-将SPJ编译，放在data对应题目目录下，命名为spj
+将SPJ编译，放在data对应题目目录下，命名为spj(或者将spj.cpp放在该目录下，将会被自动编译)
 SPJ参数：
     - argv[1]: 标准输入文件
     - argv[2]: 选手输出文件

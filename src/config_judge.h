@@ -10,10 +10,10 @@ using namespace std;
 namespace Config {
 	static void FPrintResult(ofstream &fout, JudgeResult *q) {
 		fout << q->score << endl
-			<< q->st << endl
-			<< q->time << endl
-			<< q->memo << endl
-			<< q->ExtraInfo << '\\' << endl;
+			 << q->st << endl
+			 << q->time << endl
+			 << q->memo << endl
+			 << q->ExtraInfo << '\\' << endl;
 	}
 	
 	static void FScanfResult(ifstream &fin, JudgeResult *q) {
@@ -21,7 +21,7 @@ namespace Config {
 			>> q->st
 			>> q->time
 			>> q->memo;
-		getline(fin,q->ExtraInfo,'\n');
+		getline(fin,q->ExtraInfo,'\n');//Ignore the first '\n'
 		getline(fin,q->ExtraInfo,'\\');
 	}
 
@@ -32,15 +32,15 @@ namespace Config {
 		for (int i=0;i<x->problem.size();i++) {
 			Problem *p=&x->problem[i];
 			fout << p->name_to_print << endl
-				<< p->name << endl
-				<< p->memorylimit << endl
-				<< p->timelimit << endl
-				<< p->point.size() << endl;
+				 << p->name << endl
+				 << p->memorylimit << endl
+				 << p->timelimit << endl
+				 << p->eachscore << endl
+				 << p->point.size() << endl;
 			for (int j=0;j<p->point.size();j++) {
 				TestPoint *q=&p->point[j];
 				fout << q->stdInput << endl
-					<< q->stdOutput << endl
-					<< q->MaxScore << endl;
+					 << q->stdOutput << endl;
 			}
 		}
 		fout << x->oier.size() << endl;
@@ -74,14 +74,14 @@ namespace Config {
 				>> p->name
 				>> p->memorylimit
 				>> p->timelimit
+				>> p->eachscore
 				>> size;
 			while (p->point.size()<size)
 				p->point.push_back((TestPoint){});
 			for (int j=0;j<p->point.size();j++) {
 				TestPoint *q=&p->point[j];
 				fin >> q->stdInput
-					>> q->stdOutput
-					>> q->MaxScore;
+					>> q->stdOutput;
 			}
 		}
 		fin >> size;

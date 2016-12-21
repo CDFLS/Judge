@@ -1,0 +1,16 @@
+,"总分数","AplusB",,"BplusA",,"SPJtest",,
+"ACer",300,AAAAAAAAAA,100,AAAAAAAAAA,100,AAAAA,100,
+"Mengbier",220,AAAAWAWAWA,70,WWAAWWWAAA,50,AAAAA,100,
+"CEer",0,----------,0,----------,0,-----,0,
+"Mogician",0,WWWWWWWWWW,0,WWWWWWWWWW,0,WWWWW,0,
+"REer",0,RRRRRRRRRR,0,RRRRRRRRRR,0,RRRRR,0,
+"WAer",0,WWWWWWWWWW,0,WWWWWWWWWW,0,WWWWW,0,
+,
+,,,,,,,,,"符号说明：
+A:Accepted
+W:Wrong Answer
+-:Compile Error
+T:Time Limit Exceeded
+M:Memory Limit Exceeded
+R:Runtime Error
+",

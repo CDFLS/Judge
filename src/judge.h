@@ -16,6 +16,8 @@ using namespace std;
 #define MLE 4
 #define RE 5
 
+class Contest;
+
 namespace JudgeSettings {
 	static char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
 	static char Status_Short[]="AW-TMR";
@@ -27,7 +29,8 @@ namespace JudgeSettings {
 	static string PrintDevice;
 	static int use_freopen=0,Terminal=1,PrinttoCSV=-1,UseCUI=0;
 	int ConverttoInt(string colorname);
-	void ReadSettings(const char *settingsfile);
+	void SourceProblem(string name,string source,Contest *x);
+	void ReadSettings(const char *settingsfile,Contest *x);
 	int ReadFromArgv(int c,char *v[]);
 };
 
@@ -43,8 +46,7 @@ class JudgeResult{
 class TestPoint {
 	public:
 		string stdInput,stdOutput;
-		int MaxScore;
-		JudgeResult JudgePoint(string bin,double timelimit,int memorylimit,string &Directory);
+		JudgeResult JudgePoint(string bin,double timelimit,int memorylimit,int MaxScore,string &Directory);
 };
 
 class Contestant {
@@ -62,6 +64,7 @@ class Problem {
 		vector<TestPoint> point;
 		int memorylimit=128000;
 		double timelimit=1;
+		int eachscore;
 		void InitProblem();
 		bool SafetyCheck(string filename);
 		JudgeResult JudgeProblem(Contestant &oier);

@@ -82,7 +82,7 @@ void Contest::Judge_CUI() {
 	int npage=0;
 	int MAXL=0;
 	for (int i=0;i<oier.size();i++)
-		MAXL=max(MAXL,zh_CN_exlen(oier[i].name_to_print)+(int)oier[i].name_to_print.size());
+		MAXL=max(MAXL,-zh_CN_exlen(oier[i].name_to_print)+(int)oier[i].name_to_print.size());
 	for (int i=0;i<MAXL+8;i++)
 		Title.text=" "+Title.text;
 	Title.text="Judge"+Title.text;

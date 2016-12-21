@@ -7,7 +7,9 @@ namespace Context {
 	const string help=
 "Usage:judge [Options]...\n\
 Judge OI contest. Compile sources in directory ./ and source/[Contestant name], and use the data in directory ./ and data/[Problem name] automatically to judge. Support stdin and freopen only.\n\
-It will use this command to compile: g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
+It will use these commands to compile:\n\
+    g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
+    gcc -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
 \n\
     -w [STRING]               Forbidden words in sources\n\
     -w[NUMBER] [STRING]...    [NUMBER] forbidden words in sources\n\
@@ -20,16 +22,34 @@ It will use this command to compile: g++ -static -lm -s [FILENAME].cpp -o [FILEN
     -c, --cui                 Use a simple CUI to manage a contest\n\
     -h, --help                Print this help message and exit\n\
 \n\
-This program will read settings from ~/.judgerc and ./judgerc. The format is :[Option]=[Value]. Options below are supported so far:\n\
+This program will read settings from ~/.judgerc and ./judgerc. The format is :[Option]=[Value1]|[Value2]... Options below are supported:\n\
+  Options with one argument:\n\
     background, bg            Set the background when print WA,AC,etc. :black green red blue yellow cyan white purple\n\
     InvalidWordsNumber, iwn   Set the number of values in option 'InvalidWords'\n\
     InvalidWords, iw          Add [InvalidWordsNumber] strings to the list of forbidden words, seperated by spaces\n\
     InvalidHeadersNumber, ihn Set the number of values in option 'InvalidHeaders'\n\
     InvalidHeaders, ih        Add [InvalidHeadersNumber] strings to the list of forbidden headers, seperated by spaces\n\
+  With two arguments:\n\
+    SourceProblem, source, sp Configure problem [Value1] with the problem config file(which will be introduced later)[Value2]\n\
+  A example:\n\
+    ./judgerc：\n\
+      ih=fstream\n\
+      source=aplusb|config\n\
+    ./config:\n\
+      time=2.0\n\
+      memo=64000\n\
+      score=10\n\
+\n\
+Problem config file:\n\
+    Three options are supported, and the format is also: [Option]=[Value]\n\
+    time, t                   Set time limit\n\
+    memo, memory, m           Set memory limit\n\
+    score, s                  Max score for each test point\n\
+\n\
 CUI mode:\n\
     tab to switch(rejudge or view history), 'w''s' to choose, 'a''d' to turn page, enter to confirm, 'q' to quit\n\
 SPJ:\n\
-Put your spj program in the data directory of that problem, rename it as 'spj'\n\
+Put your spj program in the data directory of that problem, rename it as 'spj'(or you can put 'spj.cpp' in that directory, and it will be compiled automatically)\n\
 SPJ arguments：\n\
     - argv[1]: Standard input file\n\
     - argv[2]: Contestant output file\n\
