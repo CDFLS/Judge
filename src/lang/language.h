@@ -11,8 +11,8 @@ namespace Context {
     g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
     gcc -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
 \n\
-    -w [STRING]               禁止源文件中出现该字符串\n\
-    -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个字符串\n\
+    -w [STRING]               禁止源文件中出现该函数\n\
+    -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个函数\n\
     -s [STRING]               禁止源文件中出现该头文件\n\
     -s[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个头文件\n\
     -t [TIME]                 限定程序运行时间(未指定时为" + CTS::DoubleToString(JudgeSettings::Default_timelimit) + "s)\n\
@@ -26,9 +26,9 @@ namespace Context {
   一个参数：\n\
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple\n\
     InvalidWordsNumber, iwn   设置InvalidWords选项的值数量，默认为1\n\
-    InvalidWords, iw          将接下来的InvalidWordsNumber个字符串加入禁用单词列表，以空格分割\n\
+    InvalidWords, iw          将接下来的InvalidWordsNumber个函数加入禁用函数列表，以空格分割\n\
     InvalidHeadersNumber, ihn 设置InvalidHeaders选项的值数量，默认为1\n\
-    InvalidHeaders, ih        将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割\n\
+    InvalidHeaders, ih        将接下来的InvalidHeadersNumber个函数加入禁用函数列表，以空格分割\n\
   两个参数：\n\
     SourceProblem, source, sp 将问题[值1]按照配置文件(详见下一部分)[值2]进行配置\n\
   示例配置：\n\
@@ -65,7 +65,7 @@ SPJ参数：\n\
 	}
 	const char InvalidHeaderFound[]="非法的头文件";
 	const char SourceNotFound[]="找不到源代码。";
-	const char InvalidWordFound[]="非法的单词";
+	const char InvalidWordFound[]="非法的函数";
 	const char Score[]="得分";
 	const char Time[]="时间";
 	const char Memory[]="内存";

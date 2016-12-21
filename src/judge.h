@@ -23,7 +23,7 @@ namespace JudgeSettings {
 	static char Status_Short[]="AW-TMR";
 	static int Status_Backround=white;
 	static int Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
-	static vector<string> InvalidFunc={"system","rand"},InvalidHeaders={"windows.h","con","/dev/tty"};
+	static vector<string> InvalidFunc={"system","rand"},InvalidHeaders={"windows.h","con","/dev/tty","/dev/stdin","/proc/self/fd/0"};
 	static double Default_timelimit=1;
 	static int Default_memorylimit=128000;
 	static string PrintDevice;

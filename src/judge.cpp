@@ -23,13 +23,13 @@ bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和wor
 	for (int i=0;i<strlen(word);i++) {
 		if (s+i+pos>=strlen(str))
 			return false;
-		if (str[s+i+pos]==' ') {
-			pos++;
-			continue;
-		}
-		if ((s+i+pos+1<strlen(str))&&str[s+i+pos]=='#'&&str[s+i+pos+1]=='#') {
-			pos+=2;
-			continue;
+		int bakpos=pos-1;
+		while (pos!=bakpos) {
+			bakpos=pos;
+			while (str[s+i+pos]==' '&&word[i]!=' ')
+				pos++;
+			while ((s+i+pos+1<strlen(str))&&str[s+i+pos]=='#'&&str[s+i+pos+1]=='#')
+				pos+=2;
 		}
 		if (str[s+i+pos]!=word[i])
 			return false;
@@ -302,10 +302,6 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,in
 		return (JudgeResult){((score==MaxScore)?(AC):(WA)),memo,time,score,(vector<JudgeResult>){},extrainfo};
 	}
 	sprintf(str,"timeout 1s diff -b -B -Z .ejudge.tmp %s > /dev/null 2>/dev/null && rm .ejudge.tmp",stdOutput.c_str());//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
-#ifdef DEBUG
-	system(("cat "+stdOutput).c_str());
-	system("cat .ejudge.tmp");
-#endif
 	if (WEXITSTATUS(system(str))!=0)
 		return (JudgeResult){WA,memo,time,0};
 	else
@@ -323,7 +319,6 @@ bool Contestant::operator<(Contestant &x) {
 }
 
 bool Problem::SafetyCheck(string filename) {
-	int r=false;
 	JudgeSettings::use_freopen=0;
 	FILE *fp=fopen(filename.c_str(),"r");
 	if (fp==NULL) {
@@ -337,7 +332,7 @@ bool Problem::SafetyCheck(string filename) {
 		if (str[strlen(str)-1]=='\n')
 			str[strlen(str)-1]=0;
 		line++;
-		int include=0,First=1,define=0;
+		int include=0,First=1;
 		for (int i=0;i<strlen(str);i++)
 			if ((str[i]=='/')&&(str[i+1]=='/'))
 				break;
@@ -356,13 +351,32 @@ bool Problem::SafetyCheck(string filename) {
 				if (ifdef==1)
 					ifdef=2;
 			}
-			else if (cmp(str,i,(char *)"#define"))
-				define=1;
+			else if (cmp(str,i,(char *)"#define")&&FirstChar(str)=='#') {
+				int w=i,cnt=0;
+				for (;w<strlen(str);w++) {
+					if (str[w]==' ')
+						cnt++;
+					if (cnt==2)
+						break;
+				}
+				w++;
+				for (int k=0;k<JudgeSettings::InvalidFunc.size();k++)
+					if (cmp(str,w,(char *)JudgeSettings::InvalidFunc[k].c_str())) {
+						if (JudgeSettings::Terminal) {
+							ClearColor();
+							HighLight();
+						}
+						printf("%s:%d: ",filename.c_str(),line);
+						JudgeOutput::PrintError();
+						printf("%s:%s\n",Context::InvalidWordFound,JudgeSettings::InvalidFunc[k].c_str());
+						return true;
+					}
+			}
 			else if (flag||ifndef||(ifdef==2))
 				continue;
 			else if (cmp(str,i,(char *)"#include")&&FirstChar(str)=='#') {
 				if (HeadersCheck(str,line,filename))
-					r=true;
+					return true;
 				include=1;
 			}
 			else if (str[i]=='"'&&include&&First) {//不允许调用自定义头文件
@@ -374,13 +388,13 @@ bool Problem::SafetyCheck(string filename) {
 				JudgeOutput::PrintError();
 				printf("%s:%s\n",Context::InvalidHeaderFound,str);
 				First=0;
-				r=true;
+				return true;
 			}
 			else if (cmp(str,i,(char *)"freopen("))
 				JudgeSettings::use_freopen=1;
 			else
 				for (int k=0;k<JudgeSettings::InvalidFunc.size();k++)
-					if (cmp(str,i,(char *)(JudgeSettings::InvalidFunc[k]+(define?"":"(")).c_str())) {
+					if (cmp(str,i,(char *)(JudgeSettings::InvalidFunc[k]+"(").c_str())) {
 						if (JudgeSettings::Terminal) {
 							ClearColor();
 							HighLight();
@@ -388,11 +402,11 @@ bool Problem::SafetyCheck(string filename) {
 						printf("%s:%d: ",filename.c_str(),line);
 						JudgeOutput::PrintError();
 						printf("%s:%s\n",Context::InvalidWordFound,JudgeSettings::InvalidFunc[k].c_str());
-						r=true;
+						return true;
 					}
 	}
 	fclose(fp);
-	return r;
+	return false;
 }
 
 void Problem::InitProblem() {
@@ -412,7 +426,8 @@ void Problem::InitProblem() {
 	}
 	memorylimit=JudgeSettings::Default_memorylimit;
 	timelimit=JudgeSettings::Default_timelimit;
-	eachscore=100/point.size();
+	if (point.size())
+		eachscore=100/point.size();
 }
 
 JudgeResult Problem::JudgeProblem(Contestant &oier){
@@ -422,7 +437,6 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 	tot.memo=-1;
 	tot.time=-1;
 	putchar('\n');
-	//if (SafetyCheck(oier.name+name_to_print+".cpp")||(WEXITSTATUS(system(("g++ -static -lm -s "+oier.name+name_to_print+".cpp -DEJUDGE -o ./"+name_to_print+((JudgeSettings::Terminal==0)?(string)" 2>.ejudge.tmp":(string)"")).c_str())))) {
 	if (Compile(oier.name,name_to_print,JudgeSettings::Terminal)) {
 		if (!JudgeSettings::Terminal) {
 			fstream fin;
@@ -498,7 +512,8 @@ void Contest::InitContest() {
 		Default.name="./";
 		Default.name_to_print=GetName();
 		Default.InitProblem();
-		problem.push_back(Default);
+		if (Default.point.size())
+			problem.push_back(Default);
 	}
 	filelist=GetFile("./data","");
 	for (int i=0;i<filelist.size();i++) {
@@ -506,7 +521,8 @@ void Contest::InitContest() {
 		tmp.name="./data/"+filelist[i]+"/";
 		tmp.name_to_print=filelist[i];
 		tmp.InitProblem();
-		problem.push_back(tmp);
+		if (tmp.point.size())
+			problem.push_back(tmp);
 	}
 
 	if (JudgeSettings::PrinttoCSV==-1) {
@@ -515,11 +531,6 @@ void Contest::InitContest() {
 		else
 			JudgeSettings::PrinttoCSV=0;
 	}
-	
-	//for (int i=0;i<oier.size();i++)
-		//cout << oier[i].name_to_print+" "+oier[i].name << endl;
-	//for (int i=0;i<problem.size();i++)
-		//cout << problem[i].name_to_print+" "+problem[i].name << endl;
 }
 
 void Contest::JudgeContest() {
@@ -641,9 +652,7 @@ void JudgeOutput::OutputContest(Contest &test) {
 			printf("%11d",test.oier[i].problem[j].score);
 		puts("");
 	}
-#ifndef DEBUG
 	if (JudgeSettings::PrinttoCSV)
-#endif
 		ConverttoCSV(test,(string)"result.csv");
 }
 

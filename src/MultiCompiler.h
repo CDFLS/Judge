@@ -6,8 +6,8 @@
 using namespace std;
 static vector<string> SupportedFile={"cpp","c"};
 static vector<string> CompileCommand={
-	"g++ -static -lm -s -DEJUDGE %s -o %s",
-	"gcc -static -lm -s -DEJUDGE %s -o %s",
+	"timeout 2s g++ -static -lm -s -DEJUDGE %s -o %s",
+	"timeout 2s gcc -static -lm -s -DEJUDGE %s -o %s",
 };
 static int Compile(string pathto,string problem,int terminal) {
 	int dot;

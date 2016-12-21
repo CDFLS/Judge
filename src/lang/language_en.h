@@ -11,8 +11,8 @@ It will use these commands to compile:\n\
     g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
     gcc -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
 \n\
-    -w [STRING]               Forbidden words in sources\n\
-    -w[NUMBER] [STRING]...    [NUMBER] forbidden words in sources\n\
+    -w [STRING]               Forbidden functions in sources\n\
+    -w[NUMBER] [STRING]...    [NUMBER] forbidden functions in sources\n\
     -s [STRING]               Forbidden headers in sources\n\
     -s[NUMBER] [STRING]...    [NUMBER] forbidden headers in sources\n\
     -t [TIME]                 Limit time (" + CTS::DoubleToString(JudgeSettings::Default_timelimit) + "s by default)\n\
@@ -26,7 +26,7 @@ This program will read settings from ~/.judgerc and ./judgerc. The format is :[O
   Options with one argument:\n\
     background, bg            Set the background when print WA,AC,etc. :black green red blue yellow cyan white purple\n\
     InvalidWordsNumber, iwn   Set the number of values in option 'InvalidWords'\n\
-    InvalidWords, iw          Add [InvalidWordsNumber] strings to the list of forbidden words, seperated by spaces\n\
+    InvalidWords, iw          Add [InvalidWordsNumber] strings to the list of forbidden functions, seperated by spaces\n\
     InvalidHeadersNumber, ihn Set the number of values in option 'InvalidHeaders'\n\
     InvalidHeaders, ih        Add [InvalidHeadersNumber] strings to the list of forbidden headers, seperated by spaces\n\
   With two arguments:\n\
@@ -63,7 +63,7 @@ SPJ arguments：\n\
 	}
 	const char InvalidHeaderFound[]="Invalid header";
 	const char SourceNotFound[]="source not found.";
-	const char InvalidWordFound[]="Invalid word";
+	const char InvalidWordFound[]="Invalid function";
 	const char Score[]="Score";
 	const char Time[]="Time";
 	const char Memory[]="Memory";
