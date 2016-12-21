@@ -21,10 +21,14 @@ using namespace std;
 bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和word的第1个字符开始比较
 	int pos=0;
 	for (int i=0;i<strlen(word);i++) {
-		if (s+i+pos<=strlen(str))
+		if (s+i+pos>=strlen(str))
 			return false;
 		if (str[s+i+pos]==' ') {
 			pos++;
+			continue;
+		}
+		if ((s+i+pos+1<strlen(str))&&str[s+i+pos]=='#'&&str[s+i+pos+1]=='#') {
+			pos+=2;
 			continue;
 		}
 		if (str[s+i+pos]!=word[i])
@@ -135,20 +139,20 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 	if (!fin)
 		return ;
 	string l;
-	int InvalidWordsNumber=1,InvalidHeadersNumber=1;
+	int InvalidFuncNumber=1,InvalidHeadersNumber=1;
 	while (getline(fin,l,'=')) {
 		if (l=="background"||l=="bg") {
 			fin >> l;
 			JudgeSettings::Status_Backround=ConverttoInt(l);
 		}
-		else if (l=="InvalidWords"||l=="iw") {
-			for (int i=0;i<InvalidWordsNumber;i++) {
+		else if (l=="InvalidFunc"||l=="iw") {
+			for (int i=0;i<InvalidFuncNumber;i++) {
 				fin >> l;
-				JudgeSettings::InvalidWords.push_back(l);
+				JudgeSettings::InvalidFunc.push_back(l);
 			}
 		}
-		else if (l=="InvalidWordsNumber"||l=="iwn") {
-			fin >> InvalidWordsNumber;
+		else if (l=="InvalidFuncNumber"||l=="iwn") {
+			fin >> InvalidFuncNumber;
 		}
 		else if (l=="InvalidHeaders"||l=="ih") {
 			for (int i=0;i<InvalidHeadersNumber;i++) {
@@ -186,7 +190,7 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 					char str[256];
 					sprintf(str,"%s",v[i]),i++;
 					string tmp=str;
-					JudgeSettings::InvalidWords.push_back(tmp);
+					JudgeSettings::InvalidFunc.push_back(tmp);
 				}
 				i--;
 			}
@@ -333,7 +337,7 @@ bool Problem::SafetyCheck(string filename) {
 		if (str[strlen(str)-1]=='\n')
 			str[strlen(str)-1]=0;
 		line++;
-		int include=0,First=1;
+		int include=0,First=1,define=0;
 		for (int i=0;i<strlen(str);i++)
 			if ((str[i]=='/')&&(str[i+1]=='/'))
 				break;
@@ -352,6 +356,8 @@ bool Problem::SafetyCheck(string filename) {
 				if (ifdef==1)
 					ifdef=2;
 			}
+			else if (cmp(str,i,(char *)"#define"))
+				define=1;
 			else if (flag||ifndef||(ifdef==2))
 				continue;
 			else if (cmp(str,i,(char *)"#include")&&FirstChar(str)=='#') {
@@ -373,15 +379,15 @@ bool Problem::SafetyCheck(string filename) {
 			else if (cmp(str,i,(char *)"freopen("))
 				JudgeSettings::use_freopen=1;
 			else
-				for (int k=0;k<JudgeSettings::InvalidWords.size();k++)
-					if (cmp(str,i,(char *)JudgeSettings::InvalidWords[k].c_str())) {
+				for (int k=0;k<JudgeSettings::InvalidFunc.size();k++)
+					if (cmp(str,i,(char *)(JudgeSettings::InvalidFunc[k]+(define?"":"(")).c_str())) {
 						if (JudgeSettings::Terminal) {
 							ClearColor();
 							HighLight();
 						}
 						printf("%s:%d: ",filename.c_str(),line);
 						JudgeOutput::PrintError();
-						printf("%s:%s\n",Context::InvalidWordFound,JudgeSettings::InvalidWords[k].c_str());
+						printf("%s:%s\n",Context::InvalidWordFound,JudgeSettings::InvalidFunc[k].c_str());
 						r=true;
 					}
 	}

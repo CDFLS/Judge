@@ -5,6 +5,6 @@ int main() {
 	int a,b;
 	system("echo HELLO");
 	cin >> a >> b;
-	cout << a%b+a|b;
+	cout << (a%b+a|b);
 	return 0;
 }

@@ -5,6 +5,6 @@ int main() {
 	int a,b;
 	system("echo HAHA");
 	cin >> a >> b;
-	cout << a^b+!a;
+	cout << (a^b+!a);
 	return 0;
 }

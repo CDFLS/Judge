@@ -1,3 +1,4 @@
 ih=sys/resource.h
 source=AplusB|./config
 source=BplusA|./config
+background=black
