@@ -3,14 +3,17 @@
 #include "../judge.h"
 #include "../ConverttoString.h"
 #include <sstream>
+#include <iostream>
+using namespace std;
 namespace Context {
-	const string help=
+	static void PrintHelp() {
+		string help=
 "Usage:judge [Options]...\n\
 Judge OI contest. Compile sources in directory ./ and source/[Contestant name], and use the data in directory ./ and data/[Problem name] automatically to judge. Support stdin and freopen only.\n\
-It will use these commands to compile:\n\
-    g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
-    gcc -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
-\n\
+It will use these commands to compile:\n";
+		for (int i=0;i<CompileCommand.size();i++)
+			help+=CompileCommand[i]+"\n";
+		help+="\n\
     -w [STRING]               Forbidden functions in sources\n\
     -w[NUMBER] [STRING]...    [NUMBER] forbidden functions in sources\n\
     -s [STRING]               Forbidden headers in sources\n\
@@ -58,6 +61,8 @@ SPJ arguments：\n\
     - argv[5]: Score output file(must be created)with only one line, containing the score.\n\
     - argv[6]: Extra infomation(not necessary)\n\
 ";
+		cout << help;
+	}
     static void WrongArgument(char *str) {
 		printf("judge: Unknown argument '%s'\nMore info with 'judge -h'\n",str);
 	}

@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sys/types.h>
 #include <unistd.h>
+#include <dirent.h>
 
 using namespace std;
 static void HighLight() {//高亮显示
@@ -35,6 +36,18 @@ static vector<string> GetFile(string directory,string grep) {
 	}
 	ans.erase(ans.end()-1);
 	fin.close();
+	return ans;
+}
+
+static vector<string> GetDir(const char *path) {
+	vector<string> ans;
+	DIR *pDir;
+	struct dirent *ent;
+	pDir=opendir(path);
+	while ((ent=readdir(pDir))!=NULL)
+		if ((ent->d_type & DT_DIR)&&((string)ent->d_name!=".")&&((string)ent->d_name)!="..")
+			ans.push_back((string)ent->d_name);
+	closedir(pDir);
 	return ans;
 }
 

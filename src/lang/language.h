@@ -2,15 +2,19 @@
 #define LANG
 #include "../judge.h"
 #include "../ConverttoString.h"
+#include "../MultiCompiler.h"
 #include <sstream>
+#include <iostream>
+using namespace std;
 namespace Context {
-	const string help=
+	static void PrintHelp() {
+		string help=
 "用法：judge [选项]...\n\
 评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测，但仅允许freopen。\n\
-编译使用命令:\n\
-    g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
-    gcc -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE\n\
-\n\
+编译使用命令:\n";
+		for (int i=0;i<CompileCommand.size();i++)
+			help+=CompileCommand[i]+"\n";
+		help+="\n\
     -w [STRING]               禁止源文件中出现该函数\n\
     -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个函数\n\
     -s [STRING]               禁止源文件中出现该头文件\n\
@@ -60,6 +64,8 @@ SPJ参数：\n\
     - argv[5]: 分数输出文件(必须创建),仅一行,包含一个非负整数,表示得分.\n\
     - argv[6]: 额外信息文件(可以不创建)\n\
 ";
+		cout << help;
+	}
     static void WrongArgument(char *str) {
 		printf("judge: 未知的选项或不足的参数 '%s'\n请尝试 \"judge --help\"，以获得更多信息。\n",str);
 	}

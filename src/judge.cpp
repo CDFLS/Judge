@@ -232,7 +232,7 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 			else if (((string)v[i-1]==(string)"-c")||((string)v[i-1]==(string)"--cui"))
 				JudgeSettings::UseCUI=1;
 			else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
-				cout << Context::help ;
+				Context::PrintHelp();
 				return 1;
 			}
 			else{
@@ -516,7 +516,7 @@ void Contest::InitContest() {
 		user.name_to_print=GetUserName();
 		oier.push_back(user);
 	}
-	filelist=GetFile("./source","");
+	filelist=GetDir("./source");
 	for (int i=0;i<filelist.size();i++) {
 		Contestant tmp;
 		tmp.name="./source/"+filelist[i]+"/";
@@ -533,7 +533,7 @@ void Contest::InitContest() {
 		if (Default.point.size())
 			problem.push_back(Default);
 	}
-	filelist=GetFile("./data","");
+	filelist=GetDir("./data");
 	for (int i=0;i<filelist.size();i++) {
 		Problem tmp;
 		tmp.name="./data/"+filelist[i]+"/";
