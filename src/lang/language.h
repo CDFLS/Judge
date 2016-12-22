@@ -7,6 +7,7 @@
 #include <iostream>
 using namespace std;
 namespace Context {
+	static string CUIhelp="tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择,q退出";
 	static void PrintHelp() {
 		string help=
 "用法：judge [选项]...\n\
@@ -51,9 +52,7 @@ namespace Context {
     score, s                  单个测试点分数\n\
   示例同上。\n\
 \n\
-CUI模式：\n\
-    tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择,q退出\n\
-\n\
+CUI模式：\n"+CUIhelp+"\n\
 SPJ说明：\n\
 将SPJ编译，放在data对应题目目录下，命名为spj(或者将spj.cpp放在该目录下，将会被自动编译)\n\
 SPJ参数：\n\

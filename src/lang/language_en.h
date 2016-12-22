@@ -6,6 +6,7 @@
 #include <iostream>
 using namespace std;
 namespace Context {
+	static string CUIhelp="tab: switch modes|'w''s': move|'a''d': turn page|enter: confirm|'q': quit";
 	static void PrintHelp() {
 		string help=
 "Usage:judge [Options]...\n\
@@ -49,9 +50,7 @@ Problem config file:\n\
     memo, memory, m           Set memory limit\n\
     score, s                  Max score for each test point\n\
 \n\
-CUI mode:\n\
-    tab to switch(rejudge or view history), 'w''s' to choose, 'a''d' to turn page, enter to confirm, 'q' to quit\n\
-SPJ:\n\
+CUI mode:\n"+CUIhelp+"SPJ:\n\
 Put your spj program in the data directory of that problem, rename it as 'spj'(or you can put 'spj.cpp' in that directory, and it will be compiled automatically)\n\
 SPJ arguments：\n\
     - argv[1]: Standard input file\n\

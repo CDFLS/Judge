@@ -8,19 +8,10 @@
 #include <fstream>
 using namespace std;
 
-#define Hblack 0
-#define Hblue 4
-#define Hgreen 9
-#define Hcyan 2
-#define Hred 1
-#define Hpurple 5
-#define Hyellow 3
-#define Hwhite 7
-
 #define black 0
 #define blue 4
-#define green 6
-#define cyan 2
+#define green 2
+#define cyan 6
 #define red 1
 #define purple 5
 #define yellow 3

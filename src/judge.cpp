@@ -606,11 +606,11 @@ void JudgeOutput::PrintError() {
 
 void JudgeOutput::PrintResult(JudgeResult &x) {
 	if (JudgeSettings::Terminal) {
-		foreground(green);
+		foreground(cyan);
 		printf("%s:",Context::Time);
 		foreground(yellow);
 		printf("%5.2lfs",x.time);
-		foreground(green);
+		foreground(cyan);
 		printf(" %s:",Context::Memory);
 		foreground(yellow);
 		printf("%7dKB ",x.memo);

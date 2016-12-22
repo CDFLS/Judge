@@ -22,7 +22,7 @@ namespace JudgeSettings {
 	static char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error"};
 	static char Status_Short[]="AW-TMR";
 	static int Status_Backround=white;
-	static int Status_Color[]={green,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
+	static int Status_Color[]={cyan,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
 	static vector<string> InvalidFunc={"system","rand"},InvalidHeaders={"windows.h","con","/dev/tty","/dev/stdin","/proc/self/fd/0"};
 	static double Default_timelimit=1;
 	static int Default_memorylimit=128000;
@@ -88,5 +88,4 @@ namespace JudgeOutput {
 	void OutputContest(Contest &test);
 	void ConverttoCSV(Contest &test,string csv);
 };
-
 #endif

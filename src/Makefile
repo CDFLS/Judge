@@ -12,3 +12,4 @@ debug:
 	$(CPP) $(FLAG) -g -DDEBUG
 en:$(DEPENDENCIES)
 	$(CPP) $(FLAG) -O2 -DEN
+	sudo make install

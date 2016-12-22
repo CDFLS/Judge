@@ -27,20 +27,20 @@ class Bar_oier:public Bar {
 		}
 };
 
+static int W=71,L=23;
+
 class Page {
 	public:
 		vector<Bar_oier> p;
 		void print() {
-			for (int i=0;i<min((int)p.size(),24);i++)
+			for (int i=0;i<min((int)p.size(),L);i++)
 				p[i].show();
 		}
 		void print(int page) {
-			for (int i=page*24;i<min((int)p.size(),(page+1)*24);i++)
+			for (int i=page*L;i<min((int)p.size(),(page+1)*L);i++)
 				p[i].show();
 		}
 };
-
-static int W=71,L=24;
 
 int zh_CN_exlen(string str) {
 	int tmp=0;
@@ -64,15 +64,54 @@ string Ginfo(Contestant *x,int MAXL) {
 	return info;
 }
 
+#define TITLE 0
+#define MAINWINDOW 1
+#define MENU 2
+#define PAGES 2
+#define BLANKS 2
+#define BOTTOM 3
+#define PAIR(x) ColorScheme::c[x].fg,ColorScheme::c[x].bg
+
+struct ColorPair {
+	int fg,bg;
+};
+
+namespace ColorScheme {
+	static vector<ColorPair> c={
+		{white,blue},					//Title
+		{black,white},					//MAINWINDOW
+		{white,blue},					//MENU
+		{white,blue},					//BOTTOM
+	};
+};
+
 void Contest::Judge_CUI() {
+
+	//experimental, used for choose colorscheme
+	if (exist("judgecolor")) {
+		ifstream fin;
+		fin.open("judgecolor");
+		string l1,l2;
+		for (int i=0;i<ColorScheme::c.size();i++) {
+			fin >> l1 >> l2;
+			ColorScheme::c[i].fg=JudgeSettings::ConverttoInt(l1);
+			ColorScheme::c[i].bg=JudgeSettings::ConverttoInt(l2);
+		}
+		fin.close();
+	}
+
 	sort(oier.begin(),oier.end());
-	color(white,yellow);
+	color(white,blue);
 	system("clear");
 	HideCursor();
 	Page window;
-	vector<Bar> menu=(vector<Bar>){(Bar){Context::View,1,2,10,white,yellow,TEXT_MIDDLE},(Bar){Context::Rejudge,1,3,10,white,yellow,TEXT_MIDDLE}};
+	vector<Bar> menu=(vector<Bar>){(Bar){Context::View,1,2,10,PAIR(MENU),TEXT_MIDDLE},(Bar){Context::Rejudge,1,3,10,PAIR(MENU),TEXT_MIDDLE}};
 	vector<Bar> ShowPage;
-	Bar Title(" Total",1,1,80,white,yellow,TEXT_LEFT);
+	vector<Bar> Blanks;
+	Blanks.push_back((Bar){Context::CUIhelp,1,L+1,W+9,PAIR(BOTTOM),TEXT_MIDDLE});
+	for (int i=menu.size()+2;i<=L;i++)
+		Blanks.push_back((Bar){"",1,i,10,PAIR(BLANKS),TEXT_LEFT});
+	Bar Title(" Total",1,1,80,PAIR(TITLE),TEXT_LEFT);
 	for (int i=0;i<problem.size();i++) {
 		char str[256];
 		sprintf(str," %5s",problem[i].name_to_print.c_str());
@@ -88,16 +127,20 @@ void Contest::Judge_CUI() {
 		Title.text=" "+Title.text;
 	Title.text="Judge"+Title.text;
 	for (int i=0;i<oier.size();i++)
-		window.p.push_back((Bar_oier){Ginfo(&oier[i],MAXL),11,i%L+2,W-10,blue,white,TEXT_LEFT,&oier[i]});
-	int tmp=(window.p.size()/24+1-((window.p.size()%24==0)?1:0));
+		window.p.push_back((Bar_oier){Ginfo(&oier[i],MAXL),11,i%L+2,W-10,PAIR(MAINWINDOW),TEXT_LEFT,&oier[i]});
+	int tmp=(window.p.size()/L+1-((window.p.size()%L==0)?1:0));
 	for (int i=0;i<tmp;i++)
-		ShowPage.push_back((Bar){CTS::IntToString(i+1),W+1,i+2,9,blue,white,TEXT_MIDDLE});
+		ShowPage.push_back((Bar){CTS::IntToString(i+1),W+1,i+2,9,PAIR(PAGES),TEXT_MIDDLE});
+	for (int i=ShowPage.size()+2;i<=L;i++)
+		Blanks.push_back((Bar){"",W+1,i,9,PAIR(BLANKS),TEXT_LEFT});
 	int page=0,s=0,tab=0;
 	menu[tab].rever();
 	window.print(page);
 	window.p[s].rever();
 	for (int i=0;i<ShowPage.size();i++)
 		ShowPage[i].show();
+	for (int i=0;i<Blanks.size();i++)
+		Blanks[i].show();
 	ShowPage[0].rever();
 	Title.show();
 	char ch;
@@ -112,7 +155,7 @@ void Contest::Judge_CUI() {
 		if (ch=='d'||ch=='C')
 			page++,pageturned=1;
 		if ((ch=='\n'||ch=='\r')&&(tab==1)) {
-			Contestant *P=window.p[s+page*24].p;
+			Contestant *P=window.p[s+page*L].p;
 			system("clear");
 			for (int i=0;i<problem.size();i++) {
 				cout << Context::Contestant+" " << ':' << P->name_to_print << " "+Context::Problem+" " << i+1 << ':' << problem[i].name_to_print << " [" << i+1 << '/' << problem.size() << ']' << endl;
@@ -135,12 +178,14 @@ void Contest::Judge_CUI() {
 			menu[tab].rever();
 			for (int i=0;i<ShowPage.size();i++)
 				ShowPage[i].show();
+			for (int i=0;i<Blanks.size();i++)
+				Blanks[i].show();
 			ShowPage[page].rever();
 			Title.show();
 		}
 		if ((ch=='\n'||ch=='\r')&&(tab==0)) {
 			system("clear");
-			Contestant *P=window.p[s+page*24].p;
+			Contestant *P=window.p[s+page*L].p;
 			for (int i=0;i<problem.size();i++) {
 				cout << Context::Contestant+" " << ':' << P->name_to_print << " "+Context::Problem+" " << i+1 << ':' << problem[i].name_to_print << " [" << i+1 << '/' << problem.size() << ']' << endl;
 				int maxlength=0;
@@ -173,6 +218,8 @@ void Contest::Judge_CUI() {
 			menu[tab].rever();
 			for (int i=0;i<ShowPage.size();i++)
 				ShowPage[i].show();
+			for (int i=0;i<Blanks.size();i++)
+				Blanks[i].show();
 			ShowPage[page].rever();
 			Title.show();
 		}
@@ -184,13 +231,15 @@ void Contest::Judge_CUI() {
 			menu[tab].rever();
 		}
 		if (pageturned) {
-			int tmp=window.p.size()/24+1-((window.p.size()%24==0)?1:0);
+			int tmp=window.p.size()/L+1-((window.p.size()%L==0)?1:0);
 			page=(page+tmp)%tmp;
 			system("clear");
 			for (int i=0;i<menu.size();i++)
 				menu[i].show();
 			for (int i=0;i<ShowPage.size();i++)
 				ShowPage[i].show();
+			for (int i=0;i<Blanks.size();i++)
+				Blanks[i].show();
 			ShowPage[page].rever();
 			menu[tab].rever();
 			window.print(page);
@@ -199,10 +248,10 @@ void Contest::Judge_CUI() {
 			refresh_list=1;
 		}
 		if (refresh_list) {
-			window.p[last+page*24].show();
-			int tmp=min((int)window.p.size()-page*24,24);
+			window.p[last+page*L].show();
+			int tmp=min((int)window.p.size()-page*L,L);
 			s=(s+tmp)%tmp;
-			window.p[s+page*24].rever();
+			window.p[s+page*L].rever();
 		}
 	}
 	UnHideCursor();
