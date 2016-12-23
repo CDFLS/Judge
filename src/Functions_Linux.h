@@ -44,11 +44,22 @@ static vector<string> GetDir(const char *path) {
 	DIR *pDir;
 	struct dirent *ent;
 	pDir=opendir(path);
+	if (pDir==NULL)
+		return (vector<string>){};
 	while ((ent=readdir(pDir))!=NULL)
 		if ((ent->d_type & DT_DIR)&&((string)ent->d_name!=".")&&((string)ent->d_name)!="..")
 			ans.push_back((string)ent->d_name);
 	closedir(pDir);
 	return ans;
+}
+
+static bool existdir(const char *path) {
+	DIR *pDir;
+	pDir=opendir(path);
+	if (pDir==NULL)
+		return false;
+	closedir(pDir);
+	return true;
 }
 
 static string GetName() {//获取当前目录名

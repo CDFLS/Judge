@@ -11,6 +11,7 @@ namespace Context {
 		string help=
 "Usage:judge [Options]...\n\
 Judge OI contest. Compile sources in directory ./ and source/[Contestant name], and use the data in directory ./ and data/[Problem name] automatically to judge. Support stdin and freopen only.\n\
+When you run judge as root, it will automatically use chroot to run programs, like a simple sandbox.\n\
 It will use these commands to compile:\n";
 		for (int i=0;i<CompileCommand.size();i++)
 			help+=CompileCommand[i]+"\n";
@@ -66,8 +67,9 @@ SPJ arguments：\n\
 		printf("judge: Unknown argument '%s'\nMore info with 'judge -h'\n",str);
 	}
 	const char InvalidHeaderFound[]="Invalid header";
-	const char SourceNotFound[]="source not found.";
+	const char SourceNotFound[]="Source not found.";
 	const char InvalidWordFound[]="Invalid function";
+	const char InvalidConstFound[]="Invalid const";
 	const char Score[]="Score";
 	const char Time[]="Time";
 	const char Memory[]="Memory";

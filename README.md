@@ -20,7 +20,7 @@
 - [x] CUI
 - [x] 调用外部SPJ
 - [ ] 更多的配置项(编译器，单个问题时间内存限制修改……)
-- [ ] Sandbox
+- [x] Sandbox
 
 #Help
 可查看judge --help或查看example目录。
@@ -28,11 +28,12 @@
 用法：judge [选项]...
 评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测，但仅允许freopen。
 编译使用命令:
-    g++ -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE
-    gcc -static -lm -s [FILENAME].cpp -o [FILENAME] -DEJUDGE
+timeout 3s g++ -static -std=c++11 -s -Wall -O2 -lm -DEJUDGE %s -o Exec/%s
+timeout 3s gcc -static -std=c99 -fno-asm -s -Wall -O2 -lm -DEJUDGE %s -o Exec/%s
+timeout 3s fpc -Xs -Sgic -O2 -dEJUDGE %s -o %s
 
-    -w [STRING]               禁止源文件中出现该字符串
-    -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个字符串
+    -w [STRING]               禁止源文件中出现该函数
+    -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个函数
     -s [STRING]               禁止源文件中出现该头文件
     -s[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个头文件
     -t [TIME]                 限定程序运行时间(未指定时为1s)
@@ -46,9 +47,9 @@
   一个参数：
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple
     InvalidWordsNumber, iwn   设置InvalidWords选项的值数量，默认为1
-    InvalidWords, iw          将接下来的InvalidWordsNumber个字符串加入禁用单词列表，以空格分割
+    InvalidWords, iw          将接下来的InvalidWordsNumber个函数加入禁用函数列表，以空格分割
     InvalidHeadersNumber, ihn 设置InvalidHeaders选项的值数量，默认为1
-    InvalidHeaders, ih        将接下来的InvalidHeadersNumber个字符串加入禁用单词列表，以空格分割
+    InvalidHeaders, ih        将接下来的InvalidHeadersNumber个函数加入禁用函数列表，以空格分割
   两个参数：
     SourceProblem, source, sp 将问题[值1]按照配置文件(详见下一部分)[值2]进行配置
   示例配置：
@@ -68,8 +69,7 @@
   示例同上。
 
 CUI模式：
-    tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择,q退出
-
+tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择,q退出
 SPJ说明：
 将SPJ编译，放在data对应题目目录下，命名为spj(或者将spj.cpp放在该目录下，将会被自动编译)
 SPJ参数：

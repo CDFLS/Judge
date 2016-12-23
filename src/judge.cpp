@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <string>
@@ -85,8 +84,6 @@ int JudgeSettings::ConverttoInt(string colorname) {
 }
 
 bool HeadersCheck(string str,int line,string filename) {//检查一行include是否包含非法头文件
-	//for (int i=0;i<JudgeSettings::InvalidHeaders.size();i++)
-		//cout << JudgeSettings::InvalidHeaders[i] << endl;
 	char head[256],l=0;
 	int flag=0;
 	for (int i=0;i<str.length();i++) {
@@ -244,21 +241,31 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 }
 
 JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,int MaxScore,string &Directory) {
-	int s=AC,memo,RuntimeReturn;
+	int s=AC,memo,RunAsRoot=WEXITSTATUS(system("if [[ $EUID -eq 0 ]]; then exit 1;fi"));
 	double time;
 	char str[1024];
 	if (JudgeSettings::use_freopen) {
-		sprintf(str,"cp %s %s.in",stdInput.c_str(),bin.c_str());
+		if (RunAsRoot) {
+			system(("cp "+stdInput+" Exec/"+bin+".in").c_str());
+			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs chroot Exec %s / 2>.ejudge.run",timelimit,bin.c_str());
+		} else {
+			system(("cp "+stdInput+" "+bin+".in").c_str());
+			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./Exec/%s 2>.ejudge.run",timelimit,bin.c_str());
+		}
 		system(str);
-		sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./%s 2>.ejudge.run",timelimit,bin.c_str());
-		RuntimeReturn=system(str);
-		sprintf(str,"mv %s.out .ejudge.tmp 2>/dev/null",bin.c_str());
-		system(str);
-		sprintf(str,"rm %s.in",bin.c_str());
-		system(str);
+		if (RunAsRoot) {
+			system(("rm Exec/"+bin+".in").c_str());
+			system(("mv Exec/"+bin+".out ./.ejudge.tmp 2>/dev/null").c_str());
+		} else {
+			system(("rm "+bin+".in").c_str());
+			system(("mv "+bin+".out .ejudge.tmp 2>/dev/null").c_str());
+		}
 	} else {
-		sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs %s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,bin.c_str(),stdInput.c_str());//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
-		RuntimeReturn=system(str);
+		if (WEXITSTATUS(system("if [[ $EUID -eq 0 ]]; then exit 1;fi")))
+			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs chroot Exec %s / < %s > .ejudge.tmp 2>.ejudge.run",timelimit,bin.c_str(),stdInput.c_str());
+		else
+			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./Exec/%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,bin.c_str(),stdInput.c_str());//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
+		system(str);
 	}
 	FILE *fp=fopen(".ejudge.run","r");
 	char ch;
@@ -271,7 +278,7 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,in
 //	  Command terminated by signal 11
 //	  Time:0.02s Memory:1924KB
 //或者：
-//    Command exited with non-zero status 233
+//    Command exited with non-zero status 1
 //    Time:0.00s Memory:1988KB
 //故有如下解析代码：
 	fscanf(fp,"%c",&ch);
@@ -346,6 +353,8 @@ bool Problem::SafetyCheck(string filename) {
 		puts(Context::SourceNotFound);
 		return true;
 	}
+	if (!((filename.length()>=3&&cmp(filename.c_str(),filename.length()-3,(char *)"cpp")||(filename.length()>=1&&filename[filename.length()-1]=='c'))))
+		return false;
 	string str;
 	int line=0,ifndef=0,flag=0,ifdef=0;//忽略在注释和#ifndef EJUDGE和#ifdef EJUDGE #else中的单词
 	while (getline(fin,str,'\n')) {
@@ -410,7 +419,7 @@ bool Problem::SafetyCheck(string filename) {
 			}
 			else if (cmp(str,i,(char *)"freopen("))
 				JudgeSettings::use_freopen=1;
-			else
+			else {
 				for (int k=0;k<JudgeSettings::InvalidFunc.size();k++)
 					if (cmp(str,i,(char *)(JudgeSettings::InvalidFunc[k]+"(").c_str())) {
 						if (JudgeSettings::Terminal) {
@@ -422,6 +431,18 @@ bool Problem::SafetyCheck(string filename) {
 						printf("%s:%s\n",Context::InvalidWordFound,JudgeSettings::InvalidFunc[k].c_str());
 						return true;
 					}
+				for (int k=0;k<JudgeSettings::InvalidConst.size();k++)
+					if (cmp(str,i,(char *)(JudgeSettings::InvalidConst[k]).c_str())) {
+						if (JudgeSettings::Terminal) {
+							ClearColor();
+							HighLight();
+							printf("%s:%d: ",filename.c_str(),line);
+							JudgeOutput::PrintError();
+							printf("%s:%s\n",Context::InvalidConstFound,JudgeSettings::InvalidConst[k].c_str());
+							return true;
+						}
+					}
+			}
 	}
 	fin.close();
 	return false;
@@ -439,7 +460,6 @@ void Problem::InitProblem() {
 		tmp.stdOutput=name+filelist[i].replace(filelist[i].length()-3,3,".out");
 		if (!exist(tmp.stdOutput))
 			continue;
-		//cout << tmp.stdInput+" "+tmp.stdOutput << endl;
 		point.push_back(tmp);
 	}
 	memorylimit=JudgeSettings::Default_memorylimit;
@@ -464,7 +484,6 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 				cout << line << endl;
 			fin.close();
 		}
-		//JudgeOutput::PrintStatus(CE);
 		vector<JudgeResult> sub;
 		for (int i=0;i<point.size();i++)
 			sub.push_back((JudgeResult){CE,0,0,0});
@@ -486,7 +505,7 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 		tot.memo=max(tot.memo,tmpresult.memo);
 		tot.time=max(tot.time,tmpresult.time);
 	}
-	system(("rm ./"+name_to_print).c_str());
+	system(("rm ./Exec/"+name_to_print).c_str());
 	return tot;
 }
 
@@ -582,7 +601,6 @@ void Contest::JudgeContest() {
 }
 
 void JudgeOutput::PrintStatus(int st) {
-	//color(Status_Color[st],black);
 	if (JudgeSettings::Terminal) {	
 		color(JudgeSettings::Status_Color[st],JudgeSettings::Status_Backround);
 		HighLight();
