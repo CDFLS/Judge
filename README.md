@@ -8,6 +8,7 @@
 ![demo1](https://github.com/Heptagon196/Judge/blob/pic/demo1.png)
 ![demo2](https://github.com/Heptagon196/Judge/blob/pic/demo2.png)
 ![demo3](https://github.com/Heptagon196/Judge/blob/pic/demo3.png)
+![demo5](https://github.com/Heptagon196/Judge/blob/pic/demo5.png)
 ![demo4](https://github.com/Heptagon196/Judge/blob/pic/demo4.png)
 ![cui](https://github.com/Heptagon196/Judge/blob/pic/cui.png)
 
@@ -30,7 +31,7 @@
 编译使用命令:
 timeout 3s g++ -static -std=c++11 -s -Wall -O2 -lm -DEJUDGE %s -o Exec/%s
 timeout 3s gcc -static -std=c99 -fno-asm -s -Wall -O2 -lm -DEJUDGE %s -o Exec/%s
-timeout 3s fpc -Xs -Sgic -O2 -dEJUDGE %s -o %s
+timeout 3s fpc -Xs -Sgic -O2 -dEJUDGE %s -o%s
 
     -w [STRING]               禁止源文件中出现该函数
     -w[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个函数

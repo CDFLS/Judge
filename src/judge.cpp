@@ -635,13 +635,13 @@ void JudgeOutput::PrintResult(JudgeResult &x) {
 		PrintStatus(x.st);
 		ClearColor();
 		cout << ' ' << x.ExtraInfo << endl;
+		ClearColor();
 	}
 	else {
-		printf("%s:%5.2lfs %s:%7dKB",Context::Time,x.time,Context::Memory,x.memo);
+		printf("%s:%5.2lfs %s:%7dKB ",Context::Time,x.time,Context::Memory,x.memo);
 		PrintStatus(x.st);
 		cout << ' ' << x.ExtraInfo << endl;
 	}
-	ClearColor();
 }
 
 void JudgeOutput::Print_zh_CN(string str,int len) {//修复输出问题

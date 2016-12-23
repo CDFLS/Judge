@@ -1,0 +1,358 @@
+选手 1:Mogician 题目 1:AplusB [1/24]
+
+   ./data/AplusB/0.in 时间: 0.00s 内存:   2016KB Wrong Answer 
+   ./data/AplusB/1.in 时间: 0.00s 内存:   2012KB Wrong Answer 
+   ./data/AplusB/2.in 时间: 0.00s 内存:   1836KB Wrong Answer 
+   ./data/AplusB/3.in 时间: 0.00s 内存:   1972KB Wrong Answer 
+   ./data/AplusB/4.in 时间: 0.00s 内存:   1840KB Wrong Answer 
+   ./data/AplusB/5.in 时间: 0.00s 内存:   1832KB Wrong Answer 
+   ./data/AplusB/6.in 时间: 0.00s 内存:   2024KB Wrong Answer 
+   ./data/AplusB/7.in 时间: 0.00s 内存:   1872KB Wrong Answer 
+   ./data/AplusB/8.in 时间: 0.00s 内存:   1968KB Wrong Answer 
+   ./data/AplusB/9.in 时间: 0.00s 内存:   1872KB Wrong Answer 
+
+Mogician 时间: 0.00s 内存:   2024KB Wrong Answer 
+得分:0
+
+选手 1:Mogician 题目 2:SPJtest [2/24]
+
+   ./data/SPJtest/1.in 时间: 0.00s 内存:   1744KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/2.in 时间: 0.00s 内存:   1836KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/3.in 时间: 0.00s 内存:   1972KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/4.in 时间: 0.00s 内存:   1972KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/5.in 时间: 0.00s 内存:   1832KB Wrong Answer WAWAWAWA!
+
+Mogician 时间: 0.00s 内存:   1972KB Wrong Answer 
+得分:0
+
+选手 1:Mogician 题目 3:BplusA [3/24]
+
+   ./data/BplusA/0.in 时间: 0.00s 内存:   1968KB Wrong Answer 
+   ./data/BplusA/1.in 时间: 0.00s 内存:   1840KB Wrong Answer 
+   ./data/BplusA/2.in 时间: 0.00s 内存:   1836KB Wrong Answer 
+   ./data/BplusA/3.in 时间: 0.00s 内存:   2024KB Wrong Answer 
+   ./data/BplusA/4.in 时间: 0.00s 内存:   1836KB Wrong Answer 
+   ./data/BplusA/5.in 时间: 0.00s 内存:   1840KB Wrong Answer 
+   ./data/BplusA/6.in 时间: 0.00s 内存:   2008KB Wrong Answer 
+   ./data/BplusA/7.in 时间: 0.00s 内存:   1836KB Wrong Answer 
+   ./data/BplusA/8.in 时间: 0.00s 内存:   1872KB Wrong Answer 
+   ./data/BplusA/9.in 时间: 0.00s 内存:   1876KB Wrong Answer 
+
+Mogician 时间: 0.00s 内存:   2024KB Wrong Answer 
+得分:0
+
+选手 2:ACer 题目 1:AplusB [4/24]
+
+   ./data/AplusB/0.in 时间: 0.00s 内存:   2028KB Accepted 
+   ./data/AplusB/1.in 时间: 0.00s 内存:   1832KB Accepted 
+   ./data/AplusB/2.in 时间: 0.00s 内存:   1872KB Accepted 
+   ./data/AplusB/3.in 时间: 0.00s 内存:   1944KB Accepted 
+   ./data/AplusB/4.in 时间: 0.00s 内存:   1832KB Accepted 
+   ./data/AplusB/5.in 时间: 0.00s 内存:   1772KB Accepted 
+   ./data/AplusB/6.in 时间: 0.00s 内存:   1768KB Accepted 
+   ./data/AplusB/7.in 时间: 0.00s 内存:   1972KB Accepted 
+   ./data/AplusB/8.in 时间: 0.00s 内存:   2020KB Accepted 
+   ./data/AplusB/9.in 时间: 0.00s 内存:   2028KB Accepted 
+
+ACer 时间: 0.00s 内存:   2028KB Accepted 
+得分:100
+
+选手 2:ACer 题目 2:SPJtest [5/24]
+
+   ./data/SPJtest/1.in 时间: 0.00s 内存:   1836KB Accepted 又强又劲！
+   ./data/SPJtest/2.in 时间: 0.00s 内存:   1948KB Accepted 又强又劲！
+   ./data/SPJtest/3.in 时间: 0.00s 内存:   1836KB Accepted 又强又劲！
+   ./data/SPJtest/4.in 时间: 0.00s 内存:   2024KB Accepted 又强又劲！
+   ./data/SPJtest/5.in 时间: 0.00s 内存:   1836KB Accepted 又强又劲！
+
+ACer 时间: 0.00s 内存:   2024KB Accepted 
+得分:100
+
+选手 2:ACer 题目 3:BplusA [6/24]
+
+   ./data/BplusA/0.in 时间: 0.00s 内存:   1872KB Accepted 
+   ./data/BplusA/1.in 时间: 0.00s 内存:   1840KB Accepted 
+   ./data/BplusA/2.in 时间: 0.00s 内存:   1944KB Accepted 
+   ./data/BplusA/3.in 时间: 0.00s 内存:   1740KB Accepted 
+   ./data/BplusA/4.in 时间: 0.00s 内存:   1872KB Accepted 
+   ./data/BplusA/5.in 时间: 0.00s 内存:   2008KB Accepted 
+   ./data/BplusA/6.in 时间: 0.00s 内存:   2028KB Accepted 
+   ./data/BplusA/7.in 时间: 0.00s 内存:   1772KB Accepted 
+   ./data/BplusA/8.in 时间: 0.00s 内存:   1948KB Accepted 
+   ./data/BplusA/9.in 时间: 0.00s 内存:   1836KB Accepted 
+
+ACer 时间: 0.00s 内存:   2028KB Accepted 
+得分:100
+
+选手 3:Pascal 题目 1:AplusB [7/24]
+Free Pascal Compiler version 3.0.0 [2015/11/26] for i386
+Copyright (c) 1993-2015 by Florian Klaempfl and others
+Target OS: Linux for i386
+Compiling ./source/Pascal/AplusB.pas
+Linking Exec/./AplusB
+5 lines compiled, 0.1 sec
+
+   ./data/AplusB/0.in 时间: 0.00s 内存:   1744KB Accepted 
+   ./data/AplusB/1.in 时间: 0.00s 内存:   2024KB Accepted 
+   ./data/AplusB/2.in 时间: 0.00s 内存:   1768KB Accepted 
+   ./data/AplusB/3.in 时间: 0.00s 内存:   1876KB Accepted 
+   ./data/AplusB/4.in 时间: 0.00s 内存:   1840KB Accepted 
+   ./data/AplusB/5.in 时间: 0.00s 内存:   1876KB Accepted 
+   ./data/AplusB/6.in 时间: 0.00s 内存:   2008KB Accepted 
+   ./data/AplusB/7.in 时间: 0.00s 内存:   2028KB Accepted 
+   ./data/AplusB/8.in 时间: 0.00s 内存:   1840KB Accepted 
+   ./data/AplusB/9.in 时间: 0.00s 内存:   1876KB Accepted 
+
+Pascal 时间: 0.00s 内存:   2028KB Accepted 
+得分:100
+
+选手 3:Pascal 题目 2:SPJtest [8/24]
+Free Pascal Compiler version 3.0.0 [2015/11/26] for i386
+Copyright (c) 1993-2015 by Florian Klaempfl and others
+Target OS: Linux for i386
+Compiling ./source/Pascal/SPJtest.pas
+Linking Exec/./SPJtest
+5 lines compiled, 0.1 sec
+
+   ./data/SPJtest/1.in 时间: 0.00s 内存:   1948KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/2.in 时间: 0.00s 内存:   2008KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/3.in 时间: 0.00s 内存:   2024KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/4.in 时间: 0.00s 内存:   2008KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/5.in 时间: 0.00s 内存:   1836KB Wrong Answer WAWAWAWA!
+
+Pascal 时间: 0.00s 内存:   2024KB Wrong Answer 
+得分:0
+
+选手 3:Pascal 题目 3:BplusA [9/24]
+Free Pascal Compiler version 3.0.0 [2015/11/26] for i386
+Copyright (c) 1993-2015 by Florian Klaempfl and others
+Target OS: Linux for i386
+Compiling ./source/Pascal/BplusA.pas
+Linking Exec/./BplusA
+5 lines compiled, 0.1 sec
+
+   ./data/BplusA/0.in 时间: 0.00s 内存:   1836KB Accepted 
+   ./data/BplusA/1.in 时间: 0.00s 内存:   1836KB Accepted 
+   ./data/BplusA/2.in 时间: 0.00s 内存:   1772KB Accepted 
+   ./data/BplusA/3.in 时间: 0.00s 内存:   1944KB Accepted 
+   ./data/BplusA/4.in 时间: 0.00s 内存:   2024KB Accepted 
+   ./data/BplusA/5.in 时间: 0.00s 内存:   1968KB Accepted 
+   ./data/BplusA/6.in 时间: 0.00s 内存:   2028KB Accepted 
+   ./data/BplusA/7.in 时间: 0.00s 内存:   1744KB Accepted 
+   ./data/BplusA/8.in 时间: 0.00s 内存:   1968KB Accepted 
+   ./data/BplusA/9.in 时间: 0.00s 内存:   1840KB Accepted 
+
+Pascal 时间: 0.00s 内存:   2028KB Accepted 
+得分:100
+
+选手 4:LGer 题目 1:AplusB [10/24]
+
+   ./data/AplusB/0.in 时间:-0.00s 内存:-1219459296KB Wrong Answer 
+   ./data/AplusB/1.in 时间:-0.00s 内存:-1219076800KB Wrong Answer 
+   ./data/AplusB/2.in 时间:-0.00s 内存:-1219076800KB Wrong Answer 
+   ./data/AplusB/3.in 时间:-0.00s 内存:-1219076800KB Wrong Answer 
+   ./data/AplusB/4.in 时间:-0.00s 内存:-1219076800KB Wrong Answer 
+   ./data/AplusB/5.in 时间:-0.00s 内存:-1219076800KB Wrong Answer 
+   ./data/AplusB/6.in 时间:-0.00s 内存:-1219076800KB Wrong Answer 
+   ./data/AplusB/7.in 时间:-0.00s 内存:-1219076800KB Wrong Answer 
+   ./data/AplusB/8.in 时间:-0.00s 内存:-1219076800KB Wrong Answer 
+   ./data/AplusB/9.in 时间:-0.00s 内存:-1219076800KB Wrong Answer 
+
+LGer 时间:-0.00s 内存:     -1KB Wrong Answer 
+得分:0
+
+选手 4:LGer 题目 2:SPJtest [11/24]
+
+   ./data/SPJtest/1.in 时间: 0.00s 内存:   2028KB Accepted 又强又劲！
+   ./data/SPJtest/2.in 时间: 0.00s 内存:   1832KB Accepted 又强又劲！
+   ./data/SPJtest/3.in 时间: 0.00s 内存:   1836KB Accepted 又强又劲！
+   ./data/SPJtest/4.in 时间: 0.00s 内存:   2028KB Accepted 又强又劲！
+   ./data/SPJtest/5.in 时间: 0.00s 内存:   2012KB Accepted 又强又劲！
+
+LGer 时间: 0.00s 内存:   2028KB Accepted 
+得分:100
+
+选手 4:LGer 题目 3:BplusA [12/24]
+
+./source/LGer/BplusA.cpp:6: 错误：非法的函数:system
+
+LGer 时间: 0.00s 内存:      0KB Compile Error 
+得分:0
+
+选手 5:Mengbier 题目 1:AplusB [13/24]
+
+   ./data/AplusB/0.in 时间: 0.00s 内存:   1836KB Accepted 
+   ./data/AplusB/1.in 时间: 0.00s 内存:   1948KB Accepted 
+   ./data/AplusB/2.in 时间: 0.00s 内存:   1972KB Accepted 
+   ./data/AplusB/3.in 时间: 0.00s 内存:   1768KB Accepted 
+   ./data/AplusB/4.in 时间: 0.00s 内存:   1872KB Wrong Answer 
+   ./data/AplusB/5.in 时间: 0.00s 内存:   2024KB Accepted 
+   ./data/AplusB/6.in 时间: 0.00s 内存:   2028KB Wrong Answer 
+   ./data/AplusB/7.in 时间: 0.00s 内存:   1832KB Accepted 
+   ./data/AplusB/8.in 时间: 0.00s 内存:   2016KB Wrong Answer 
+   ./data/AplusB/9.in 时间: 0.00s 内存:   2008KB Accepted 
+
+Mengbier 时间: 0.00s 内存:   2028KB Wrong Answer 
+得分:70
+
+选手 5:Mengbier 题目 2:SPJtest [14/24]
+
+   ./data/SPJtest/1.in 时间: 0.00s 内存:   2028KB Accepted 又强又劲！
+   ./data/SPJtest/2.in 时间: 0.00s 内存:   1836KB Accepted 又强又劲！
+   ./data/SPJtest/3.in 时间: 0.00s 内存:   1836KB Accepted 又强又劲！
+   ./data/SPJtest/4.in 时间: 0.00s 内存:   1832KB Accepted 又强又劲！
+   ./data/SPJtest/5.in 时间: 0.00s 内存:   2028KB Accepted 又强又劲！
+
+Mengbier 时间: 0.00s 内存:   2028KB Accepted 
+得分:100
+
+选手 5:Mengbier 题目 3:BplusA [15/24]
+
+   ./data/BplusA/0.in 时间: 0.00s 内存:   1968KB Wrong Answer 
+   ./data/BplusA/1.in 时间: 0.00s 内存:   1948KB Wrong Answer 
+   ./data/BplusA/2.in 时间: 0.00s 内存:   1832KB Accepted 
+   ./data/BplusA/3.in 时间: 0.00s 内存:   1832KB Accepted 
+   ./data/BplusA/4.in 时间: 0.00s 内存:   1972KB Wrong Answer 
+   ./data/BplusA/5.in 时间: 0.00s 内存:   1832KB Wrong Answer 
+   ./data/BplusA/6.in 时间: 0.00s 内存:   1972KB Wrong Answer 
+   ./data/BplusA/7.in 时间: 0.00s 内存:   1840KB Accepted 
+   ./data/BplusA/8.in 时间: 0.00s 内存:   1972KB Accepted 
+   ./data/BplusA/9.in 时间: 0.00s 内存:   1772KB Accepted 
+
+Mengbier 时间: 0.00s 内存:   1972KB Wrong Answer 
+得分:50
+
+选手 6:REer 题目 1:AplusB [16/24]
+
+   ./data/AplusB/0.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/AplusB/1.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/AplusB/2.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/AplusB/3.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/AplusB/4.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/AplusB/5.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/AplusB/6.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/AplusB/7.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/AplusB/8.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/AplusB/9.in 时间: 0.00s 内存:      0KB Runtime Error 
+
+REer 时间: 0.00s 内存:      0KB Runtime Error 
+得分:0
+
+选手 6:REer 题目 2:SPJtest [17/24]
+
+   ./data/SPJtest/1.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/SPJtest/2.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/SPJtest/3.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/SPJtest/4.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/SPJtest/5.in 时间: 0.00s 内存:      0KB Runtime Error 
+
+REer 时间: 0.00s 内存:      0KB Runtime Error 
+得分:0
+
+选手 6:REer 题目 3:BplusA [18/24]
+
+   ./data/BplusA/0.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/BplusA/1.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/BplusA/2.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/BplusA/3.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/BplusA/4.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/BplusA/5.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/BplusA/6.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/BplusA/7.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/BplusA/8.in 时间: 0.00s 内存:      0KB Runtime Error 
+   ./data/BplusA/9.in 时间: 0.00s 内存:      0KB Runtime Error 
+
+REer 时间: 0.00s 内存:      0KB Runtime Error 
+得分:0
+
+选手 7:CEer 题目 1:AplusB [19/24]
+
+./source/CEer/AplusB.cpp: 在函数‘int main()’中:
+./source/CEer/AplusB.cpp:8:2: 错误：expected ‘;’ before ‘return’
+  return 0;
+  ^~~~~~
+./source/CEer/AplusB.cpp:8:10: 警告：语句不起作用 [-Wunused-value]
+  return 0;
+          ^
+
+CEer 时间: 0.00s 内存:      0KB Compile Error 
+得分:0
+
+选手 7:CEer 题目 2:SPJtest [20/24]
+
+./source/CEer/SPJtest.c: 在函数‘main’中:
+./source/CEer/SPJtest.c:6:2: 警告：语句不起作用 [-Wunused-value]
+  233
+  ^~~
+./source/CEer/SPJtest.c:7:2: 错误：expected ‘;’ before ‘return’
+  return 0;
+  ^~~~~~
+
+CEer 时间: 0.00s 内存:      0KB Compile Error 
+得分:0
+
+选手 7:CEer 题目 3:BplusA [21/24]
+
+./source/CEer/BplusA.cpp: 在函数‘int main()’中:
+./source/CEer/BplusA.cpp:8:2: 错误：expected ‘;’ before ‘return’
+  return 0;
+  ^~~~~~
+./source/CEer/BplusA.cpp:8:10: 警告：语句不起作用 [-Wunused-value]
+  return 0;
+          ^
+
+CEer 时间: 0.00s 内存:      0KB Compile Error 
+得分:0
+
+选手 8:WAer 题目 1:AplusB [22/24]
+
+   ./data/AplusB/0.in 时间: 0.00s 内存:   5436KB Wrong Answer 
+   ./data/AplusB/1.in 时间: 0.00s 内存:   5436KB Wrong Answer 
+   ./data/AplusB/2.in 时间: 0.01s 内存:   5432KB Wrong Answer 
+   ./data/AplusB/3.in 时间: 0.00s 内存:   5436KB Wrong Answer 
+   ./data/AplusB/4.in 时间: 0.00s 内存:   5436KB Wrong Answer 
+   ./data/AplusB/5.in 时间: 0.00s 内存:   5436KB Wrong Answer 
+   ./data/AplusB/6.in 时间: 0.00s 内存:   5432KB Wrong Answer 
+   ./data/AplusB/7.in 时间: 0.00s 内存:   5436KB Wrong Answer 
+   ./data/AplusB/8.in 时间: 0.00s 内存:   5436KB Wrong Answer 
+   ./data/AplusB/9.in 时间: 0.00s 内存:   5436KB Wrong Answer 
+
+WAer 时间: 0.01s 内存:   5436KB Wrong Answer 
+得分:0
+
+选手 8:WAer 题目 2:SPJtest [23/24]
+
+   ./data/SPJtest/1.in 时间: 0.00s 内存:   1876KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/2.in 时间: 0.00s 内存:   1972KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/3.in 时间: 0.00s 内存:   1836KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/4.in 时间: 0.00s 内存:   1968KB Wrong Answer WAWAWAWA!
+   ./data/SPJtest/5.in 时间: 0.00s 内存:   1972KB Wrong Answer WAWAWAWA!
+
+WAer 时间: 0.00s 内存:   1972KB Wrong Answer 
+得分:0
+
+选手 8:WAer 题目 3:BplusA [24/24]
+
+   ./data/BplusA/0.in 时间: 0.00s 内存:   2032KB Wrong Answer 
+   ./data/BplusA/1.in 时间: 0.00s 内存:   1972KB Wrong Answer 
+   ./data/BplusA/2.in 时间: 0.00s 内存:   1836KB Wrong Answer 
+   ./data/BplusA/3.in 时间: 0.00s 内存:   1872KB Wrong Answer 
+   ./data/BplusA/4.in 时间: 0.00s 内存:   1832KB Wrong Answer 
+   ./data/BplusA/5.in 时间: 0.00s 内存:   1836KB Wrong Answer 
+   ./data/BplusA/6.in 时间: 0.00s 内存:   1836KB Wrong Answer 
+   ./data/BplusA/7.in 时间: 0.00s 内存:   1944KB Wrong Answer 
+   ./data/BplusA/8.in 时间: 0.00s 内存:   1972KB Wrong Answer 
+   ./data/BplusA/9.in 时间: 0.00s 内存:   2024KB Wrong Answer 
+
+WAer 时间: 0.00s 内存:   2032KB Wrong Answer 
+得分:0
+
+              总分数     AplusB    SPJtest     BplusA
+    ACer:        300        100        100        100
+Mengbier:        220         70        100         50
+  Pascal:        200        100          0        100
+    LGer:        100          0        100          0
+Mogician:          0          0          0          0
+    REer:          0          0          0          0
+    CEer:          0          0          0          0
+    WAer:          0          0          0          0
