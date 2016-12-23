@@ -1,5 +1,7 @@
 compile:
 	cd src&&make
+en:
+	cd src&&make en
 install:
 	cd src&&make install
 uninstall:

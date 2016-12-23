@@ -12,26 +12,27 @@ namespace Context {
 "Usage:judge [Options]...\n\
 Judge OI contest. Compile sources in directory ./ and source/[Contestant name], and use the data in directory ./ and data/[Problem name] automatically to judge. Support stdin and freopen only.\n\
 When you run judge as root, it will automatically use chroot to run programs, like a simple sandbox.\n\
+Judge will only search for invalid functions or headers in C and C++\n\
 It will use these commands to compile:\n";
 		for (int i=0;i<CompileCommand.size();i++)
 			help+=CompileCommand[i]+"\n";
 		help+="\n\
-    -w [STRING]               Forbidden functions in sources\n\
-    -w[NUMBER] [STRING]...    [NUMBER] forbidden functions in sources\n\
-    -s [STRING]               Forbidden headers in sources\n\
-    -s[NUMBER] [STRING]...    [NUMBER] forbidden headers in sources\n\
+    -f [STRING]               Forbidden functions in sources\n\
+    -f[NUMBER] [STRING]...    [NUMBER] forbidden functions in sources\n\
+    -h [STRING]               Forbidden headers in sources\n\
+    -h[NUMBER] [STRING]...    [NUMBER] forbidden headers in sources\n\
     -t [TIME]                 Limit time (" + CTS::DoubleToString(JudgeSettings::Default_timelimit) + "s by default)\n\
     -m [MEMORY]               Limit memory (" + CTS::IntToString(JudgeSettings::Default_memorylimit) + "KB by default)\n\
     --csv                     Output result to result.csv after judging. Used by default when there is more than one contestant\n\
     --nocsv                   Turn off csv output(even if there is more than one contestant)\n\
     -c, --cui                 Use a simple CUI to manage a contest\n\
-    -h, --help                Print this help message and exit\n\
+    --help                Print this help message and exit\n\
 \n\
 This program will read settings from ~/.judgerc and ./judgerc. The format is :[Option]=[Value1]|[Value2]... Options below are supported:\n\
   Options with one argument:\n\
     background, bg            Set the background when print WA,AC,etc. :black green red blue yellow cyan white purple\n\
-    InvalidWordsNumber, iwn   Set the number of values in option 'InvalidWords'\n\
-    InvalidWords, iw          Add [InvalidWordsNumber] strings to the list of forbidden functions, seperated by spaces\n\
+    InvalidFuncNumber, ifn   Set the number of values in option 'InvalidFunc'\n\
+    InvalidFunc, if          Add [InvalidFuncNumber] strings to the list of forbidden functions, seperated by spaces\n\
     InvalidHeadersNumber, ihn Set the number of values in option 'InvalidHeaders'\n\
     InvalidHeaders, ih        Add [InvalidHeadersNumber] strings to the list of forbidden headers, seperated by spaces\n\
   With two arguments:\n\

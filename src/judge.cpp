@@ -161,13 +161,13 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 			fin >> l;
 			JudgeSettings::Status_Backround=ConverttoInt(l);
 		}
-		else if (l=="InvalidFunc"||l=="iw") {
+		else if (l=="InvalidFunc"||l=="if") {
 			for (int i=0;i<InvalidFuncNumber;i++) {
 				fin >> l;
 				JudgeSettings::InvalidFunc.push_back(l);
 			}
 		}
-		else if (l=="InvalidFuncNumber"||l=="iwn") {
+		else if (l=="InvalidFuncNumber"||l=="ifn") {
 			fin >> InvalidFuncNumber;
 		}
 		else if (l=="InvalidHeaders"||l=="ih") {
@@ -198,9 +198,9 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 				sscanf(v[i],"%lf",&JudgeSettings::Default_timelimit);
 			else if (cmp(v[i-1],0,(char *)"-m")&&(strlen(v[i-1])==2)&&(i<c))//内存
 				sscanf(v[i],"%d",&JudgeSettings::Default_memorylimit);
-			else if (cmp(v[i-1],0,(char *)"-w")&&(strlen(v[i-1])>=2)&&(i<c)) {//添加禁用单词，如-w3表示添加接下的的三个单词，-w与-w1等效
+			else if (cmp(v[i-1],0,(char *)"-f")&&(strlen(v[i-1])>=2)&&(i<c)) {//添加禁用函数，如-f3表示添加接下的的三个单词，-f与-f1等效
 				int t;
-				if (sscanf(v[i-1],"-w%d",&t)==-1)
+				if (sscanf(v[i-1],"-f%d",&t)==-1)
 					t=1;
 				for (int k=0;(k<t)&&(i<c);k++) {
 					char str[256];
@@ -210,9 +210,9 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 				}
 				i--;
 			}
-			else if (cmp(v[i-1],0,(char *)"-s")&&(strlen(v[i-1])>=2)&&(i<c)) {//添加禁用头文件，如-s3表示添加接下的的三个头文件，-s与-s1等效
+			else if (cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])>=2)&&(i<c)) {//添加禁用头文件，如-h3表示添加接下的的三个头文件，-h与-h1等效
 				int t;
-				if (sscanf(v[i-1],"-s%d",&t)==-1)
+				if (sscanf(v[i-1],"-h%d",&t)==-1)
 					t=1;
 				for (int k=0;(k<t)&&(i<c);k++) {
 					char str[256];
@@ -228,7 +228,7 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 				JudgeSettings::PrinttoCSV=0;
 			else if (((string)v[i-1]==(string)"-c")||((string)v[i-1]==(string)"--cui"))
 				JudgeSettings::UseCUI=1;
-			else if ((cmp(v[i-1],0,(char *)"-h")&&(strlen(v[i-1])==2))||(cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
+			else if ((cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
 				Context::PrintHelp();
 				return 1;
 			}
