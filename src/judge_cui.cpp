@@ -7,6 +7,7 @@
 #include "ConverttoString.h"
 #include "config_judge.h"
 #include "MultiCompiler.h"
+#include "Functions_Linux.h"
 
 #ifdef EN
 #include "lang/language_en.h"
@@ -190,13 +191,12 @@ void Contest::Judge_CUI() {
 				cout << Context::Contestant+" " << ':' << P->name_to_print << " "+Context::Problem+" " << i+1 << ':' << problem[i].name_to_print << " [" << i+1 << '/' << problem.size() << ']' << endl;
 				int maxlength=0;
 				for (int j=0;j<problem[i].point.size();j++)
-					if ((int)problem[i].point[j].stdInput.size()>maxlength)
-						maxlength=problem[i].point[j].stdInput.size();
+					maxlength=max(maxlength,(int)BaseName(problem[i].point[j].stdInput).length());
 				char tmp[256];
 				sprintf(tmp,"%%%ds ",maxlength+3);
 				if (P->problem[i].st!=CE)
 					for (int j=0;j<problem[i].point.size();j++) {
-						printf(tmp,problem[i].point[j].stdInput.c_str());
+						printf(tmp,BaseName(problem[i].point[j].stdInput).c_str());
 						JudgeOutput::PrintResult(P->problem[i].subresult[j]);
 					}
 				else

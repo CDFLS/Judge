@@ -110,4 +110,15 @@ static bool PrinttoTerminal(string &x) {
 		else
 			return true;
 }
+
+static string BaseName(string &x) {
+	string tmp;
+	for (int i=x.length()-1;i>=0;i--)
+		if (x[i]=='/') {
+			for (int j=i+1;j<=x.length()-1;j++)
+				tmp.push_back(x[j]);
+			return tmp;
+		}
+	return tmp;
+}
 #endif

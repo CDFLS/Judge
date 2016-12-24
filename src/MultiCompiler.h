@@ -6,9 +6,10 @@
 using namespace std;
 static vector<string> SupportedFile={"cpp","c","pas","py"};
 static vector<string> CompileCommand={
-	"timeout 3s g++ -static -std=c++11 -s -Wall -O2 -lm -DEJUDGE %s -o Exec/%s",
-	"timeout 3s gcc -static -std=c99 -fno-asm -s -Wall -O2 -lm -DEJUDGE %s -o Exec/%s",
-	"timeout 3s fpc -Xs -Sgic -O2 -dEJUDGE %s -oExec/%s"
+	"timeout 3s g++ -static -std=c++11 -s -O2 -lm -DEJUDGE %s -o Exec/%s",
+	"timeout 3s gcc -static -std=c99 -fno-asm -s -O2 -lm -DEJUDGE %s -o Exec/%s",
+	"timeout 3s fpc -Xs -Sgic -O2 -dEJUDGE %s -oExec/%s",
+	"judge python %s Exec/%s"
 };
 static int Compile(string pathto,string problem,int terminal) {
 	int dot;

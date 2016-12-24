@@ -491,12 +491,11 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 	}
 	int maxlength=-(1<<30);
 	for (int i=0;i<point.size();i++)
-		if ((int)point[i].stdInput.size()>maxlength)
-			maxlength=point[i].stdInput.size();
+		maxlength=max(maxlength,(int)BaseName(point[i].stdInput).length());
 	char tmp[256];
 	sprintf(tmp,"%%%ds ",maxlength+3);
 	for (int i=0;i<point.size();i++) {
-		printf(tmp,point[i].stdInput.c_str());
+		printf(tmp,BaseName(point[i].stdInput).c_str());
 		JudgeOutput::PrintResult(tmpresult=(point[i].JudgePoint("./"+name_to_print,timelimit,memorylimit,eachscore,name)));
 		tot.score+=tmpresult.score;
 		if ((tot.st==AC)&&(tmpresult.st!=AC))
