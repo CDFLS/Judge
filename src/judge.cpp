@@ -668,7 +668,7 @@ void JudgeOutput::Print_zh_CN(string str,int len) {//修复输出问题
 }
 
 void JudgeOutput::OutputContest(Contest &test) {
-	if (JudgeSettings::UseCUI||test.oier.size()<=1)
+	if (JudgeSettings::UseCUI||(test.oier.size()<=1&&test.problem.size()<=1))
 		return ;
 	sort(test.oier.begin(),test.oier.end());
 	int len=6;
