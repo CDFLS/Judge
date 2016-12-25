@@ -27,6 +27,7 @@ bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和wor
 			bakpos=pos;
 			while (str[s+i+pos]==' '&&word[i]!=' ')
 				pos++;
+			//TODO: 宏定义中字符串拼接含有参数?(如#define HA(x) sys##x)
 			while ((s+i+pos+1<strlen(str))&&str[s+i+pos]=='#'&&str[s+i+pos+1]=='#')
 				pos+=2;
 		}
@@ -281,6 +282,7 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,in
 //    Command exited with non-zero status 1
 //    Time:0.00s Memory:1988KB
 //故有如下解析代码：
+//TODO: 如果被评测程序输出到stderr?
 	fscanf(fp,"%c",&ch);
 	if (ch=='C') {
 		for (int i=0;i<8;i++)
