@@ -10,7 +10,7 @@ namespace Context {
 	static void PrintHelp() {
 		string help=
 "Usage:judge [Options]...\n\
-Judge OI contest. Compile sources in directory ./ and source/[Contestant name], and use the data in directory ./ and data/[Problem name] automatically to judge. Support stdin and freopen only.\n\
+Judge OI contest. Compile sources in directory ./ and source/[Contestant name], and use the data in directory ./ and data/[Problem name] automatically to judge. Also detect freopen.\n\
 When you run judge as root, it will automatically use chroot to run programs, like a simple sandbox.\n\
 Judge will only search for invalid functions or headers in C and C++\n\
 It will use these commands to compile:\n";

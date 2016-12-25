@@ -26,20 +26,22 @@
 - [x] 设置文件
 - [x] CUI
 - [x] 调用外部SPJ
-- [ ] 更多的配置项(编译器，单个问题时间内存限制修改……)
 - [x] Sandbox
+- [ ] 更多的配置项
+- [ ] define解析
 
 # Help
 可查看judge --help或查看example目录。
 ```
 用法：judge [选项]...
-评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测，但仅允许freopen。
+评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测(仅检测freopen)。
 当以root权限运行judge时，将调用chroot实现一个简单的沙盒。
 代码检测仅检测C与C++
 编译使用命令:
-timeout 3s g++ -static -std=c++11 -s -Wall -O2 -lm -DEJUDGE %s -o Exec/%s
-timeout 3s gcc -static -std=c99 -fno-asm -s -Wall -O2 -lm -DEJUDGE %s -o Exec/%s
-timeout 3s fpc -Xs -Sgic -O2 -dEJUDGE %s -oExec/%s
+timeout 10s g++ -static -std=c++11 -s -O2 -lm -DEJUDGE %s -o Exec/%s
+timeout 10s gcc -static -std=c99 -fno-asm -s -O2 -lm -DEJUDGE %s -o Exec/%s
+timeout 10s fpc -Xs -Sgic -O2 -dEJUDGE %s -oExec/%s
+judge python %s Exec/%s
 
     -f [STRING]               禁止源文件中出现该函数
     -f[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个函数

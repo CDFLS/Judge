@@ -104,4 +104,5 @@ static bool exist(string str) {
 	fin.close();
 	return true;
 }
+
 #endif

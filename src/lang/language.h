@@ -11,7 +11,7 @@ namespace Context {
 	static void PrintHelp() {
 		string help=
 "用法：judge [选项]...\n\
-评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测，但仅允许freopen。\n\
+评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测(仅检测freopen)。\n\
 当以root权限运行judge时，将调用chroot实现一个简单的沙盒。\n\
 代码检测仅检测C与C++\n\
 编译使用命令:\n";
