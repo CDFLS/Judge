@@ -85,28 +85,38 @@ int JudgeSettings::ConverttoInt(string colorname) {
 }
 
 bool HeadersCheck(string str,int line,string filename) {//检查一行include是否包含非法头文件
-	char head[256],l=0;
-	int flag=0;
+	int useown=0;
+	string head;
+	int flag=0,wrong=0;
 	for (int i=0;i<str.length();i++) {
+		if (str[i]=='"') {
+			if (useown)
+				flag=0;
+			else {
+				useown++;
+				flag=1;
+				wrong=1;
+			}
+		}
 		if (str[i]=='>')
 			flag=0;
-		if (flag&&str[i]!=' ') {
-			head[l++]=str[i];
+		if (flag&&str[i]!=' '&&str[i]!='"') {
+			head.push_back(str[i]);
 			continue;
 		}
 		if (str[i]=='<')
 			flag=1;
 	}
-	head[l]=0;
 	for (int i=0;i<JudgeSettings::InvalidHeaders.size();i++)
-		if (cmp((char *)JudgeSettings::InvalidHeaders[i].c_str(),0,head)&&(JudgeSettings::InvalidHeaders[i].length())==strlen(head)) {
+		if (wrong||(cmp((char *)JudgeSettings::InvalidHeaders[i].c_str(),0,(char *)head.c_str())&&(JudgeSettings::InvalidHeaders[i].length())==head.length())) {
+			PRINTERR:;
 			if (JudgeSettings::Terminal) {
 				ClearColor();
 				HighLight();
 			}
 			printf("%s:%d: ",filename.c_str(),line);
 			JudgeOutput::PrintError();
-			printf("%s:%s\n",Context::InvalidHeaderFound,head);
+			printf("%s:%s\n",Context::InvalidHeaderFound,head.c_str());
 			return true;
 		}
 	return false;
@@ -357,69 +367,58 @@ bool Problem::SafetyCheck(string filename) {
 	}
 	if (!((filename.length()>=3&&cmp(filename.c_str(),filename.length()-3,(char *)"cpp")||(filename.length()>=1&&filename[filename.length()-1]=='c'))))
 		return false;
+	int extraline=0;
+	{//预处理宏
+		const string inc="#include";
+		ifstream fin;
+		ofstream fout;
+		fin.open(filename);
+		if (!fin)
+			return 0;
+		fout.open(".ejudge.tmp.cpp");
+		string l;
+		int linenumber=0;
+		while (getline(fin,l,'\n')) {
+			int mark=0;
+			for (int i=0;i<l.length();i++)
+				if (l[i]=='#') {
+					extraline++;
+					if (l.length()-i>=inc.length()) {
+						if (l.substr(i,inc.length())!=inc)
+							continue;
+						linenumber++;
+						string line=l;
+						while (l[l.length()-1]=='\\') {
+							line.pop_back();
+							getline(fin,l,'\n');
+							for (int w=0;w<l.length();w++)
+								line.push_back(l[w]);
+							extraline++;
+							linenumber++;
+						}
+						if (HeadersCheck(line,linenumber,filename))
+							return true;
+						goto END;
+						}
+				} else if (l[i]!=' '&&l[i]!='\t')
+					break;
+			linenumber++;
+			fout << l << endl;
+			END:;
+		}
+		fin.close();
+		fout.close();
+		system("cp .ejudge.tmp.cpp dev.cpp");
+		system("g++ -E -P -DEJUDGE .ejudge.tmp.cpp > .ejudge.cpp");
+	}
+	fin.close();
+	fin.open(".ejudge.cpp");
 	string str;
-	int line=0,ifndef=0,flag=0,ifdef=0;//忽略在注释和#ifndef EJUDGE和#ifdef EJUDGE #else中的单词
+	int line=0;
 	while (getline(fin,str,'\n')) {
 		line++;
-		int include=0,First=1;
 		for (int i=0;i<str.length();i++)
-			if ((str[i]=='/')&&(str[i+1]=='/'))
-				break;
-			else if ((str[i]=='*')&&(str[i+1]=='/'))
-				flag=0;
-			else if ((str[i]=='/')&&(str[i+1]=='*'))
-				flag=1;
-			else if (cmp(str,i,(char *)"#ifndef EJUDGE"))
-				ifndef=1;
-			else if (cmp(str,i,(char *)"#ifdef EJUDGE"))
-				ifdef=1;
-			else if (cmp(str,i,(char *)"#endif"))
-				ifndef=0,ifdef=0;
-			else if (cmp(str,i,(char *)"#else")) {
-				ifndef=0;
-				if (ifdef==1)
-					ifdef=2;
-			}
-			else if (cmp(str,i,(char *)"#define")&&FirstChar(str)=='#') {
-				int w=i,cnt=0;
-				for (;w<str.length();w++) {
-					if (str[w]==' ')
-						cnt++;
-					if (cnt==2)
-						break;
-				}
-				w++;
-				for (int k=0;k<JudgeSettings::InvalidFunc.size();k++)
-					if (cmp(str,w,(char *)JudgeSettings::InvalidFunc[k].c_str())) {
-						if (JudgeSettings::Terminal) {
-							ClearColor();
-							HighLight();
-						}
-						printf("%s:%d: ",filename.c_str(),line);
-						JudgeOutput::PrintError();
-						printf("%s:%s\n",Context::InvalidWordFound,JudgeSettings::InvalidFunc[k].c_str());
-						return true;
-					}
-			}
-			else if (flag||ifndef||(ifdef==2))
-				continue;
-			else if (cmp(str,i,(char *)"#include")&&FirstChar(str)=='#') {
-				if (HeadersCheck(str,line,filename))
-					return true;
-				include=1;
-			}
-			else if (str[i]=='"'&&include&&First) {//不允许调用自定义头文件
-				if (JudgeSettings::Terminal) {
-					ClearColor();
-					HighLight();
-				}
-				printf("%s:%d: ",filename.c_str(),line);
-				JudgeOutput::PrintError();
-				printf("%s:%s\n",Context::InvalidHeaderFound,str);
-				First=0;
-				return true;
-			}
-			else if (cmp(str,i,(char *)"freopen("))
+			if (cmp(str,i,(char *)"freopen("))
 				JudgeSettings::use_freopen=1;
 			else {
 				for (int k=0;k<JudgeSettings::InvalidFunc.size();k++)
@@ -428,7 +427,7 @@ bool Problem::SafetyCheck(string filename) {
 							ClearColor();
 							HighLight();
 						}
-						printf("%s:%d: ",filename.c_str(),line);
+						printf("%s:%d: ",filename.c_str(),line+extraline);
 						JudgeOutput::PrintError();
 						printf("%s:%s\n",Context::InvalidWordFound,JudgeSettings::InvalidFunc[k].c_str());
 						return true;
@@ -438,11 +437,11 @@ bool Problem::SafetyCheck(string filename) {
 						if (JudgeSettings::Terminal) {
 							ClearColor();
 							HighLight();
-							printf("%s:%d: ",filename.c_str(),line);
-							JudgeOutput::PrintError();
-							printf("%s:%s\n",Context::InvalidConstFound,JudgeSettings::InvalidConst[k].c_str());
-							return true;
 						}
+						printf("%s:%d: ",filename.c_str(),line+extraline);
+						JudgeOutput::PrintError();
+						printf("%s:%s\n",Context::InvalidConstFound,JudgeSettings::InvalidConst[k].c_str());
+						return true;
 					}
 			}
 	}
