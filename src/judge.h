@@ -25,10 +25,6 @@ namespace JudgeSettings {
 	static int Status_Color[]={cyan,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
 	static vector<string> InvalidFunc={"system","rand"},InvalidHeaders={"windows.h","con","/dev/tty","/dev/stdin","/proc/self/fd/0"},InvalidConst={"cerr<<","stderr"};
 	//Function模式会检测括号，Header模式只在include中查询，Const模式直接匹配。都会忽略空格和define的字符串拼接。
-	//但无法预防这种情况：
-	//	#define HA(x) sys##x
-	//	HA(tem)("poweroff");
-	//因此还是沙盒靠谱，不过头文件检测还是有用的。
 	static double Default_timelimit=1;
 	static int Default_memorylimit=128000;
 	static string PrintDevice;
@@ -52,6 +48,7 @@ class TestPoint {
 	public:
 		string stdInput,stdOutput;
 		JudgeResult JudgePoint(string bin,double timelimit,int memorylimit,int MaxScore,string &Directory);
+		bool operator < (TestPoint x);
 };
 
 class Contestant {

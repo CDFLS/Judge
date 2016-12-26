@@ -321,6 +321,14 @@ JudgeResult RunAnalyse(string filename,int memorylimit) {
 	return res;
 }
 
+bool TestPoint::operator<(TestPoint x) {
+	if (stdInput.length()!=x.stdInput.length())
+		return stdInput.length()<x.stdInput.length();
+	for (int i=0;i<stdInput.length();i++)
+		if (stdInput[i]!=x.stdInput[i])
+			return stdInput[i]<x.stdInput[i];
+}
+
 JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,int MaxScore,string &Directory) {
 	int RunAsRoot=WEXITSTATUS(system("if [[ $EUID -eq 0 ]]; then exit 1;fi"));
 	char str[1024];
@@ -496,6 +504,7 @@ void Problem::InitProblem() {
 	}
 	memorylimit=JudgeSettings::Default_memorylimit;
 	timelimit=JudgeSettings::Default_timelimit;
+	sort(point.begin(),point.end());
 	if (point.size())
 		eachscore=100/point.size();
 }
