@@ -335,10 +335,10 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,in
 	if (JudgeSettings::use_freopen) {
 		if (RunAsRoot) {
 			system(("cp "+stdInput+" Exec/"+bin+".in").c_str());
-			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs chroot Exec %s / 2>.ejudge.run",timelimit,bin.c_str());
+			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs chroot Exec %s / 2>.ejudge.run > /dev/null",timelimit,bin.c_str());
 		} else {
 			system(("cp "+stdInput+" "+bin+".in").c_str());
-			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./Exec/%s 2>.ejudge.run",timelimit,bin.c_str());
+			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./Exec/%s 2>.ejudge.run >/dev/null",timelimit,bin.c_str());
 		}
 		system(str);
 		if (RunAsRoot) {
