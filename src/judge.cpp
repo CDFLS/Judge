@@ -22,15 +22,8 @@ bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和wor
 	for (int i=0;i<strlen(word);i++) {
 		if (s+i+pos>=strlen(str))
 			return false;
-		int bakpos=pos-1;
-		while (pos!=bakpos) {
-			bakpos=pos;
-			while (str[s+i+pos]==' '&&word[i]!=' ')
+		while (str[s+i+pos]==' '&&word[i]!=' ')
 				pos++;
-			//TODO: 宏定义中字符串拼接含有参数?(如#define HA(x) sys##x)
-			while ((s+i+pos+1<strlen(str))&&str[s+i+pos]=='#'&&str[s+i+pos+1]=='#')
-				pos+=2;
-		}
 		if (str[s+i+pos]!=word[i])
 			return false;
 	}
@@ -251,9 +244,85 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 	return 0;
 }
 
+void ReadLine(FILE *fp,string &line) {
+	line.clear();
+	char ch;
+	while (fscanf(fp,"%c",&ch)==1) {
+		if (ch=='\n')
+			break;
+		line.push_back(ch);
+		if (line.length()>50)
+			line.erase(0,1);
+	}
+}
+
+JudgeResult RunAnalyse(string filename,int memorylimit) {
+//解析输出。
+//当程序超时，timeout终结进程时，输出如下：
+//	  Command terminated by signal 9
+//	  Time:1.00s Memory:1732KB
+//当程序运行错误时，输出如下：
+//	  timeout: the monitored command dumped core
+//	  Command terminated by signal 11
+//	  Time:0.02s Memory:1924KB
+//或者：
+//    Command exited with non-zero status 1
+//    Time:0.00s Memory:1988KB
+	system(("tac "+filename+" > .ejudge.analyse").c_str());//从最后一行开始解析，防止程序输出到stderr
+	JudgeResult res;
+	res.score=0;
+	string line;
+	FILE *fp=fopen(".ejudge.analyse","r");
+	ReadLine(fp,line);
+	int k=0;
+	for (int i=line.size()-1;i>=0;i--)
+		if (line[i]=='T') {
+			k=i;
+			break;
+		}
+	char tmpstr[256];
+	sprintf(tmpstr,"%s",line.substr(k,line.size()-k).c_str());
+	sscanf(tmpstr,"Time:%lfs Memory:%dKB\n",&res.time,&res.memo);
+	if (res.memo==0) {
+		res.st=RE;
+		return res;
+	}
+	if (res.memo>memorylimit) {
+		res.st=MLE;
+		return res;
+	}
+	ReadLine(fp,line);
+	if (line=="") {
+		res.st=-2333;
+		return res;
+	}
+	string TLE_RE="Command terminated by signal";
+	string RE_top="timeout: the monitored command dumped core";
+	string RE_1="Command exited with non-zero status";
+	for (int i=0;i<line.size();i++) {
+		if ((line.size()-i>=TLE_RE.length())&&(line.substr(i,TLE_RE.length())==TLE_RE)) {
+			string line2;
+			ReadLine(fp,line2);
+			if (line2=="") {
+				res.st=TLE;
+				goto END;
+			} else {
+				res.st=RE;
+				goto END;
+			}
+		}
+		if ((line.size()-i>=RE_1.length())&&(line.substr(i,RE_1.length())==RE_1)) {
+			res.st=RE;
+			goto END;
+		}
+	}
+	END:;
+	fclose(fp);
+	return res;
+}
+
 JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,int MaxScore,string &Directory) {
-	int s=AC,memo,RunAsRoot=WEXITSTATUS(system("if [[ $EUID -eq 0 ]]; then exit 1;fi"));
-	double time;
+	int RunAsRoot=WEXITSTATUS(system("if [[ $EUID -eq 0 ]]; then exit 1;fi"));
 	char str[1024];
 	if (JudgeSettings::use_freopen) {
 		if (RunAsRoot) {
@@ -278,46 +347,9 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,in
 			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./Exec/%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,bin.c_str(),stdInput.c_str());//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
 		system(str);
 	}
-	FILE *fp=fopen(".ejudge.run","r");
-	char ch;
-//解析输出。
-//当程序超时，timeout终结进程时，输出如下：
-//	  Command terminated by signal 9
-//	  Time:1.00s Memory:1732KB
-//当程序运行错误时，输出如下：
-//	  timeout: the monitored command dumped core
-//	  Command terminated by signal 11
-//	  Time:0.02s Memory:1924KB
-//或者：
-//    Command exited with non-zero status 1
-//    Time:0.00s Memory:1988KB
-//故有如下解析代码：
-//TODO: 如果被评测程序输出到stderr?
-	fscanf(fp,"%c",&ch);
-	if (ch=='C') {
-		for (int i=0;i<8;i++)
-			fscanf(fp,"%c",&ch);
-		if (ch=='e')
-			s=RE;
-		else
-			s=TLE;
-		while (ch!='T')
-			fscanf(fp,"%c",&ch);
-	} else if (ch=='t') {
-		s=RE;
-		while (ch!='T')
-			fscanf(fp,"%c",&ch);
-	}
-	fscanf(fp,"ime:%lfs Memory:%dKB",&time,&memo);
-	fclose(fp);
-	if (s==TLE)
-		return (JudgeResult){TLE,memo,time,0};
-	if (s==RE)
-		return (JudgeResult){RE,0,0,0};
-	if (memo>memorylimit)
-		return (JudgeResult){MLE,memo,time,0};
-	if (memo==0)
-		return (JudgeResult){RE,memo,time,0};
+	JudgeResult res=RunAnalyse(".ejudge.run",memorylimit);
+	if (res.st!=-2333)
+		return res;
 	if (exist(Directory+"spj")) {//SPJ support
  //		- argv[1]: 标准输入文件
  //		- argv[2]: 选手输出文件
@@ -337,13 +369,13 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,in
 		if (fin) fin >> extrainfo;
 		fin.close();
 		system("rm .ejudge.tmp");
-		return (JudgeResult){((score==MaxScore)?(AC):(WA)),memo,time,score,(vector<JudgeResult>){},extrainfo};
+		return (JudgeResult){((score==MaxScore)?(AC):(WA)),res.memo,res.time,score,(vector<JudgeResult>){},extrainfo};
 	}
 	sprintf(str,"timeout 1s diff -b -B -Z .ejudge.tmp %s > /dev/null 2>/dev/null && rm .ejudge.tmp",stdOutput.c_str());//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
 	if (WEXITSTATUS(system(str))!=0)
-		return (JudgeResult){WA,memo,time,0};
+		return (JudgeResult){WA,res.memo,res.time,0};
 	else
-		return (JudgeResult){AC,memo,time,MaxScore};
+		return (JudgeResult){AC,res.memo,res.time,MaxScore};
 }
 
 void Contestant::sumup() {
@@ -408,7 +440,6 @@ bool Problem::SafetyCheck(string filename) {
 		}
 		fin.close();
 		fout.close();
-		system("cp .ejudge.tmp.cpp dev.cpp");
 		system("g++ -E -P -DEJUDGE .ejudge.tmp.cpp > .ejudge.cpp");
 	}
 	fin.close();

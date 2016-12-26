@@ -10,6 +10,9 @@
 - coreutils
 - time (/usr/bin/time而非bash保留字)
 
+# 安全性
+对于一份代码，首先会删除所有include行(同时检查头文件)，然后对g++ -E -P -DEJUDGE的输出进行字符串搜索(从而防止使用宏定义避免搜索)。然后检测是否以root运行，是则使用chroot。
+
 # 截图
 ![demo1](https://github.com/Heptagon196/Judge/blob/pic/demo1.png)
 ![demo2](https://github.com/Heptagon196/Judge/blob/pic/demo2.png)
@@ -28,7 +31,7 @@
 - [x] 调用外部SPJ
 - [x] Sandbox
 - [ ] 更多的配置项
-- [ ] define解析
+- [x] define解析
 
 # Help
 可查看judge --help或查看example目录。
