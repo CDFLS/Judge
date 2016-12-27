@@ -159,34 +159,43 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 	if (!fin)
 		return ;
 	string l;
-	int InvalidFuncNumber=1,InvalidHeadersNumber=1;
-	while (getline(fin,l,'=')) {
+	while (getline(fin,l,'(')) {
 		if (l=="background"||l=="bg") {
-			fin >> l;
+			getline(fin,l,')');
 			JudgeSettings::Status_Backround=ConverttoInt(l);
 		}
-		else if (l=="InvalidFunc"||l=="if") {
-			for (int i=0;i<InvalidFuncNumber;i++) {
-				fin >> l;
+		else if (l=="Func"||l=="f") {
+			while (true) {
+				l.clear();
+				char ch;
+				while (fin >> ch) {
+					if ((ch==')')||(ch==','))
+						break;
+					l.push_back(ch);
+				}
 				JudgeSettings::InvalidFunc.push_back(l);
+				if (ch==')')
+					break;
 			}
 		}
-		else if (l=="InvalidFuncNumber"||l=="ifn") {
-			fin >> InvalidFuncNumber;
-		}
-		else if (l=="InvalidHeaders"||l=="ih") {
-			for (int i=0;i<InvalidHeadersNumber;i++) {
-				fin >> l;
+		else if (l=="Header"||l=="h") {
+			while (true) {
+				l.clear();
+				char ch;
+				while (fin >> ch) {
+					if ((ch==')')||(ch==','))
+						break;
+					l.push_back(ch);
+				}
 				JudgeSettings::InvalidHeaders.push_back(l);
+				if (ch==')')
+					break;
 			}
 		}
-		else if (l=="InvalidHeadersNumber"||l=="ihn") {
-			fin >> InvalidHeadersNumber;
-		}
-		else if (l=="SourceProblem"||l=="source"||l=="sp") {
+		else if (l=="SourceProblem"||l=="source"||l=="s") {
 			string pathto;
-			getline(fin,l,'|');//problem name
-			fin >> pathto;
+			getline(fin,l,',');//problem name
+			getline(fin,pathto,')');
 			SourceProblem(l,pathto,x);
 		}
 		getline(fin,l,'\n');

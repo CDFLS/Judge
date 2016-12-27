@@ -1,4 +1,4 @@
-ih=sys/resource.h
-source=AplusB|./config
-source=BplusA|./config
-background=black
+ih(sys/resource.h,iostream,stdio.h,stdlib.h,cstdlib)
+source(AplusB,./config)
+source(BplusA|./config)
+background(black)

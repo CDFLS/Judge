@@ -31,16 +31,16 @@ It will use these commands to compile:\n";
 This program will read settings from ~/.judgerc and ./judgerc. The format is :[Option]=[Value1]|[Value2]... Options below are supported:\n\
   Options with one argument:\n\
     background, bg            Set the background when print WA,AC,etc. :black green red blue yellow cyan white purple\n\
-    InvalidFuncNumber, ifn   Set the number of values in option 'InvalidFunc'\n\
-    InvalidFunc, if          Add [InvalidFuncNumber] strings to the list of forbidden functions, seperated by spaces\n\
-    InvalidHeadersNumber, ihn Set the number of values in option 'InvalidHeaders'\n\
-    InvalidHeaders, ih        Add [InvalidHeadersNumber] strings to the list of forbidden headers, seperated by spaces\n\
   With two arguments:\n\
-    SourceProblem, source, sp Configure problem [Value1] with the problem config file(which will be introduced later)[Value2]\n\
+    SourceProblem, source, s  Configure problem [Value1] with the problem config file(which will be introduced later)[Value2]\n\
+  With one or more arguments:\n\
+    Func, f                   Add arguments to the list of forbidden functions\n\
+    Header, h                 Add arguments the list of forbidden headers\n\
   A example:\n\
     ./judgerc：\n\
-      ih=fstream\n\
-      source=aplusb|config\n\
+      h(fstream)\n\
+	  f(folk)\n\
+      source(aplusb,config)\n\
     ./config:\n\
       time=2.0\n\
       memo=64000\n\

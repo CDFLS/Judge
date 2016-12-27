@@ -29,19 +29,19 @@ namespace Context {
     -c, --cui                 使用一个简单的CUI管理一次考试\n\
     --help                显示本帮助\n\
 \n\
-程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值1]|[值2]......目前支持以下选项：\n\
+程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]([参数1],[参数2]......)目前支持以下选项：\n\
   一个参数：\n\
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple\n\
-    InvalidFuncNumber, ifn   设置InvalidFunc选项的值数量，默认为1\n\
-    InvalidFunc, if          将接下来的InvalidFuncNumber个函数加入禁用函数列表，以空格分割\n\
-    InvalidHeadersNumber, ihn 设置InvalidHeaders选项的值数量，默认为1\n\
-    InvalidHeaders, ih        将接下来的InvalidHeadersNumber个函数加入禁用函数列表，以空格分割\n\
   两个参数：\n\
-    SourceProblem, source, sp 将问题[值1]按照配置文件(详见下一部分)[值2]进行配置\n\
+    SourceProblem, source, s  将问题[值1]按照配置文件(详见下一部分)[值2]进行配置\n\
+  多个参数：\n\
+    Func, f                   将所有参数加入禁用函数列表\n\
+    Header, h                 将所有参数加入禁用头文件列表\n\
   示例配置：\n\
     ./judgerc：\n\
-      ih=fstream\n\
-      source=aplusb|config\n\
+      h(fstream)\n\
+	  f(folk)\n\
+      source(aplusb,config)\n\
     ./config:\n\
       time=2.0\n\
       memo=64000\n\

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include </dev/tty>
 using namespace std;
 int main() {
 	int a,b;

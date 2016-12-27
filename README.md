@@ -57,19 +57,19 @@ judge python %s Exec/%s
     -c, --cui                 使用一个简单的CUI管理一次考试
     --help                显示本帮助
 
-程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]=[值1]|[值2]......目前支持以下选项：
+程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]([参数1],[参数2]......)目前支持以下选项：
   一个参数：
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple
-    InvalidFuncNumber, ifn   设置InvalidFunc选项的值数量，默认为1
-    InvalidFunc, if          将接下来的InvalidFuncNumber个函数加入禁用函数列表，以空格分割
-    InvalidHeadersNumber, ihn 设置InvalidHeaders选项的值数量，默认为1
-    InvalidHeaders, ih        将接下来的InvalidHeadersNumber个函数加入禁用函数列表，以空格分割
   两个参数：
-    SourceProblem, source, sp 将问题[值1]按照配置文件(详见下一部分)[值2]进行配置
+    SourceProblem, source, s  将问题[值1]按照配置文件(详见下一部分)[值2]进行配置
+  多个参数：
+    Func, f                   将所有参数加入禁用函数列表
+    Header, h                 将所有参数加入禁用头文件列表
   示例配置：
     ./judgerc：
-      ih=fstream
-      source=aplusb|config
+      h(fstream)
+	  f(folk)
+      source(aplusb,config)
     ./config:
       time=2.0
       memo=64000
