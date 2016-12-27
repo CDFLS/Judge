@@ -1,4 +1,11 @@
-ih(fstream)
-source(AplusB,./config)
-source(BplusA,./config)
-background(black)
+ih(fstream) 后括号后的内容将被忽略，包括以下不必要的';'。
+source(AplusB,./config);
+source(\,SPJ,./data/\,SPJ/config);
+background(black);
+enter(BplusA);
+time(1);
+memo(20000);
+quit();
+enter(\,SPJ);
+rename(SPJtest);
+quit();

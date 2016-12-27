@@ -26,20 +26,25 @@ It will use these commands to compile:\n";
     --csv                     Output result to result.csv after judging. Used by default when there is more than one contestant\n\
     --nocsv                   Turn off csv output(even if there is more than one contestant)\n\
     -c, --cui                 Use a simple CUI to manage a contest\n\
-    --help                Print this help message and exit\n\
+    --help                    Print this help message and exit\n\
 \n\
+Global config:\n\
 This program will read settings from ~/.judgerc and ./judgerc. The format is :[Option]=[Value1]|[Value2]... Options below are supported:\n\
-  Options with one argument:\n\
+  Options with no arguments:\n\
+    quit                      See 'enter'\n\
+  With one argument:\n\
     background, bg            Set the background when print WA,AC,etc. :black green red blue yellow cyan white purple\n\
+	enter                     Config the problem specified, use the rule of problem config file to analyse the command below, end with command 'quit'\n\
   With two arguments:\n\
     SourceProblem, source, s  Configure problem [Value1] with the problem config file(which will be introduced later)[Value2]\n\
   With one or more arguments:\n\
     Func, f                   Add arguments to the list of forbidden functions\n\
     Header, h                 Add arguments the list of forbidden headers\n\
+	(in those arguments, \"\\,\" means \",\", \"\\(\" means \"(\")\n\
   A example:\n\
     ./judgerc：\n\
       h(fstream)\n\
-	  f(folk)\n\
+      f(folk)\n\
       source(aplusb,config)\n\
     ./config:\n\
       time=2.0\n\
@@ -47,10 +52,11 @@ This program will read settings from ~/.judgerc and ./judgerc. The format is :[O
       score=10\n\
 \n\
 Problem config file:\n\
-    Three options are supported, and the format is also: [Option]=[Value]\n\
+    Three options are supported, and the format is the same as judgerc\n\
     time, t                   Set time limit\n\
     memo, memory, m           Set memory limit\n\
     score, s                  Max score for each test point\n\
+    rename, ren, r            Rename this problem\n\
 \n\
 CUI mode:\n"+CUIhelp+"SPJ:\n\
 Put your spj program in the data directory of that problem, rename it as 'spj'(or you can put 'spj.cpp' in that directory, and it will be compiled automatically)\n\

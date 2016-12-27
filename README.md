@@ -30,7 +30,7 @@
 - [x] CUI
 - [x] 调用外部SPJ
 - [x] Sandbox
-- [ ] 更多的配置项
+- [x] 更多的配置项
 - [x] define解析
 
 # Help
@@ -55,11 +55,16 @@ judge python %s Exec/%s
     --csv                     输出结果到result.csv，当人数大于一时默认开启
     --nocsv                   禁止输出到result.csv(即使人数大于一)
     -c, --cui                 使用一个简单的CUI管理一次考试
-    --help                显示本帮助
+    --help                    显示本帮助
 
-程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]([参数1],[参数2]......)目前支持以下选项：
+全局配置文件：
+程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]([参数1],[参数2]......)
+当参数为字符串且参数不定时，会启用转义符，如"\,"表示","，"\("表示"("目前支持以下选项：
+  无参数：
+    quit                      回到全局配置编辑模式(在enter命令结束时使用)
   一个参数：
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple
+    enter                     对[参数1]问题进行配置，使接下来的命令按照配置文件解析，quit命令结束
   两个参数：
     SourceProblem, source, s  将问题[值1]按照配置文件(详见下一部分)[值2]进行配置
   多个参数：
@@ -68,7 +73,7 @@ judge python %s Exec/%s
   示例配置：
     ./judgerc：
       h(fstream)
-	  f(folk)
+      f(folk)
       source(aplusb,config)
     ./config:
       time=2.0
@@ -76,10 +81,11 @@ judge python %s Exec/%s
       score=10
 
 问题配置文件：
-    三个选项，格式为：[选项]=[值]
+    三个选项，格式同judgerc
     time, t                   时间
     memo, memory, m           内存
     score, s                  单个测试点分数
+    rename, ren, r            重命名问题
   示例同上。
 
 CUI模式：

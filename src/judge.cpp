@@ -115,14 +115,43 @@ bool HeadersCheck(string str,int line,string filename) {//检查一行include是
 	return false;
 }
 
-void JudgeSettings::SourceProblem(string name,string source,Contest *x) {
-	ifstream fin;
-	string bak=source;
-	fin.open(source);
-	if (!fin) {
-		cerr << "Error: config file not found: "+source << endl;
-		return ;
+int SourceProblem_Deal(Contest *x,Problem *p,ifstream &fin,string l) {
+	if (l=="time"||l=="t") {
+		double t;
+		fin >> t;
+		p->timelimit=t;
 	}
+	else if (l=="score"||l=="s") {
+		int sc;
+		fin >> sc;
+		p->eachscore=sc;
+	}
+	else if (l=="memo"||l=="memory"||l=="m") {
+		int m;
+		fin >> m;
+		p->memorylimit=m;
+	}
+	else if (l=="rename"||l=="ren"||l=="r") {
+		l.clear();
+		char ch;
+		while (fin >> ch) {
+			if (ch=='\\') {
+				fin >> ch;
+				l.push_back(ch);
+				continue;
+			}
+			if (ch==')')
+				break;
+			l.push_back(ch);
+		}
+		p->name_to_print=l;
+	}
+	else if (l=="quit")
+		return 0;
+	return 1;
+}
+
+void JudgeSettings::SourceProblem(string name,ifstream &fin,Contest *x) {
 	string l;
 	Problem *p=NULL;
 	for (int i=0;i<x->problem.size();i++)
@@ -132,25 +161,26 @@ void JudgeSettings::SourceProblem(string name,string source,Contest *x) {
 		cerr << "Error: problem not found: " << name << endl;
 		return ;
 	}
-	while (getline(fin,l,'=')) {
-		if (l=="time"||l=="t") {
-			double t;
-			fin >> t;
-			p->timelimit=t;
-		}
-		else if (l=="score"||l=="s") {
-			int sc;
-			fin >> sc;
-			p->eachscore=sc;
-		}
-		else if (l=="memo"||l=="memory"||l=="m") {
-			int m;
-			fin >> m;
-			p->memorylimit=m;
-		}
+	while (getline(fin,l,'(')) {
+		SourceProblem_Deal(x,p,fin,l);
 		getline(fin,l,'\n');
 	}
 	fin.close();
+}
+
+void GetLine(ifstream &fin,string &l,char ch) {
+	char tmp;
+	l.clear();
+	while (fin >> tmp) {
+		if (tmp=='\\') {
+			fin >> tmp;
+			l.push_back(tmp);
+			continue;
+		}
+		if (tmp==ch)
+			return ;
+		l.push_back(tmp);
+	}
 }
 
 void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
@@ -159,45 +189,69 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 	if (!fin)
 		return ;
 	string l;
+	vector<string> *lis[]={&JudgeSettings::InvalidFunc,&JudgeSettings::InvalidHeaders};
+	int p;
+	Problem *Pro;
+	int type=0;//配置全局变量还是单个问题
 	while (getline(fin,l,'(')) {
-		if (l=="background"||l=="bg") {
-			getline(fin,l,')');
-			JudgeSettings::Status_Backround=ConverttoInt(l);
-		}
-		else if (l=="Func"||l=="f") {
-			while (true) {
-				l.clear();
-				char ch;
-				while (fin >> ch) {
-					if ((ch==')')||(ch==','))
-						break;
-					l.push_back(ch);
-				}
-				JudgeSettings::InvalidFunc.push_back(l);
-				if (ch==')')
-					break;
+		p=-1;
+		if (type==0) {
+			if (l=="background"||l=="bg") {
+				getline(fin,l,')');
+				JudgeSettings::Status_Backround=ConverttoInt(l);
 			}
-		}
-		else if (l=="Header"||l=="h") {
-			while (true) {
-				l.clear();
-				char ch;
-				while (fin >> ch) {
-					if ((ch==')')||(ch==','))
-						break;
-					l.push_back(ch);
+			else if (l=="SourceProblem"||l=="source"||l=="s") {
+				string pathto;
+				GetLine(fin,l,',');//problem name
+				GetLine(fin,pathto,')');
+				ifstream tmp;
+				tmp.open(pathto);
+				if (!tmp) {
+					cerr << "Error: config file not found: " << pathto << endl;
+					continue;
 				}
-				JudgeSettings::InvalidHeaders.push_back(l);
-				if (ch==')')
-					break;
+				SourceProblem(l,tmp,x);
 			}
+			else if (l=="Func"||l=="f")
+				p=0;
+			else if (l=="Header"||l=="h")
+				p=1;
+			else if (l=="enter") {
+				GetLine(fin,l,')');
+				Pro=NULL;
+				for (int i=0;i<x->problem.size();i++)
+					if (x->problem[i].name=="./data"+l+"/"||x->problem[i].name=="./data/"+l+"/")
+						Pro=&x->problem[i];
+				type=1;
+				if (Pro==NULL) {
+					cerr << "Error: problem not found: " << l << endl;
+					type=0;
+				}
+			}
+
+			if (p!=-1)
+				while (true) {
+					l.clear();
+					char ch;
+					while (fin >> ch) {
+						if (ch=='\\') {
+							fin >> ch;
+							l.push_back(ch);
+							continue;
+						}
+						if ((ch==')')||(ch==','))
+							break;
+						l.push_back(ch);
+					}
+					lis[p]->push_back(l);
+					if (ch==')')
+						break;
+				}
 		}
-		else if (l=="SourceProblem"||l=="source"||l=="s") {
-			string pathto;
-			getline(fin,l,',');//problem name
-			getline(fin,pathto,')');
-			SourceProblem(l,pathto,x);
-		}
+		
+		if (type==1)
+			type=SourceProblem_Deal(x,Pro,fin,l);
+	
 		getline(fin,l,'\n');
 	}
 	fin.close();
@@ -410,6 +464,11 @@ bool Problem::SafetyCheck(string filename) {
 	ifstream fin;
 	fin.open(filename);
 	if (!fin) {
+		if (JudgeSettings::Terminal) {
+			ClearColor();
+			HighLight();
+		}
+		cout << filename << ": ";
 		JudgeOutput::PrintError();
 		puts(Context::SourceNotFound);
 		return true;

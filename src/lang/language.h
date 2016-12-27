@@ -27,11 +27,16 @@ namespace Context {
     --csv                     输出结果到result.csv，当人数大于一时默认开启\n\
     --nocsv                   禁止输出到result.csv(即使人数大于一)\n\
     -c, --cui                 使用一个简单的CUI管理一次考试\n\
-    --help                显示本帮助\n\
+    --help                    显示本帮助\n\
 \n\
-程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]([参数1],[参数2]......)目前支持以下选项：\n\
+全局配置文件：\n\
+程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]([参数1],[参数2]......)\n\
+当参数为字符串且参数不定时，会启用转义符，如\"\\,\"表示\",\"，\"\\(\"表示\"(\"目前支持以下选项：\n\
+  无参数：\n\
+    quit                      回到全局配置编辑模式(在enter命令结束时使用)\n\
   一个参数：\n\
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple\n\
+    enter                     对[参数1]问题进行配置，使接下来的命令按照配置文件解析，quit命令结束\n\
   两个参数：\n\
     SourceProblem, source, s  将问题[值1]按照配置文件(详见下一部分)[值2]进行配置\n\
   多个参数：\n\
@@ -40,7 +45,7 @@ namespace Context {
   示例配置：\n\
     ./judgerc：\n\
       h(fstream)\n\
-	  f(folk)\n\
+      f(folk)\n\
       source(aplusb,config)\n\
     ./config:\n\
       time=2.0\n\
@@ -48,10 +53,11 @@ namespace Context {
       score=10\n\
 \n\
 问题配置文件：\n\
-    三个选项，格式为：[选项]=[值]\n\
+    三个选项，格式同judgerc\n\
     time, t                   时间\n\
     memo, memory, m           内存\n\
     score, s                  单个测试点分数\n\
+    rename, ren, r            重命名问题\n\
   示例同上。\n\
 \n\
 CUI模式：\n"+CUIhelp+"\n\

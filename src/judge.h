@@ -30,7 +30,7 @@ namespace JudgeSettings {
 	static string PrintDevice;
 	static int use_freopen=0,Terminal=1,PrinttoCSV=-1,UseCUI=0;
 	int ConverttoInt(string colorname);
-	void SourceProblem(string name,string source,Contest *x);
+	void SourceProblem(string name,ifstream &fin,Contest *x);
 	void ReadSettings(const char *settingsfile,Contest *x);
 	int ReadFromArgv(int c,char *v[]);
 };
