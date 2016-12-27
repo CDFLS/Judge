@@ -1,4 +1,4 @@
-ih(sys/resource.h,iostream,stdio.h,stdlib.h,cstdlib)
+ih(fstream)
 source(AplusB,./config)
-source(BplusA|./config)
+source(BplusA,./config)
 background(black)
