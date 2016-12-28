@@ -8,6 +8,7 @@
 #include "judge.h"
 #include "config_judge.h"
 #include "MultiCompiler.h"
+#include "TrieTree.h"
 
 #ifdef EN
 #include "lang/language_en.h"
@@ -100,18 +101,18 @@ bool HeadersCheck(string str,int line,string filename) {//检查一行include是
 		if (str[i]=='<')
 			flag=1;
 	}
-	for (int i=0;i<JudgeSettings::InvalidHeaders.size();i++)
-		if (wrong||(cmp((char *)JudgeSettings::InvalidHeaders[i].c_str(),0,(char *)head.c_str())&&(JudgeSettings::InvalidHeaders[i].length())==head.length())) {
-			PRINTERR:;
-			if (JudgeSettings::Terminal) {
-				ClearColor();
-				HighLight();
-			}
-			printf("%s:%d: ",filename.c_str(),line);
-			JudgeOutput::PrintError();
-			printf("%s:%s\n",Context::InvalidHeaderFound,head.c_str());
-			return true;
+	int k;
+	if (wrong||(((k=JudgeSettings::Header.query(head))!=-1)&&(k==head.length()))) {
+		PRINTERR:;
+		if (JudgeSettings::Terminal) {
+			ClearColor();
+			HighLight();
 		}
+		printf("%s:%d: ",filename.c_str(),line);
+		JudgeOutput::PrintError();
+		printf("%s:%s\n",Context::InvalidHeaderFound,head.c_str());
+		return true;
+	}
 	return false;
 }
 
@@ -189,7 +190,7 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 	if (!fin)
 		return ;
 	string l;
-	vector<string> *lis[]={&JudgeSettings::InvalidFunc,&JudgeSettings::InvalidHeaders};
+	vector<TrieTree*> lis={&JudgeSettings::Func,&JudgeSettings::Header};
 	int p;
 	Problem *Pro;
 	int type=0;//配置全局变量还是单个问题
@@ -243,7 +244,9 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 							break;
 						l.push_back(ch);
 					}
-					lis[p]->push_back(l);
+					if (lis[p]==&JudgeSettings::Func)
+						l+='(';
+					lis[p]->add(l);
 					if (ch==')')
 						break;
 				}
@@ -272,8 +275,8 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 				for (int k=0;(k<t)&&(i<c);k++) {
 					char str[256];
 					sprintf(str,"%s",v[i]),i++;
-					string tmp=str;
-					JudgeSettings::InvalidFunc.push_back(tmp);
+					string tmp=(string)str+"(";
+					JudgeSettings::Func.add(tmp);
 				}
 				i--;
 			}
@@ -285,7 +288,7 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
 					char str[256];
 					sprintf(str,"%s",v[i]),i++;
 					string tmp=str;
-					JudgeSettings::InvalidHeaders.push_back(tmp);
+					JudgeSettings::Header.add(tmp);
 				}
 				i--;
 			}
@@ -523,33 +526,39 @@ bool Problem::SafetyCheck(string filename) {
 	string str;
 	int line=0;
 	while (getline(fin,str,'\n')) {
+		string tmp;
+		while (str[str.length()-1]=='\\') {
+			str.pop_back();
+			getline(fin,tmp,'\n');
+			for (int w=0;w<tmp.length();w++)
+				str.push_back(tmp[w]);
+		}
 		line++;
 		for (int i=0;i<str.length();i++)
 			if (cmp(str,i,(char *)"freopen("))
 				JudgeSettings::use_freopen=1;
 			else {
-				for (int k=0;k<JudgeSettings::InvalidFunc.size();k++)
-					if (cmp(str,i,(char *)(JudgeSettings::InvalidFunc[k]+"(").c_str())) {
-						if (JudgeSettings::Terminal) {
-							ClearColor();
-							HighLight();
-						}
-						printf("%s:%d: ",filename.c_str(),line+extraline);
-						JudgeOutput::PrintError();
-						printf("%s:%s\n",Context::InvalidWordFound,JudgeSettings::InvalidFunc[k].c_str());
-						return true;
+				int k;
+				if ((k=JudgeSettings::Func.query(str,i))!=-1) {
+					if (JudgeSettings::Terminal) {
+						ClearColor();
+						HighLight();
 					}
-				for (int k=0;k<JudgeSettings::InvalidConst.size();k++)
-					if (cmp(str,i,(char *)(JudgeSettings::InvalidConst[k]).c_str())) {
-						if (JudgeSettings::Terminal) {
-							ClearColor();
-							HighLight();
-						}
-						printf("%s:%d: ",filename.c_str(),line+extraline);
-						JudgeOutput::PrintError();
-						printf("%s:%s\n",Context::InvalidConstFound,JudgeSettings::InvalidConst[k].c_str());
-						return true;
+					printf("%s:%d: ",filename.c_str(),line+extraline);
+					JudgeOutput::PrintError();
+					printf("%s:%s\n",Context::InvalidWordFound,(str.substr(i,k-i-1)).c_str());
+					return true;
+				}
+				if ((k=JudgeSettings::Const.query(str,i))!=-1) {
+					if (JudgeSettings::Terminal) {
+						ClearColor();
+						HighLight();
 					}
+					printf("%s:%d: ",filename.c_str(),line+extraline);
+					JudgeOutput::PrintError();
+					printf("%s:%s\n",Context::InvalidConstFound,(str.substr(i,k-i)).c_str());
+					return true;
+				}
 			}
 	}
 	fin.close();
@@ -561,7 +570,7 @@ void Problem::InitProblem() {
 		system(((string)"mv "+name+(string)".in"+" "+name+(string)"_.in").c_str());
 		system(((string)"mv "+name+(string)".out"+" "+name+(string)"_.out").c_str());
 	}
-	vector<string> filelist=GetFile(name,(string)"\\.in");
+	vector<string> filelist=GetFile(name.c_str(),".in");
 	for (int i=0;i<filelist.size();i++) {
 		TestPoint tmp;
 		tmp.stdInput=name+filelist[i];
@@ -630,10 +639,10 @@ void Contest::InitContest() {
 		Config::Readfrom(this,"judgelog");
 		return ;
 	}
-	vector<string> filelist=GetFile(".","\\.cpp");
+	vector<string> filelist=GetFile(".",".cpp");
 	vector<string> tmp;
-	for (int i=0;i<SupportedFile.size();i++) {
-		tmp=GetFile(".","\\."+SupportedFile[i]);
+	for (int i=0;i<Compiler.size();i++) {
+		tmp=GetFile(".",("."+Compiler[i].suffix).c_str());
 		for (int j=0;j<tmp.size();j++)
 			filelist.push_back(tmp[j]);
 	}
@@ -651,7 +660,7 @@ void Contest::InitContest() {
 		oier.push_back(tmp);
 	}
 
-	filelist=GetFile(".","\\.in");
+	filelist=GetFile(".",".in");
 	if (filelist.size()) {
 		Problem Default;
 		Default.name="./";

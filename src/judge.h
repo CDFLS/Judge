@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "Conio.h"
+#include "TrieTree.h"
 using namespace std;
 
 #define AC 0
@@ -23,8 +24,8 @@ namespace JudgeSettings {
 	static char Status_Short[]="AW-TMR";
 	static int Status_Backround=white;
 	static int Status_Color[]={cyan,red,yellow,red,red,yellow};//输出Accepted等提示信息的颜色
-	static vector<string> InvalidFunc={"system","rand"},InvalidHeaders={"windows.h","con","/dev/tty","/dev/stdin","/proc/self/fd/0"},InvalidConst={"cerr<<","stderr"};
-	//Function模式会检测括号，Header模式只在include中查询，Const模式直接匹配。都会忽略空格和define的字符串拼接。
+	static TrieTree Func((vector<string>){"system","folk"}),Header((vector<string>){"windows.h","/dev/tty","/dev/stdin","/proc/self/fd/0"}),Const((vector<string>){"cerr<<","stderr"});
+	//Function模式会检测括号，Header模式只在include中查询，Const模式直接匹配。都会忽略空格。
 	static double Default_timelimit=1;
 	static int Default_memorylimit=128000;
 	static string PrintDevice;

@@ -24,18 +24,20 @@ static inline void ClearFile() {//清理文件
     system("rm ./.ejudge.* 2>/dev/null");
 }
 
-static vector<string> GetFile(string directory,string grep) {
-    system(("ls "+directory+" 2>/dev/null|grep \""+grep+"$\" > .ejudge.input 2>/dev/null").c_str());
+static vector<string> GetFile(const char * path,const char * grep) {
 	vector<string> ans;
-	string tmp;
-	ifstream fin;
-	fin.open(".ejudge.input");
-	while (fin) {
-		getline(fin,tmp,'\n');
-		ans.push_back(tmp);
-	}
-	ans.erase(ans.end()-1);
-	fin.close();
+	DIR *pDir;
+	struct dirent *ent;
+	pDir=opendir(path);
+	if (pDir==NULL)
+		return (vector<string>){};
+	while ((ent=readdir(pDir))!=NULL)
+		if (!(ent->d_type & DT_DIR)) {
+			string tmp=ent->d_name;
+			if ((tmp.length()>=strlen(grep))&&(tmp.substr(tmp.length()-strlen(grep),strlen(grep))==(string)grep))
+				ans.push_back(tmp);
+		}
+	closedir(pDir);
 	return ans;
 }
 

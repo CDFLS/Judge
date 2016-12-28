@@ -15,8 +15,8 @@ namespace Context {
 当以root权限运行judge时，将调用chroot实现一个简单的沙盒。\n\
 代码检测仅检测C与C++\n\
 编译使用命令:\n";
-		for (int i=0;i<CompileCommand.size();i++)
-			help+=CompileCommand[i]+"\n";
+		for (int i=0;i<Compiler.size();i++)
+			help+=Compiler[i].cmd+"\n";
 		help+="\n\
     -f [STRING]               禁止源文件中出现该函数\n\
     -f[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个函数\n\
