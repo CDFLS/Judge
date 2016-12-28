@@ -77,9 +77,9 @@ SPJ参数：\n\
 		printf("judge: 未知的选项或不足的参数 '%s'\n请尝试 \"judge --help\"，以获得更多信息。\n",str);
 	}
 	const char InvalidHeaderFound[]="非法的头文件";
-	const char SourceNotFound[]="找不到源代码。";
+	const char SourceNotFound[]="没有那个文件或目录";
 	const char InvalidWordFound[]="非法的函数";
-	const char InvalidConstFound[]="非法的常量";
+	const char InvalidConstFound[]="非法的单词";
 	const char Score[]="得分";
 	const char Time[]="时间";
 	const char Memory[]="内存";

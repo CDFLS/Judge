@@ -149,6 +149,8 @@ int SourceProblem_Deal(Contest *x,Problem *p,ifstream &fin,string l) {
 	}
 	else if (l=="quit")
 		return 0;
+	else
+		cerr << "Unknown command: " << l << endl;
 	return 1;
 }
 
@@ -196,7 +198,10 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 	int type=0;//配置全局变量还是单个问题
 	while (getline(fin,l,'(')) {
 		p=-1;
-		if (type==0) {
+
+		if (type==1)
+			type=SourceProblem_Deal(x,Pro,fin,l);
+		else if (type==0) {
 			if (l=="background"||l=="bg") {
 				getline(fin,l,')');
 				JudgeSettings::Status_Backround=ConverttoInt(l);
@@ -229,6 +234,15 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 					type=0;
 				}
 			}
+			else if (l=="compiler") {
+				string a,b,c;
+				getline(fin,a,',');
+				getline(fin,b,',');
+				getline(fin,c,')');
+				Compiler.push_back((COMPILER){a,b,c});
+			}
+			else
+				cerr << "Unknown command: " << l << endl;
 
 			if (p!=-1)
 				while (true) {
@@ -252,9 +266,6 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 				}
 		}
 		
-		if (type==1)
-			type=SourceProblem_Deal(x,Pro,fin,l);
-	
 		getline(fin,l,'\n');
 	}
 	fin.close();
@@ -440,7 +451,7 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,in
 		if (fin) fin >> score;
 		fin.close();
 		fin.open(".ejudge.msg");
-		if (fin) fin >> extrainfo;
+		if (fin) getline(fin,extrainfo,'\n');
 		fin.close();
 		system("rm .ejudge.tmp");
 		return (JudgeResult){((score==MaxScore)?(AC):(WA)),res.memo,res.time,score,(vector<JudgeResult>){},extrainfo};

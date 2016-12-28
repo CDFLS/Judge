@@ -20,7 +20,7 @@ int main(int argc,char *argv[]) {
 	if (ans==out)
 		fout << "又强又劲！";
 	else
-		fout << "WAWAWAWA! ";
+		fout << "Read " << out << " but " << ans << " expected" << endl;
 	fout.close();
 	return 0;
 }

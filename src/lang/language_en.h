@@ -74,9 +74,9 @@ SPJ arguments：\n\
 		printf("judge: Unknown argument '%s'\nMore info with 'judge -h'\n",str);
 	}
 	const char InvalidHeaderFound[]="Invalid header";
-	const char SourceNotFound[]="Source not found.";
+	const char SourceNotFound[]="No such file or directory";
 	const char InvalidWordFound[]="Invalid function";
-	const char InvalidConstFound[]="Invalid const";
+	const char InvalidConstFound[]="Invalid word";
 	const char Score[]="Score";
 	const char Time[]="Time";
 	const char Memory[]="Memory";

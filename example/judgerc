@@ -1,6 +1,6 @@
-ih(fstream) 后括号后的内容将被忽略，包括以下不必要的';'。
+h(fstream) 后括号后的内容将被忽略，包括以下不必要的';'。
 source(AplusB,./config);
-source(\,SPJ,./data/\,SPJ/config);
+source(\,SPJ,./data/\,SPJ/config); '\'是转义符
 background(black);
 enter(BplusA);
 time(1);
