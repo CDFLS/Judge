@@ -67,7 +67,7 @@ class Problem {
 		vector<TestPoint> point;
 		int memorylimit=128000;
 		double timelimit=1;
-		int eachscore;
+		int eachscore=0;
 		void InitProblem();
 		bool SafetyCheck(string filename);
 		JudgeResult JudgeProblem(Contestant &oier);

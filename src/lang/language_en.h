@@ -47,9 +47,9 @@ This program will read settings from ~/.judgerc and ./judgerc. The format is :[O
       f(folk)\n\
       source(aplusb,config)\n\
     ./config:\n\
-      time=2.0\n\
-      memo=64000\n\
-      score=10\n\
+      time(2.0)\n\
+      memo(64000)\n\
+      score(10)\n\
 \n\
 Problem config file:\n\
     Three options are supported, and the format is the same as judgerc\n\

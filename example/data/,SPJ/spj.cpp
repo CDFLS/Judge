@@ -4,6 +4,8 @@
 #include <fstream>
 using namespace std;
 int main(int argc,char *argv[]) {
+	int maxscore;
+	sscanf(argv[4],"%d",&maxscore);
 	ifstream fin;
 	ofstream fout;
 	int ans,out;
@@ -14,7 +16,7 @@ int main(int argc,char *argv[]) {
 	fin >> out;
 	fin.close();
 	fout.open(argv[5]);
-	fout << ((ans==out)?20:0);
+	fout << ((ans==out)?maxscore:0);
 	fout.close();
 	fout.open(argv[6]);
 	if (ans==out)

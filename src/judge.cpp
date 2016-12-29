@@ -126,6 +126,7 @@ int SourceProblem_Deal(Contest *x,Problem *p,ifstream &fin,string l) {
 		int sc;
 		fin >> sc;
 		p->eachscore=sc;
+		cout << p->name_to_print << ' ' << p->eachscore << endl;
 	}
 	else if (l=="memo"||l=="memory"||l=="m") {
 		int m;
@@ -226,7 +227,7 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 				GetLine(fin,l,')');
 				Pro=NULL;
 				for (int i=0;i<x->problem.size();i++)
-					if (x->problem[i].name=="./data"+l+"/"||x->problem[i].name=="./data/"+l+"/")
+					if (x->problem[i].name_to_print==l)
 						Pro=&x->problem[i];
 				type=1;
 				if (Pro==NULL) {
@@ -593,7 +594,7 @@ void Problem::InitProblem() {
 	memorylimit=JudgeSettings::Default_memorylimit;
 	timelimit=JudgeSettings::Default_timelimit;
 	sort(point.begin(),point.end());
-	if (point.size())
+	if (point.size()&&eachscore==0)
 		eachscore=100/point.size();
 }
 

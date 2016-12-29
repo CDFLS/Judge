@@ -48,9 +48,9 @@ namespace Context {
       f(folk)\n\
       source(aplusb,config)\n\
     ./config:\n\
-      time=2.0\n\
-      memo=64000\n\
-      score=10\n\
+      time(2.0)\n\
+      memo(64000)\n\
+      score(10)\n\
 \n\
 问题配置文件：\n\
     三个选项，格式同judgerc\n\

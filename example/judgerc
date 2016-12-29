@@ -8,4 +8,5 @@ memo(20000);
 quit();
 enter(\,SPJ);
 rename(SPJtest);
+score(10)
 quit();
