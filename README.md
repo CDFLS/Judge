@@ -45,6 +45,7 @@ timeout 10s g++ -static -std=c++11 -s -O2 -lm -DEJUDGE %s -o Exec/%s
 timeout 10s gcc -static -std=c99 -fno-asm -s -O2 -lm -DEJUDGE %s -o Exec/%s
 timeout 10s fpc -Xs -Sgic -O2 -dEJUDGE %s -oExec/%s
 judge python %s Exec/%s
+judge python2 %s Exec/%s
 
     -f [STRING]               禁止源文件中出现该函数
     -f[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个函数
@@ -76,9 +77,9 @@ judge python %s Exec/%s
       f(folk)
       source(aplusb,config)
     ./config:
-      time=2.0
-      memo=64000
-      score=10
+      time(2.0)
+      memo(64000)
+      score(10)
 
 问题配置文件：
     三个选项，格式同judgerc
