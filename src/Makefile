@@ -1,4 +1,4 @@
-FLAG=judge.cpp judge_cui.cpp main.cpp -o judge --std=c++11
+FLAG=judge.cpp judge_cui.cpp main.cpp -o judge --std=c++11 -lncurses
 DEPENDENCIES=/usr/bin/time /usr/bin/timeout
 CPP=g++
 compile:$(DEPENDENCIES)
