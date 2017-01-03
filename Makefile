@@ -8,7 +8,3 @@ uninstall:
 	rm /usr/bin/judge
 remove:
 	make uninstall
-dev:
-	git add .
-	git commit -a -m "Commit"
-	git push origin master
