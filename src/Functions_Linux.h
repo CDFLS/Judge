@@ -65,32 +65,29 @@ static bool existdir(const char *path) {
 }
 
 static string GetName() {//获取当前目录名
-    system("basename \"$PWD\" > .ejudge.tmp 2>/dev/null");
-	ifstream fin;
-	string tmp;
-	fin.open(".ejudge.tmp");
-	getline(fin,tmp,'\n');
-	fin.close();
-	return tmp;
+	FILE * s=popen("basename \"$PWD\"","r");
+	char str[1024];
+	fgets(str,sizeof(str),s);
+	str[strlen(str)-1]=0;
+	pclose(s);
+	return (string)str;
 }
 
 static string GetUserName() {
-    system("echo \"$USERNAME\" > .ejudge.tmp");
-	ifstream fin;
-	string tmp;
-	fin.open(".ejudge.tmp");
-	getline(fin,tmp,'\n');
-	fin.close();
-	return tmp;
+	FILE * s=popen("echo \"$USERNAME\"","r");
+	char str[1024];
+	fgets(str,sizeof(str),s);
+	str[strlen(str)-1]=0;
+	pclose(s);
+	return (string)str;
 }
 static string GetJudgerc() {
-	system("echo \"$HOME/.judgerc\">.ejudge.tmpname");
-	string filename;
-	fstream fin;
-	fin.open(".ejudge.tmpname");
-	getline(fin,filename,'\n');
-	fin.close();
-	return filename;
+	FILE * s=popen("echo \"$HOME/.judgerc\"","r");
+	char str[1024];
+	fgets(str,sizeof(str),s);
+	str[strlen(str)-1]=0;
+	pclose(s);
+	return (string)str;
 }
 
 static bool STRCMP(char *str) {

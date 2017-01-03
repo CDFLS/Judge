@@ -129,7 +129,6 @@ int SourceProblem_Deal(Contest *x,Problem *p,ifstream &fin,string l) {
 		int sc;
 		fin >> sc;
 		p->eachscore=sc;
-		cout << p->name_to_print << ' ' << p->eachscore << endl;
 	}
 	else if (l=="memo"||l=="memory"||l=="m") {
 		int m;
@@ -581,9 +580,9 @@ bool Problem::SafetyCheck(string filename) {
 }
 
 void Problem::InitProblem() {
-	if (exist(name+(string)".in")) {
-		system(((string)"mv "+name+(string)".in"+" "+name+(string)"_.in").c_str());
-		system(((string)"mv "+name+(string)".out"+" "+name+(string)"_.out").c_str());
+	if (exist(name+name_to_print+(string)".in")) {
+		system(((string)"mv "+name+name_to_print+(string)".in"+" "+name+name_to_print+(string)"_.in").c_str());
+		system(((string)"mv "+name+name_to_print+(string)".out"+" "+name+name_to_print+(string)"_.out").c_str());
 	}
 	vector<string> filelist=GetFile(name.c_str(),".in");
 	for (int i=0;i<filelist.size();i++) {
