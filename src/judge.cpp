@@ -102,6 +102,9 @@ bool HeadersCheck(string str,int line,string filename) {//检查一行include是
 			flag=1;
 	}
 	int k;
+	for (int i=0;i<head.size();i++)
+		if (JudgeSettings::Const.query(head.substr(i,head.size()-i))!=-1)
+			goto PRINTERR;
 	if (wrong||(((k=JudgeSettings::Header.query(head))!=-1)&&(k==head.length()))) {
 		PRINTERR:;
 		if (JudgeSettings::Terminal) {
