@@ -100,7 +100,7 @@ int execute(const char* input_file_name, const char* output_file_name,
             ptrace(PTRACE_TRACEME, 0, 0, 0);  // trace !
         }
 
-		chroot("Sand");
+		chroot("Exec");
         execve(execute_file_name, 0, 0);
         fprintf(stderr, "[child]: ERROR executing %s", execute_file_name);
         perror(" ");
