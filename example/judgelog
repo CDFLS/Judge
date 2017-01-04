@@ -194,27 +194,27 @@ Mogician
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
 0
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
 0
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
 0
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
 0
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
 ACer
 ./source/ACer/
 250
@@ -488,27 +488,27 @@ Pascal
 1
 0
 156
-Read 2 but 6 expected\
+2 found but 6 expected\
 0
 1
 0
 156
-Read 2 but 6 expected\
+2 found but 6 expected\
 0
 1
 0
 156
-Read 2 but 6 expected\
+2 found but 6 expected\
 0
 1
 0
 156
-Read 2 but 6 expected\
+2 found but 6 expected\
 0
 1
 0
 156
-Read 2 but 6 expected\
+2 found but 6 expected\
 LGer
 ./source/LGer/
 0
@@ -1103,7 +1103,7 @@ WAer
 3
 0
 1
-0.013332
+0.006666
 6468
 \
 10
@@ -1119,12 +1119,12 @@ WAer
 \
 0
 1
-0.013332
+0.006666
 6468
 \
 0
 1
-0.009999
+0.006666
 6468
 \
 0
@@ -1223,24 +1223,24 @@ WAer
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
 0
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
 0
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
 0
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
 0
 1
 0
 288
-Read 7 but 6 expected\
+7 found but 6 expected\
