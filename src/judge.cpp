@@ -336,71 +336,6 @@ void ReadLine(FILE *fp,string &line) {
 	}
 }
 
-JudgeResult RunAnalyse(string filename,int memorylimit) {
-//解析输出。
-//当程序超时，timeout终结进程时，输出如下：
-//	  Command terminated by signal 9
-//	  Time:1.00s Memory:1732KB
-//当程序运行错误时，输出如下：
-//	  timeout: the monitored command dumped core
-//	  Command terminated by signal 11
-//	  Time:0.02s Memory:1924KB
-//或者：
-//    Command exited with non-zero status 1
-//    Time:0.00s Memory:1988KB
-	system(("tac "+filename+" > .ejudge.analyse").c_str());//从最后一行开始解析，防止程序输出到stderr
-	JudgeResult res;
-	res.score=0;
-	string line;
-	FILE *fp=fopen(".ejudge.analyse","r");
-	ReadLine(fp,line);
-	int k=0;
-	for (int i=line.size()-1;i>=0;i--)
-		if (line[i]=='T') {
-			k=i;
-			break;
-		}
-	char tmpstr[256];
-	sprintf(tmpstr,"%s",line.substr(k,line.size()-k).c_str());
-	sscanf(tmpstr,"Time:%lfs Memory:%dKB\n",&res.time,&res.memo);
-	if (res.memo==0) {
-		res.st=RE;
-		return res;
-	}
-	if (res.memo>memorylimit) {
-		res.st=MLE;
-		return res;
-	}
-	ReadLine(fp,line);
-	if (line=="") {
-		res.st=-2333;
-		return res;
-	}
-	string TLE_RE="Command terminated by signal";
-	string RE_top="timeout: the monitored command dumped core";
-	string RE_1="Command exited with non-zero status";
-	for (int i=0;i<line.size();i++) {
-		if ((line.size()-i>=TLE_RE.length())&&(line.substr(i,TLE_RE.length())==TLE_RE)) {
-			string line2;
-			ReadLine(fp,line2);
-			if (line2=="") {
-				res.st=TLE;
-				goto END;
-			} else {
-				res.st=RE;
-				goto END;
-			}
-		}
-		if ((line.size()-i>=RE_1.length())&&(line.substr(i,RE_1.length())==RE_1)) {
-			res.st=RE;
-			goto END;
-		}
-	}
-	END:;
-	fclose(fp);
-	return res;
-}
-
 bool TestPoint::operator<(TestPoint x) {
 	if (stdInput.length()!=x.stdInput.length())
 		return stdInput.length()<x.stdInput.length();
@@ -409,33 +344,33 @@ bool TestPoint::operator<(TestPoint x) {
 			return stdInput[i]<x.stdInput[i];
 }
 
+JudgeResult Exec(string input,string output,string bin,double timelimit,int memorylimit) {
+	JudgeResult res;
+ //* 0. OK     :  success
+ //*-1. RTE    :  runtime error
+ //*-2. TLE    :  time limit exceed
+ //*-3. MLE    :  memory limit exceed
+ //*-4. OLE    :  output limit exceed
+	const int convert[]={-2333,RE,TLE,MLE,RE};
+	res.score=0;
+	FILE *s=popen(("judge exec -c "+bin+" -i "+input+" -o "+output+" -t "+CTS::DoubleToString(timelimit)+" -m "+CTS::IntToString(memorylimit)).c_str(),"r");
+	fscanf(s,"%d %lf %d",&res.st,&res.time,&res.memo);
+	res.st=convert[res.st];
+	pclose(s);
+	return res;
+}
+
 JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,int MaxScore,string &Directory) {
-	int RunAsRoot=WEXITSTATUS(system("if [[ $EUID -eq 0 ]]; then exit 1;fi"));
 	char str[1024];
+	JudgeResult res;
 	if (JudgeSettings::use_freopen) {
-		if (RunAsRoot) {
-			system(("cp "+stdInput+" Exec/"+bin+".in").c_str());
-			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs chroot Exec %s / 2>.ejudge.run > /dev/null",timelimit,bin.c_str());
-		} else {
-			system(("cp "+stdInput+" "+bin+".in").c_str());
-			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./Exec/%s 2>.ejudge.run >/dev/null",timelimit,bin.c_str());
-		}
-		system(str);
-		if (RunAsRoot) {
-			system(("rm Exec/"+bin+".in").c_str());
-			system(("mv Exec/"+bin+".out ./.ejudge.tmp 2>/dev/null").c_str());
-		} else {
-			system(("rm "+bin+".in").c_str());
-			system(("mv "+bin+".out .ejudge.tmp 2>/dev/null").c_str());
-		}
+		system(("cp "+stdInput+" "+bin+".in").c_str());
+		res=Exec("/dev/null","/dev/null","Exec/"+bin,timelimit,memorylimit);
+		system(("rm "+bin+".in").c_str());
+		system(("mv "+bin+".out .ejudge.tmp 2>/dev/null").c_str());
 	} else {
-		if (WEXITSTATUS(system("if [[ $EUID -eq 0 ]]; then exit 1;fi")))
-			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs chroot Exec %s / < %s > .ejudge.tmp 2>.ejudge.run",timelimit,bin.c_str(),stdInput.c_str());
-		else
-			sprintf(str,"time -f \"Time:%%es Memory:%%MKB\" timeout --signal=KILL %lfs ./Exec/%s < %s > .ejudge.tmp 2>.ejudge.run",timelimit,bin.c_str(),stdInput.c_str());//为time命令指定格式获取用时和内存使用，并用timeout命令限制运行时间。
-		system(str);
+		res=Exec(stdInput,".ejudge.tmp","Exec/"+bin,timelimit,memorylimit);
 	}
-	JudgeResult res=RunAnalyse(".ejudge.run",memorylimit);
 	if (res.st!=-2333)
 		return res;
 	if (exist(Directory+"spj")) {//SPJ support
@@ -560,7 +495,7 @@ bool Problem::SafetyCheck(string filename) {
 					}
 					printf("%s:%d: ",filename.c_str(),line+extraline);
 					JudgeOutput::PrintError();
-					printf("%s:%s\n",Context::InvalidWordFound,(str.substr(i,k-i-1)).c_str());
+					printf("%s:%s\n",Context::InvalidWordFound,(str.substr(i,k-i)).c_str());
 					return true;
 				}
 				if ((k=JudgeSettings::Const.query(str,i))!=-1) {
@@ -627,8 +562,9 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
 	char tmp[256];
 	sprintf(tmp,"%%%ds ",maxlength+3);
 	for (int i=0;i<point.size();i++) {
+		tmpresult=(point[i].JudgePoint("./"+name_to_print,timelimit,memorylimit,eachscore,name));
 		printf(tmp,BaseName(point[i].stdInput).c_str());
-		JudgeOutput::PrintResult(tmpresult=(point[i].JudgePoint("./"+name_to_print,timelimit,memorylimit,eachscore,name)));
+		JudgeOutput::PrintResult(tmpresult);
 		tot.score+=tmpresult.score;
 		if ((tot.st==AC)&&(tmpresult.st!=AC))
 			tot.st=tmpresult.st;
