@@ -8,10 +8,9 @@
 
 # 依赖
 - coreutils
-- time (/usr/bin/time而非bash保留字)
 
 # 安全性
-对于一份代码，首先会删除所有include行(同时检查头文件)，然后对g++ -E -P -DEJUDGE的输出进行字符串搜索(从而防止使用宏定义避免搜索)。然后检测是否以root运行，是则使用chroot。
+对于一份代码，首先会在副本中删除所有include行(同时检查头文件)，然后对g++ -E -P -DEJUDGE的输出进行字符串搜索(从而防止使用宏定义避免搜索)。然后检测是否以root运行，是则使用chroot。
 
 # 截图
 ![demo1](https://github.com/Heptagon196/Judge/blob/pic/demo1.png)
@@ -65,6 +64,7 @@ judge python2 %s Exec/%s
     quit                      回到全局配置编辑模式(在enter命令结束时使用)
   一个参数：
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple
+    FileIO, file              强制使用或不使用文件输入输出(默认情况下检测freopen)，值：true false
     enter                     对[参数1]问题进行配置，使接下来的命令按照配置文件解析，quit命令结束
   两个参数：
     SourceProblem, source, s  将问题[值1]按照配置文件(详见下一部分)[值2]进行配置
@@ -76,6 +76,7 @@ judge python2 %s Exec/%s
       h(fstream)
       f(folk)
       source(aplusb,config)
+      file(true)
     ./config:
       time(2.0)
       memo(64000)

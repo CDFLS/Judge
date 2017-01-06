@@ -1,5 +1,6 @@
 FLAG=judge.cpp judge_cui.cpp main.cpp sandbox/execute.c -o judge --std=c++11 -lncurses -Wno-write-strings
 CPP=g++
+DEPENDENCIES=
 compile:$(DEPENDENCIES)
 	$(CPP) $(FLAG) -O2
 	sudo make install

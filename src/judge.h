@@ -28,6 +28,7 @@ namespace JudgeSettings {
 	//Function模式会检测括号，Header模式只在include中查询，Const模式直接匹配。都会忽略空格。
 	static double Default_timelimit=1;
 	static int Default_memorylimit=128000;
+	static int FileIO=0;
 	static string PrintDevice;
 	static int use_freopen=0,Terminal=1,PrinttoCSV=-1,UseCUI=0;
 	int ConverttoInt(string colorname);

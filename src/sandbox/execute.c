@@ -63,14 +63,14 @@ int execute(const char* input_file_name, const char* output_file_name,
     //========================== execute program ==============================
     if (pid == 0) {
         if (freopen(input_file_name, "r", stdin) == NULL) {
-            fprintf(stderr, "[child]: ERROR open data file %s",
-                    input_file_name);
+            /*fprintf(stderr, "[child]: ERROR open data file %s",*/
+                    /*input_file_name);*/
             perror(" ");
             _exit(1);
         }
         if (freopen(output_file_name, "w", stdout) == NULL) {
-            fprintf(stderr, "[child]: ERROR open output file %s",
-                    output_file_name);
+            /*fprintf(stderr, "[child]: ERROR open output file %s",*/
+                    /*output_file_name);*/
             perror(" ");
             _exit(1);
         }
@@ -102,12 +102,12 @@ int execute(const char* input_file_name, const char* output_file_name,
 
 		chroot("Exec");
         execve(execute_file_name, 0, 0);
-        fprintf(stderr, "[child]: ERROR executing %s", execute_file_name);
+        /*fprintf(stderr, "[child]: ERROR executing %s", execute_file_name);*/
         perror(" ");
         _exit(1);
     }
     //==============================  timer  ==================================
-    fprintf(stderr, "[Judge]: child process id:%d\n", pid);
+    /*fprintf(stderr, "[Judge]: child process id:%d\n", pid);*/
     // fprintf(stderr, "[Judge]: creating it's brother as timer\n");
     timer_pid = fork();
     if (timer_pid < 0) {
@@ -118,7 +118,7 @@ int execute(const char* input_file_name, const char* output_file_name,
         //==== timer
         // fprintf(stderr, "[timer]: ready!\n");
         sleep(time_limit);  // should be enough time....
-        fprintf(stderr, "[timer]: time up! exiting!\n");
+        /*fprintf(stderr, "[timer]: time up! exiting!\n");*/
         _exit(1);
     }
     //==============================  judge =================================
@@ -131,23 +131,23 @@ int execute(const char* input_file_name, const char* output_file_name,
 
     wait3(&status, 0, &ru);  // wait for pid STOP after execve(), hopefully it
                              // won't be the timer
-    fprintf(stderr, "[JUDGE]: status_code = %d!\n", WEXITSTATUS(status));
+    /*fprintf(stderr, "[JUDGE]: status_code = %d!\n", WEXITSTATUS(status));*/
 
     if (WIFEXITED(status)) {
-        fprintf(stderr, "[Judge]:  program exit before tracing\n");
+        /*fprintf(stderr, "[Judge]:  program exit before tracing\n");*/
         kill(timer_pid, SIGKILL);
         // ugly quickfix ...
         int exs = WEXITSTATUS(status);
         switch (exs) {
             case 0:
-                fprintf(stderr, "[Judge]:  %d exited normally\n", pid);
+                /*fprintf(stderr, "[Judge]:  %d exited normally\n", pid);*/
                 return 0;
             case 1:
                 *cputime_ptr = time_limit;
-                fprintf(stderr, "[Judge]:  timer exited\n");
+                /*fprintf(stderr, "[Judge]:  timer exited\n");*/
                 return -2;
             default:
-                fprintf(stderr, "[Judge]:  unexpected signal caught \n");
+                /*fprintf(stderr, "[Judge]:  unexpected signal caught \n");*/
                 return -1;
         }
     }
@@ -160,30 +160,30 @@ int execute(const char* input_file_name, const char* output_file_name,
             kill(pid, SIGKILL);
             cputime = time_limit;  // set time to TLE
             exitcode = -2;
-            fprintf(stderr, "[Judge]:  timer exited\n");
+            /*fprintf(stderr, "[Judge]:  timer exited\n");*/
             continue;
         }
         // pid STOPPED
         if (WIFEXITED(status)) {
             // pid exited normally
-            fprintf(stderr, "[Judge]:  %d exited normally; status = %d \n", pid,
-                    WEXITSTATUS(status));
+            /*fprintf(stderr, "[Judge]:  %d exited normally; status = %d \n", pid,*/
+                    /*WEXITSTATUS(status));*/
             exitcode = 0;  //=======success
             break;
         }
         if (WIFSIGNALED(status)) {
             sig = WTERMSIG(status);
-            fprintf(stderr, "[Judge]:  deadly signal caught %d(%s) by %d\n",
-                    sig, signal_names[sig], pid);
+            /*fprintf(stderr, "[Judge]:  deadly signal caught %d(%s) by %d\n",*/
+                    /*sig, signal_names[sig], pid);*/
             break;
         }
         if (WIFSTOPPED(status)) {
             sig = WSTOPSIG(status);
             if (sig != SIGTRAP) {
-                fprintf(
-                    stderr,
-                    "[Judge]:  unexpected signal caught %d(%s) killing %d\n",
-                    sig, signal_names[sig], pid);
+                /*fprintf(*/
+                    /*stderr,*/
+                    /*"[Judge]:  unexpected signal caught %d(%s) killing %d\n",*/
+                    /*sig, signal_names[sig], pid);*/
 
                 ptrace(PTRACE_KILL, pid, 0, 0);
                 switch (sig) {
@@ -210,8 +210,8 @@ int execute(const char* input_file_name, const char* output_file_name,
                 // fprintf(stderr, "[trace]: syscall[%d]: %s\n",
                 //		syscall_number, syscall_names[syscall_number]);
                 if (syscall_number == 45) {  // brk
-                    fprintf(stderr, "[trace]: brk (rdi = 0x%08llx) %llu\n",
-                            regs.edi, regs.edi);
+                    /*fprintf(stderr, "[trace]: brk (rdi = 0x%08llx) %llu\n",*/
+                            /*regs.edi, regs.edi);*/
                 }
                 //
                 // check before execute syscall
@@ -219,11 +219,11 @@ int execute(const char* input_file_name, const char* output_file_name,
                 if (!syscall_used[syscall_number] && !isJava) {
                     // oh no~ kill it!!!!!
 
-                    fprintf(stderr,
-                            "[trace]: syscall[%d]: %s : Restrict function!\n",
-                            syscall_number, syscall_names[syscall_number]);
-                    fprintf(stderr, "[trace]: killing process %d  .\\/.\n",
-                            pid);
+                    /*fprintf(stderr,*/
+                            /*"[trace]: syscall[%d]: %s : Restrict function!\n",*/
+                            /*syscall_number, syscall_names[syscall_number]);*/
+                    /*fprintf(stderr, "[trace]: killing process %d  .\\/.\n",*/
+                            /*pid);*/
                     exitcode = -5;
                     ptrace(PTRACE_KILL, pid, 0, 0);  //
                     continue;
@@ -247,15 +247,15 @@ int execute(const char* input_file_name, const char* output_file_name,
                      * <by mstczuo>
                      */
                     if (cur_sum != mem_sum) {
-                        fprintf(stderr, "[Judge]: proc %d memory usage: %dk\n",
-                                pid, cur_sum);
+                        /*fprintf(stderr, "[Judge]: proc %d memory usage: %dk\n",*/
+                                /*pid, cur_sum);*/
                         mem_sum = cur_sum;
                         if (maxmem < mem_sum) maxmem = mem_sum;
                         if (cur_sum > memory_limit) {
-                            fprintf(stderr, "[Judge]:  Memory Limit Exceed\n");
-                            fprintf(stderr,
-                                    "[Judge]:  killing process %d .\\/.\n",
-                                    pid);
+                            /*fprintf(stderr, "[Judge]:  Memory Limit Exceed\n");*/
+                            /*fprintf(stderr,*/
+                                    /*"[Judge]:  killing process %d .\\/.\n",*/
+                                    /*pid);*/
                             kill(pid, SIGKILL);
                             exitcode = -3;  //====MLE
                             continue;
@@ -268,14 +268,14 @@ int execute(const char* input_file_name, const char* output_file_name,
             ptrace(PTRACE_SYSCALL, pid, 0, 0);
         }
     }
-    fprintf(stderr, "[Judge]:  maximum memory used by %s: %dk\n",
-            execute_file_name, maxmem);
-    fprintf(stderr, "[Judge]:  utime sec %d, usec %06d\n",
-            (int)ru.ru_utime.tv_sec, (int)ru.ru_utime.tv_usec);
-    fprintf(stderr, "[Judge]:  stime sec %d, usec %06d\n",
-            (int)ru.ru_stime.tv_sec, (int)ru.ru_stime.tv_usec);
-    fprintf(stderr, "[Judge]:  mem usage %d \n", (int)ru.ru_maxrss);
-    if (cputime < 0) {
+    /*fprintf(stderr, "[Judge]:  maximum memory used by %s: %dk\n",*/
+            /*execute_file_name, maxmem);*/
+    /*fprintf(stderr, "[Judge]:  utime sec %d, usec %06d\n",*/
+            /*(int)ru.ru_utime.tv_sec, (int)ru.ru_utime.tv_usec);*/
+    /*fprintf(stderr, "[Judge]:  stime sec %d, usec %06d\n",*/
+            /*(int)ru.ru_stime.tv_sec, (int)ru.ru_stime.tv_usec);*/
+    /*fprintf(stderr, "[Judge]:  mem usage %d \n", (int)ru.ru_maxrss);*/
+	if (cputime < 0) {
         cputime = ru.ru_utime.tv_sec + ru.ru_utime.tv_usec * 1e-6 +
                   ru.ru_stime.tv_sec + ru.ru_stime.tv_usec * 1e-6;
     }
@@ -283,11 +283,11 @@ int execute(const char* input_file_name, const char* output_file_name,
     *run_memory = maxmem >> 10;
     // return memory usage in KB
 
-    fprintf(stderr, "[Judge]: cputime used %.4f\n", cputime);
+    /*fprintf(stderr, "[Judge]: cputime used %.4f\n", cputime);*/
     //	kill(timer_pid, SIGINT);
     kill(timer_pid, SIGKILL);
     wait(&status);
     wait(&status);
-    fprintf(stderr, "[Judge]: exiting   Total syscall %d\n", syscall_cnt);
+    /*fprintf(stderr, "[Judge]: exiting   Total syscall %d\n", syscall_cnt);*/
     return exitcode;
 }

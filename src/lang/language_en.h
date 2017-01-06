@@ -33,7 +33,8 @@ This program will read settings from ~/.judgerc and ./judgerc. The format is :[O
   Options with no arguments:\n\
     quit                      See 'enter'\n\
   With one argument:\n\
-    background, bg            Set the background when print WA,AC,etc. :black green red blue yellow cyan white purple\n\
+    background, bg            Set the background when print WA,AC,etc. : black green red blue yellow cyan white purple\n\
+    FileIO, file              Use file input/output forcibly; 'true' or 'false'\n\
 	enter                     Config the problem specified, use the rule of problem config file to analyse the command below, end with command 'quit'\n\
   With two arguments:\n\
     SourceProblem, source, s  Configure problem [Value1] with the problem config file(which will be introduced later)[Value2]\n\
@@ -46,6 +47,7 @@ This program will read settings from ~/.judgerc and ./judgerc. The format is :[O
       h(fstream)\n\
       f(folk)\n\
       source(aplusb,config)\n\
+      file(true)\n\
     ./config:\n\
       time(2.0)\n\
       memo(64000)\n\

@@ -36,6 +36,7 @@ namespace Context {
     quit                      回到全局配置编辑模式(在enter命令结束时使用)\n\
   一个参数：\n\
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple\n\
+    FileIO, file              强制使用或不使用文件输入输出(默认情况下检测freopen)，值：true false\n\
     enter                     对[参数1]问题进行配置，使接下来的命令按照配置文件解析，quit命令结束\n\
   两个参数：\n\
     SourceProblem, source, s  将问题[值1]按照配置文件(详见下一部分)[值2]进行配置\n\
@@ -47,6 +48,7 @@ namespace Context {
       h(fstream)\n\
       f(folk)\n\
       source(aplusb,config)\n\
+      file(true)\n\
     ./config:\n\
       time(2.0)\n\
       memo(64000)\n\

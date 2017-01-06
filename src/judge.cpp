@@ -9,6 +9,7 @@
 #include "config_judge.h"
 #include "MultiCompiler.h"
 #include "TrieTree.h"
+#include "sandbox/execute.h"
 
 #ifdef EN
 #include "lang/language_en.h"
@@ -221,6 +222,13 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 				}
 				SourceProblem(l,tmp,x);
 			}
+			else if (l=="file"||l=="FileIO") {
+				GetLine(fin,l,')');
+				if (l=="true")
+					JudgeSettings::FileIO=1;
+				if (l=="false")
+					JudgeSettings::FileIO=-1;
+			}
 			else if (l=="Func"||l=="f")
 				p=0;
 			else if (l=="Header"||l=="h")
@@ -351,26 +359,26 @@ JudgeResult Exec(string input,string output,string bin,double timelimit,int memo
  //*-2. TLE    :  time limit exceed
  //*-3. MLE    :  memory limit exceed
  //*-4. OLE    :  output limit exceed
+	//freopen("/dev/null","w",stderr);
 	const int convert[]={-2333,RE,TLE,MLE,RE};
 	res.score=0;
-	FILE *s=popen(("judge exec -c "+bin+" -i "+input+" -o "+output+" -t "+CTS::DoubleToString(timelimit)+" -m "+CTS::IntToString(memorylimit)).c_str(),"r");
-	fscanf(s,"%d %lf %d",&res.st,&res.time,&res.memo);
-	res.st=convert[res.st];
-	pclose(s);
+	res.st=convert[0-execute(input.c_str(),output.c_str(),bin.c_str(),timelimit,memorylimit,30000,&res.memo,&res.time)];
+	res.time=(res.time>0?res.time:(-res.time));
+	res.memo=(res.memo>0?res.memo:(-res.memo));
 	return res;
 }
 
 JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,int MaxScore,string &Directory) {
+	//int RunAsRoot=WEXITSTATUS(system("if [[ $EUID -eq 0 ]]; then exit 1;fi"));
 	char str[1024];
 	JudgeResult res;
-	if (JudgeSettings::use_freopen) {
+	if ((JudgeSettings::use_freopen&&JudgeSettings::FileIO==0)||(JudgeSettings::FileIO==1)) {
 		system(("cp "+stdInput+" "+bin+".in").c_str());
 		res=Exec("/dev/null","/dev/null","Exec/"+bin,timelimit,memorylimit);
 		system(("rm "+bin+".in").c_str());
 		system(("mv "+bin+".out .ejudge.tmp 2>/dev/null").c_str());
-	} else {
+	} else
 		res=Exec(stdInput,".ejudge.tmp","Exec/"+bin,timelimit,memorylimit);
-	}
 	if (res.st!=-2333)
 		return res;
 	if (exist(Directory+"spj")) {//SPJ support
@@ -425,7 +433,7 @@ bool Problem::SafetyCheck(string filename) {
 		puts(Context::SourceNotFound);
 		return true;
 	}
-	if (!((filename.length()>=3&&cmp(filename.c_str(),filename.length()-3,(char *)"cpp")||(filename.length()>=1&&filename[filename.length()-1]=='c'))))
+	if (!(((filename.length()>=3&&cmp(filename.c_str(),filename.length()-3,(char *)"cpp"))||((filename.length()>=1&&filename[filename.length()-1]=='c')))))
 		return false;
 	int extraline=0;
 	{//预处理宏
@@ -524,8 +532,11 @@ void Problem::InitProblem() {
 		TestPoint tmp;
 		tmp.stdInput=name+filelist[i];
 		tmp.stdOutput=name+filelist[i].replace(filelist[i].length()-3,3,".out");
-		if (!exist(tmp.stdOutput))
-			continue;
+		if (!exist(tmp.stdOutput)) {
+			tmp.stdOutput=name+filelist[i].replace(filelist[i].length()-4,4,".ans");
+			if (!exist(tmp.stdOutput))
+				continue;
+		}
 		point.push_back(tmp);
 	}
 	memorylimit=JudgeSettings::Default_memorylimit;
@@ -602,12 +613,16 @@ void Contest::InitContest() {
 		user.name_to_print=GetUserName();
 		oier.push_back(user);
 	}
-	filelist=GetDir("./source");
-	for (int i=0;i<filelist.size();i++) {
-		Contestant tmp;
-		tmp.name="./source/"+filelist[i]+"/";
-		tmp.name_to_print=filelist[i];
-		oier.push_back(tmp);
+
+	vector<string> SourceDirectory={"./source","./src"};
+	for (int P=0;P<SourceDirectory.size();P++) {
+		filelist=GetDir(SourceDirectory[P].c_str());
+		for (int i=0;i<filelist.size();i++) {
+			Contestant tmp;
+			tmp.name=SourceDirectory[P]+"/"+filelist[i]+"/";
+			tmp.name_to_print=filelist[i];
+			oier.push_back(tmp);
+		}
 	}
 
 	filelist=GetFile(".",".in");
@@ -625,7 +640,7 @@ void Contest::InitContest() {
 		tmp.name="./data/"+filelist[i]+"/";
 		tmp.name_to_print=filelist[i];
 		tmp.InitProblem();
-		if (tmp.point.size())
+		if (tmp.point.size()!=0)
 			problem.push_back(tmp);
 	}
 
@@ -648,7 +663,7 @@ void Contest::JudgeContest() {
 			if (JudgeSettings::Terminal)
 				foreground(yellow);
 			else
-				cout << Context::Contestant+" " << i+1 << ':' << oier[i].name_to_print << " "+Context::Problem+" " << j+1 << ':' << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']' << endl;
+				cout << Context::Contestant+" " << i+1 << ':' << oier[i].name_to_print << " "+Context::Problem+" " << j+1 << ':' << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']';
 			cerr << Context::Contestant+" " << i+1 << ':' << oier[i].name_to_print << " "+Context::Problem+" " << j+1 << ':' << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']' << endl;
 			if (JudgeSettings::Terminal)
 				ClearColor();
@@ -675,7 +690,7 @@ void JudgeOutput::PrintStatus(int st) {
 		ClearColor();
 	}
 	else
-		printf("%s",JudgeSettings::Status[st]);
+		printf("|%s|",JudgeSettings::Status[st]);
 }
 
 void JudgeOutput::PrintError() {
@@ -694,7 +709,10 @@ void JudgeOutput::PrintResult(JudgeResult &x) {
 		foreground(cyan);
 		printf("%s:",Context::Time);
 		foreground(yellow);
-		printf("%5.2lfs",x.time);
+		if (x.time<-1e-3||x.time>1e-3)
+			printf("%5.2lfs",((x.time>0)?x.time:(-x.time)));
+		else
+			printf(" 0.00s");
 		foreground(cyan);
 		printf(" %s:",Context::Memory);
 		foreground(yellow);
@@ -705,7 +723,10 @@ void JudgeOutput::PrintResult(JudgeResult &x) {
 		ClearColor();
 	}
 	else {
-		printf("%s:%5.2lfs %s:%7dKB ",Context::Time,x.time,Context::Memory,x.memo);
+		if (x.time<-1e-3||x.time>1e-3)
+			printf("%s:%5.2lfs %s:%7dKB ",Context::Time,((x.time>0)?x.time:(-x.time)),Context::Memory,x.memo);
+		else
+			printf("%s: 0.00s %s:%7dKB ",Context::Time,Context::Memory,x.memo);
 		PrintStatus(x.st);
 		cout << ' ' << x.ExtraInfo << endl;
 	}
