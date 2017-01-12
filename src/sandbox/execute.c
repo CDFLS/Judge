@@ -202,7 +202,7 @@ int execute(const char* input_file_name, const char* output_file_name,
             }
             // SIGTRAP
             ptrace(PTRACE_GETREGS, pid, 0, &regs);
-            syscall_number = regs.orig_eax;
+            syscall_number = regs.orig_rax;
             if (syscall_enter) {
                 syscall_cnt++;
 
