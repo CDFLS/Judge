@@ -362,7 +362,7 @@ JudgeResult Exec(string input,string output,string bin,double timelimit,int memo
 	//freopen("/dev/null","w",stderr);
 	const int convert[]={-2333,RE,TLE,MLE,RE};
 	res.score=0;
-	res.st=convert[0-execute(input.c_str(),output.c_str(),bin.c_str(),timelimit,memorylimit,30000,&res.memo,&res.time)];
+	res.st=convert[0-execute(input.c_str(),output.c_str(),bin.c_str(),timelimit,memorylimit,300000,&res.memo,&res.time)];
 	res.time=(res.time>0?res.time:(-res.time));
 	res.memo=(res.memo>0?res.memo:(-res.memo));
 	return res;
