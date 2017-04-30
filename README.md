@@ -7,8 +7,6 @@
 </br>
 运行make构建，运行make en构建英文版。</br>
 
-本人用git还不太熟练……所以有些乱，clone的时候记得加上--depth=1</br>
-
 Arch Linux 64位上g++ 6.3.1编译成功。
 
 # 安全性
