@@ -1,7 +1,7 @@
 LDFLAG=--std=c++11 -Wno-write-strings -Dlinux -O2
 FLAG=main.cpp -o judge --std=c++11 -Wno-write-strings -Dlinux -O2
 CPP=g++
-DEPENDENCIES=Bar.o judge_cui.o config_judge.o Conio.o Functions_Linux.o execute.o judge.o
+DEPENDENCIES=Bar.o judge_cui.o config_judge.o Conio.o Functions_Linux.o execute.o judge.o TrieTree.o
 judge:$(DEPENDENCIES)
 	$(CPP) $(DEPENDENCIES) $(FLAG)
 	sudo make install
@@ -21,6 +21,8 @@ execute.o:
 	$(CPP) -c $(LDFLAG) sandbox/execute.c -o execute.o
 judge.o:
 	$(CPP) -c $(LDFLAG) judge.cpp
+TrieTree.o:
+	$(CPP) -c $(LDFLAG) TrieTree.cpp
 
 clean:
 	rm *.o
