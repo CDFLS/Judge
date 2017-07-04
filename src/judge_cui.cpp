@@ -178,7 +178,7 @@ void Contest::Judge_CUI() {
             window.p[s].text=Ginfo(P,MAXL);
             stable_sort(window.p.begin(),window.p.end());
             for (int i=0;i<window.p.size();i++)
-                window.p[i].y=(i+1)%L+1;
+                window.p[i].y=(i+1)%(L+1)+1;
             window.print(page);
             window.p[s].rever();
             for (int i=0;i<menu.size();i++)
@@ -217,7 +217,7 @@ void Contest::Judge_CUI() {
             window.p[s].text=Ginfo(window.p[s].p,MAXL);
             stable_sort(window.p.begin(),window.p.end());
             for (int i=0;i<window.p.size();i++)
-                window.p[i].y=(i+1)%L+1;
+                window.p[i].y=(i+1)%(L+1)+1;
             window.print(page);
             window.p[s].rever();
             for (int i=0;i<menu.size();i++)

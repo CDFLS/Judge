@@ -760,10 +760,10 @@ void JudgeOutput::PrintResult(JudgeResult &x) {
         foreground(green);
         printf("%s:",Context::Time);
         foreground(yellow);
-        if (x.time<-1e-3||x.time>1e-3)
-            printf("%5.2lfs",((x.time>0)?x.time:(-x.time)));
+        if (x.time<-1e-4||x.time>1e-4)
+            printf("%6.3lfs",((x.time>0)?x.time:(-x.time)));
         else
-            printf(" 0.00s");
+            printf(" 0.000s");
         foreground(green);
         printf(" %s:",Context::Memory);
         foreground(yellow);
@@ -774,10 +774,10 @@ void JudgeOutput::PrintResult(JudgeResult &x) {
         ClearColor();
     }
     else {
-        if (x.time<-1e-3||x.time>1e-3)
-            printf("%s:%5.2lfs %s:%7dKB ",Context::Time,((x.time>0)?x.time:(-x.time)),Context::Memory,x.memo);
+        if (x.time<-1e-4||x.time>1e-4)
+            printf("%s:%6.3lfs %s:%7dKB ",Context::Time,((x.time>0)?x.time:(-x.time)),Context::Memory,x.memo);
         else
-            printf("%s: 0.00s %s:%7dKB ",Context::Time,Context::Memory,x.memo);
+            printf("%s: 0.000s %s:%7dKB ",Context::Time,Context::Memory,x.memo);
         PrintStatus(x.st);
         cout << ' ' << x.ExtraInfo << endl;
     }
