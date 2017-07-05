@@ -350,7 +350,7 @@ void ReadLine(FILE *fp,string &line) {
     }
 }
 
-bool TestPoint::operator<(TestPoint x) {
+bool TestPoint::operator < (TestPoint x) {
     if (stdInput.length()!=x.stdInput.length())
         return stdInput.length()<x.stdInput.length();
     for (int i=0;i<stdInput.length();i++)
@@ -422,7 +422,7 @@ void Contestant::sumup() {
         sum+=problem[i].score;
 }
 
-bool Contestant::operator<(Contestant &x) {
+bool Contestant::operator < (const Contestant &x) const {
     return sum>x.sum;
 }
 

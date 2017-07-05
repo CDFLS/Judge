@@ -61,7 +61,7 @@ class Contestant {
         vector<JudgeResult> problem;
         int sum;
         void sumup();
-        bool operator < (Contestant &x);
+        bool operator < (const Contestant &x) const;
 };
 
 class Problem {
