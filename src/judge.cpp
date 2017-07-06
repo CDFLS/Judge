@@ -324,7 +324,7 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
                 JudgeSettings::PrinttoCSV=1;
             else if ((string)v[i-1]==(string)"--nocsv")
                 JudgeSettings::PrinttoCSV=0;
-            else if (((string)v[i-1]==(string)"-c")||((string)v[i-1]==(string)"--cui"))
+            else if (((string)v[i-1]==(string)"-c")||((string)v[i-1]==(string)"--cli"))
                 JudgeSettings::UseCUI=1;
             else if ((cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
                 Context::PrintHelp();
@@ -368,7 +368,7 @@ JudgeResult Exec(string input,string output,string bin,double timelimit,int memo
     //freopen("/dev/null","w",stderr);
     const int convert[]={-2333,RE,TLE,MLE,RE};
     res.score=0;
-    res.st=convert[0-execute(input.c_str(),output.c_str(),bin.c_str(),timelimit,memorylimit,300000,&res.memo,&res.time)];
+    res.st=convert[0-execute(input.c_str(),output.c_str(),bin.c_str(),timelimit,memorylimit,30000000,&res.memo,&res.time)];
     res.time=(res.time>0?res.time:(-res.time));
     res.memo=(res.memo>0?res.memo:(-res.memo));
     return res;
@@ -647,8 +647,8 @@ void Contest::InitSPJ() {
 void Contest::InitContest() {
     if (!PrinttoTerminal(JudgeSettings::PrintDevice))
         JudgeSettings::Terminal=0;
-    if (JudgeSettings::UseCUI&&exist("judgelog")) {
-        Config::Readfrom(this,"judgelog");
+    if (JudgeSettings::UseCUI&&exist("judge.log")) {
+        Config::Readfrom(this,"judge.log");
         return ;
     }
     vector<string> filelist=GetFile(".",".cpp");
@@ -704,7 +704,7 @@ void Contest::InitContest() {
 }
 
 void Contest::JudgeContest() {
-    if (JudgeSettings::UseCUI&&exist("judgelog")) {
+    if (JudgeSettings::UseCUI&&exist("judge.log")) {
         Judge_CUI();
         return ;
     }
@@ -728,7 +728,7 @@ void Contest::JudgeContest() {
         oier[i].sumup();
     }
 
-    Config::Saveto(this,"judgelog");
+    Config::Saveto(this,"judge.log");
     if (JudgeSettings::UseCUI)
         Contest::Judge_CUI();
 }

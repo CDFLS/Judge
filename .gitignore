@@ -25,6 +25,8 @@
 
 # Executables
 judge
+spj
+judge.log
 *.exe
 *.out
 *.app

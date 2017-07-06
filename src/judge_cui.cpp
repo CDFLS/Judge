@@ -188,7 +188,7 @@ void Contest::Judge_CUI() {
         if (ch == '\t')
             Tab = (Tab + 1) % Menu.size();
         if (ch == 'q') {
-            Config::Saveto(this,"judgelog");
+            Config::Saveto(this,"judge.log");
             unhidecursor();
             ClearColor();
             puts("");
@@ -264,7 +264,7 @@ void Contest::Judge_CUI() {
             ShowContestants(oier);
         }
     }
-    Config::Saveto(this,"judgelog");
+    Config::Saveto(this,"judge.log");
     unhidecursor();
     ClearColor();
     puts("");

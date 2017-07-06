@@ -14,8 +14,8 @@ Judge OI contest. Compile sources in directory ./ and source/[Contestant name], 
 When you run judge as root, it will automatically use chroot to run programs, like a simple sandbox.\n\
 Judge will only search for invalid functions or headers in C and C++\n\
 It will use these commands to compile:\n";
-		for (int i=0;i<CompileCommand.size();i++)
-			help+=CompileCommand[i]+"\n";
+		for (int i=0;i<Compiler.size();i++)
+			help+=Compiler[i].cmd+"\n";
 		help+="\n\
     -f [STRING]               Forbidden functions in sources\n\
     -f[NUMBER] [STRING]...    [NUMBER] forbidden functions in sources\n\
@@ -25,11 +25,11 @@ It will use these commands to compile:\n";
     -m [MEMORY]               Limit memory (" + CTS::IntToString(JudgeSettings::Default_memorylimit) + "KB by default)\n\
     --csv                     Output result to result.csv after judging. Used by default when there is more than one contestant\n\
     --nocsv                   Turn off csv output(even if there is more than one contestant)\n\
-    -c, --cui                 Use a simple CUI to manage a contest\n\
+    -c, --cli                 Use a simple CLI to manage a contest\n\
     --help                    Print this help message and exit\n\
 \n\
 Global config:\n\
-This program will read settings from ~/.judgerc and ./judgerc. The format is :[Option]=[Value1]|[Value2]... Options below are supported:\n\
+This program will read settings from ~/.judgerc and ./judge.conf. The format is :[Option]([Value1],[Value2]...) Options below are supported:\n\
   Options with no arguments:\n\
     quit                      See 'enter'\n\
   With one argument:\n\
@@ -60,7 +60,7 @@ Problem config file:\n\
     score, s                  Max score for each test point\n\
     rename, ren, r            Rename this problem\n\
 \n\
-CUI mode:\n"+CUIhelp+"SPJ:\n\
+CLI mode:\n"+CUIhelp+"SPJ:\n\
 Put your spj program in the data directory of that problem, rename it as 'spj'(or you can put 'spj.cpp' in that directory, and it will be compiled automatically)\n\
 SPJ arguments：\n\
     - argv[1]: Standard input file\n\

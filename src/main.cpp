@@ -31,7 +31,7 @@ int main(int argc,char *argv[]) {
     x.InitSPJ();
     JudgeSettings::InitTrieTree();
     JudgeSettings::ReadSettings(GetJudgerc().c_str(),&x);
-    JudgeSettings::ReadSettings("judgerc",&x);
+    JudgeSettings::ReadSettings("judge.conf",&x);
     x.JudgeContest();
     ClearFile();
     JudgeOutput::OutputContest(x);

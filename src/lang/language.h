@@ -26,11 +26,11 @@ namespace Context {
     -m [MEMORY]               限制程序使用内存(为指定时为" + CTS::IntToString(JudgeSettings::Default_memorylimit) + "KB)\n\
     --csv                     输出结果到result.csv，当人数大于一时默认开启\n\
     --nocsv                   禁止输出到result.csv(即使人数大于一)\n\
-    -c, --cui                 使用一个简单的CUI管理一次考试\n\
+    -c, --cli                 使用一个简单的CLI管理一次考试\n\
     --help                    显示本帮助\n\
 \n\
 全局配置文件：\n\
-程序会依次从~/.judgerc和./judgerc中读取设置，设置文件格式为：[选项]([参数1],[参数2]......)\n\
+程序会依次从~/.judgerc和./judge.conf中读取设置，设置文件格式为：[选项]([参数1],[参数2]......)\n\
 当参数为字符串且参数不定时，会启用转义符，如\"\\,\"表示\",\"，\"\\(\"表示\"(\"目前支持以下选项：\n\
   无参数：\n\
     quit                      回到全局配置编辑模式(在enter命令结束时使用)\n\
@@ -62,7 +62,7 @@ namespace Context {
     rename, ren, r            重命名问题\n\
   示例同上。\n\
 \n\
-CUI模式：\n"+CUIhelp+"\n\
+CLI模式：\n"+CUIhelp+"\n\
 SPJ说明：\n\
 将SPJ编译，放在data对应题目目录下，命名为spj(或者将spj.cpp放在该目录下，将会被自动编译)\n\
 SPJ参数：\n\
