@@ -1,4 +1,5 @@
 # <center>Judge</center>
+![demo1](https://github.com/Heptagon196/Judge/blob/pic/demo1.png)
 一个简单的OI程序评测系统，目前只支持Linux，将来也不会支持Windows。</br>
 通过调用time与timeout运行程序，当以root运行时会使用chroot来实现一个简单的沙盒。</br>
 拥有一个简单的CLI，结果可导出至CSV文件</br>
@@ -11,14 +12,6 @@ Arch Linux 64位上g++ 6.3.1编译成功。
 
 # 安全性
 对于一份代码，首先会在副本中删除所有include行(同时检查头文件)，然后对g++ -E -P -DEJUDGE的输出进行字符串搜索(从而防止使用宏定义避免搜索)。然后检测是否以root运行，是则使用chroot。
-
-# 截图
-![demo1](https://github.com/Heptagon196/Judge/blob/pic/demo1.png)
-![demo2](https://github.com/Heptagon196/Judge/blob/pic/demo2.png)
-![demo3](https://github.com/Heptagon196/Judge/blob/pic/demo3.png)
-![demo5](https://github.com/Heptagon196/Judge/blob/pic/demo5.png)
-![demo4](https://github.com/Heptagon196/Judge/blob/pic/demo4.png)
-![cui](https://github.com/Heptagon196/Judge/blob/pic/cui.png)
 
 # Todo
 - [x] 对命令参数的查错
@@ -38,16 +31,17 @@ Arch Linux 64位上g++ 6.3.1编译成功。
 时间限制小于一秒时可能出错。</br>
 
 # Help
-可查看judge --help或查看example目录。
+如果你初次接触，可以在一次考试的根目录下运行 judge -g 命令生成 judge.conf 配置文件
+也可查看 judge --help 或 example 目录。
 ```
 用法：judge [选项]...
 评测OI程序，编译当前目录下和source/[选手名]目录下的代码(使用该代码父目录名)，并使用当前目录下和data/[题目名]目录下的数据(自动查找)评测。文件操作自动检测(仅检测freopen)。
 当以root权限运行judge时，将调用chroot实现一个简单的沙盒。
 代码检测仅检测C与C++
 编译使用命令:
-timeout 10s g++ -static -std=c++11 -s -O2 -lm -DEJUDGE %s -o Exec/%s
-timeout 10s gcc -static -std=c99 -fno-asm -s -O2 -lm -DEJUDGE %s -o Exec/%s
-timeout 10s fpc -Xs -Sgic -O2 -dEJUDGE %s -oExec/%s
+timeout 10s g++ -static -std=c++11 -s -lm -DEJUDGE %s -o Exec/%s
+timeout 10s gcc -static -std=c99 -fno-asm -s -lm -DEJUDGE %s -o Exec/%s
+timeout 10s fpc -Xs -Sgic -dEJUDGE %s -oExec/%s
 judge python %s Exec/%s
 judge python2 %s Exec/%s
 
@@ -60,6 +54,8 @@ judge python2 %s Exec/%s
     --csv                     输出结果到result.csv，当人数大于一时默认开启
     --nocsv                   禁止输出到result.csv(即使人数大于一)
     -c, --cli                 使用一个简单的CLI管理一次考试
+    -o                        开启 O2 优化
+    -g                        生成一份配置文件方便修改
     --help                    显示本帮助
 
 全局配置文件：
@@ -70,6 +66,7 @@ judge python2 %s Exec/%s
   一个参数：
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple
     FileIO, file              强制使用或不使用文件输入输出(默认情况下检测freopen)，值：true false
+    O2, optimize              开启 O2 优化，值：true false
     enter                     对[参数1]问题进行配置，使接下来的命令按照配置文件解析，quit命令结束
   两个参数：
     SourceProblem, source, s  将问题[值1]按照配置文件(详见下一部分)[值2]进行配置
@@ -107,3 +104,11 @@ SPJ参数：
     - argv[5]: 分数输出文件(必须创建),仅一行,包含一个非负整数,表示得分.
     - argv[6]: 额外信息文件(可以不创建)
 ```
+
+# 更多截图
+![demo2](https://github.com/Heptagon196/Judge/blob/pic/demo2.png)
+![demo3](https://github.com/Heptagon196/Judge/blob/pic/demo3.png)
+![demo5](https://github.com/Heptagon196/Judge/blob/pic/demo5.png)
+![demo4](https://github.com/Heptagon196/Judge/blob/pic/demo4.png)
+![cui](https://github.com/Heptagon196/Judge/blob/pic/cui.png)
+

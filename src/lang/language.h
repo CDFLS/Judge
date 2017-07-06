@@ -34,6 +34,7 @@ namespace Context {
     --nocsv                   禁止输出到result.csv(即使人数大于一)\n\
     -c, --cli                 使用一个简单的CLI管理一次考试\n\
     -o                        开启 O2 优化\n\
+    -g                        生成一份配置文件方便修改\n\
     --help                    显示本帮助\n\
 \n\
 全局配置文件：\n\
@@ -44,6 +45,7 @@ namespace Context {
   一个参数：\n\
     background, bg            设置输出AC、WA等的背景色，有以下值可选：black green red blue yellow cyan white purple\n\
     FileIO, file              强制使用或不使用文件输入输出(默认情况下检测freopen)，值：true false\n\
+    O2, optimize              开启 O2 优化，值：true false\n\
     enter                     对[参数1]问题进行配置，使接下来的命令按照配置文件解析，quit命令结束\n\
   两个参数：\n\
     SourceProblem, source, s  将问题[值1]按照配置文件(详见下一部分)[值2]进行配置\n\

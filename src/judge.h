@@ -33,6 +33,7 @@ class JudgeSettings {
         int FileIO=0;
         string PrintDevice;
         int use_freopen=0, Terminal=1, PrinttoCSV=-1, UseCUI=0, O2opti = 0;
+        int GenerateConf = 0;
         int ConverttoInt(string colorname);
         void SourceProblem(string name,ifstream &fin,Contest *x);
         void ReadSettings(const char *settingsfile,Contest *x);

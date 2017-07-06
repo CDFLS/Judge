@@ -2,19 +2,23 @@ FLAG=--std=c++11 -Wno-write-strings -Dlinux -O2
 ifdef MAKE_EN
 	FLAG += -DEN
 endif
+ifdef MAKE_STATIC
+	FLAG += -static
+endif
 CPP=g++
-DEPENDENCIES=Bar.o judge_cui.o config_judge.o Conio.o Functions_Linux.o execute.o judge.o TrieTree.o main.o
+DEPENDENCIES=main.o Bar.o judge_cui.o ConfigJudge.o Conio.o Functions_Linux.o execute.o judge.o TrieTree.o ConfGen.o
 judge:$(DEPENDENCIES)
 	$(CPP) $(DEPENDENCIES) $(FLAG) -o judge
 	sudo make install
-static:$(DEPENDENCIES)
-	$(CPP) $(DEPENDENCIES) $(FLAG) -static
+
+main.o:
+	$(CPP) -c $(FLAG) main.cpp
 Bar.o:
 	$(CPP) -c $(FLAG) Bar.cpp
 judge_cui.o:
 	$(CPP) -c $(FLAG) judge_cui.cpp
-config_judge.o:
-	$(CPP) -c $(FLAG) config_judge.cpp
+ConfigJudge.o:
+	$(CPP) -c $(FLAG) ConfigJudge.cpp
 Conio.o:
 	$(CPP) -c $(FLAG) Conio.cpp
 Functions_Linux.o:
@@ -25,8 +29,8 @@ judge.o:
 	$(CPP) -c $(FLAG) judge.cpp
 TrieTree.o:
 	$(CPP) -c $(FLAG) TrieTree.cpp
-main.o:
-	$(CPP) -c $(FLAG) main.cpp
+ConfGen.o:
+	$(CPP) -c $(FLAG) ConfGen.cpp
 
 clean:
 	rm *.o
@@ -36,3 +40,5 @@ debug:$(DEPENDENCIES)
 	$(CPP) $(DEPENDENCIES) $(FLAG) -g -DDEBUG
 en:
 	env MAKE_EN=moha make
+static:
+	env MAKE_STATIC=moha make

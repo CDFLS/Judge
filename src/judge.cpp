@@ -3,11 +3,10 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <thread>
 #include "Conio.h"
 #include "Functions_Linux.h"
 #include "judge.h"
-#include "config_judge.h"
+#include "ConfigJudge.h"
 #include "MultiCompiler.h"
 #include "TrieTree.h"
 #include "sandbox/execute.h"
@@ -23,6 +22,13 @@ namespace GlobalConfig {
 };
 using namespace std;
 using namespace GlobalConfig;
+
+void Purify(string &s) {
+    while (s[0] == '\t' || s[0] == ' ' || s[0] == '\n' || s[0] == '\r')
+        s = s.substr(1, s.length() - 1);
+    while (s[s.length() - 1] == '\t' || s[s.length() - 1] == ' ' || s[s.length() - 1] == '\n' || s[s.length() - 1] == '\r')
+        s.pop_back();
+}
 
 bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和word的第1个字符开始比较
     int pos=0;
@@ -132,6 +138,9 @@ bool HeadersCheck(string str,int line,string filename) {//检查一行include是
 }
 
 int SourceProblem_Deal(Contest *x,Problem *p,ifstream &fin,string l) {
+    Purify(l);
+    if (l == "")
+        return 1;
     if (l=="time"||l=="t") {
         double t;
         fin >> t;
@@ -199,6 +208,7 @@ void GetLine(ifstream &fin,string &l,char ch) {
             return ;
         l.push_back(tmp);
     }
+    Purify(l);
 }
 
 void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
@@ -212,6 +222,9 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
     Problem *Pro;
     int type=0;//配置全局变量还是单个问题
     while (getline(fin,l,'(')) {
+        Purify(l);
+        if (l == "")
+            continue;
         p=-1;
 
         if (type==1)
@@ -219,6 +232,7 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
         else if (type==0) {
             if (l=="background"||l=="bg") {
                 getline(fin,l,')');
+                Purify(l);
                 conf->Status_Background=ConverttoInt(l);
             }
             else if (l=="SourceProblem"||l=="source"||l=="s") {
@@ -266,8 +280,11 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
             else if (l=="compiler") {
                 string a,b,c;
                 getline(fin,a,',');
+                Purify(a);
                 getline(fin,b,',');
+                Purify(b);
                 getline(fin,c,')');
+                Purify(c);
                 Compiler.push_back((COMPILER){a,b,c});
             }
             else
@@ -330,14 +347,16 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
                 }
                 i--;
             }
-            else if ((string)v[i-1]==(string)"--csv")
+            else if ((string)v[i - 1]==(string)"--csv")
                 conf->PrinttoCSV=1;
-            else if ((string)v[i-1]==(string)"--nocsv")
+            else if ((string)v[i - 1]==(string)"--nocsv")
                 conf->PrinttoCSV=0;
-            else if (((string)v[i-1]==(string)"-c")||((string)v[i-1]==(string)"--cli"))
+            else if (((string)v[i - 1]==(string)"-c")||((string)v[i-1]==(string)"--cli"))
                 conf->UseCUI=1;
             else if ((string)v[i - 1] == (string)"-o")
                 conf->O2opti = 1;
+            else if ((string)v[i - 1] == (string)"-g")
+                conf->GenerateConf = 1;
             else if ((cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
                 Context::PrintHelp();
                 return 1;

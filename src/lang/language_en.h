@@ -33,6 +33,7 @@ It will use these commands to compile:\n";
     --nocsv                   Turn off csv output(even if there is more than one contestant)\n\
     -c, --cli                 Use a simple CLI to manage a contest\n\
     -o                        Add -O2 option when compiling\n\
+    -g                        Generate default judge.conf\n\
     --help                    Print this help message and exit\n\
 \n\
 Global config:\n\
@@ -42,6 +43,7 @@ This program will read settings from ~/.judgerc and ./judge.conf. The format is 
   With one argument:\n\
     background, bg            Set the background when print WA,AC,etc. : black green red blue yellow cyan white purple\n\
     FileIO, file              Use file input/output forcibly; 'true' or 'false'\n\
+    O2, optimize              Add -O2 option when compiling; 'true' or 'false'\n\
 	enter                     Config the problem specified, use the rule of problem config file to analyse the command below, end with command 'quit'\n\
   With two arguments:\n\
     SourceProblem, source, s  Configure problem [Value1] with the problem config file(which will be introduced later)[Value2]\n\

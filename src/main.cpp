@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "sandbox/execute.h"
+#include "ConfGen.h"
 using namespace std;
 
 int main(int argc,char *argv[]) {
@@ -33,6 +34,12 @@ int main(int argc,char *argv[]) {
     x.InitSPJ();
     conf.ReadSettings(GetJudgerc().c_str(),&x);
     conf.ReadSettings("judge.conf",&x);
+    if (conf.GenerateConf) {
+        GenConf(&conf, &x);
+        ClearFile();
+        system("rm Exec -rf 2>/dev/null");
+        return 0;
+    }
     x.JudgeContest();
     ClearFile();
     JudgeOutput::OutputContest(x);

@@ -8,7 +8,7 @@
 #include "Bar.h"
 #include "judge.h"
 #include "ConverttoString.h"
-#include "config_judge.h"
+#include "ConfigJudge.h"
 #include "MultiCompiler.h"
 #include "Functions_Linux.h"
 

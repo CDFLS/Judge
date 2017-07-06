@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "judge.h"
-#include "config_judge.h"
+#include "ConfigJudge.h"
 using namespace std;
 
 namespace Config {
