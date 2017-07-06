@@ -1,7 +1,7 @@
 # <center>Judge</center>
 一个简单的OI程序评测系统，目前只支持Linux，将来也不会支持Windows。</br>
 通过调用time与timeout运行程序，当以root运行时会使用chroot来实现一个简单的沙盒。</br>
-拥有一个简单的CUI，结果可导出至CSV文件</br>
+拥有一个简单的CLI，结果可导出至CSV文件</br>
 可将执行过程重定向到文件(将会显示进度)</br>
 会判定freopen是否写错，如果写错且爆0将给出FileError(但不一定准确，可能只是单纯地写了个freopen("./bala.in", "r", stdin)然后WA了而已，不过我不觉得有这种非主流)</br>
 </br>
@@ -32,6 +32,10 @@ Arch Linux 64位上g++ 6.3.1编译成功。
 - [x] 更多的配置项
 - [x] define解析
 - [ ] 多线程评测
+
+# 已知 Bug
+终端宽度不够时CLI陷入死循环。</br>
+时间限制小于一秒时可能出错。</br>
 
 # Help
 可查看judge --help或查看example目录。

@@ -6,6 +6,12 @@
 #include <sstream>
 #include <iostream>
 using namespace std;
+
+static JudgeSettings config;
+static void InitLang(JudgeSettings& settings) {
+    config = settings;
+}
+
 namespace Context {
 	static string CUIhelp="tab键切换模式(重测和查看记录)，ws上下移动，ad翻页，enter选择,q退出";
 	static void PrintHelp() {
@@ -22,11 +28,12 @@ namespace Context {
     -f[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个函数\n\
     -h [STRING]               禁止源文件中出现该头文件\n\
     -h[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个头文件\n\
-    -t [TIME]                 限定程序运行时间(未指定时为" + CTS::DoubleToString(JudgeSettings::Default_timelimit) + "s)\n\
-    -m [MEMORY]               限制程序使用内存(为指定时为" + CTS::IntToString(JudgeSettings::Default_memorylimit) + "KB)\n\
+    -t [TIME]                 限定程序运行时间(未指定时为" + CTS::DoubleToString(config.Default_timelimit) + "s)\n\
+    -m [MEMORY]               限制程序使用内存(为指定时为" + CTS::IntToString(config.Default_memorylimit) + "KB)\n\
     --csv                     输出结果到result.csv，当人数大于一时默认开启\n\
     --nocsv                   禁止输出到result.csv(即使人数大于一)\n\
     -c, --cli                 使用一个简单的CLI管理一次考试\n\
+    -o                        开启 O2 优化\n\
     --help                    显示本帮助\n\
 \n\
 全局配置文件：\n\

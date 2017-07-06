@@ -10,10 +10,10 @@ struct COMPILER {
 };
 static int Inited=0;
 static vector<COMPILER> Compiler={
-    {"cpp","g++ -dumpversion","timeout 10s g++ -static -std=c++11 -s -O2 -lm -DEJUDGE %s -o Exec/%s",0},
-    {"c","gcc -dumpversion","timeout 10s gcc -static -std=c99 -fno-asm -s -O2 -lm -DEJUDGE %s -o Exec/%s",0},
-    {"pas","fpc -iV","timeout 10s fpc -Xs -Sgic -O2 -dEJUDGE %s -oExec/%s",0},
-    {"py","python --version","judge python %s Exec/%s",0},
+    {"cpp","g++ -dumpversion","timeout 10s g++ -static -std=c++11 -s -lm -DEJUDGE %s -o Exec/%s",0},
+    {"c","gcc -dumpversion","timeout 10s gcc -static -std=c99 -fno-asm -s -lm -DEJUDGE %s -o Exec/%s",0},
+    {"pas","fpc -iV","timeout 10s fpc -Xs -Sgic -dEJUDGE %s -oExec/%s",0},
+    {"py","python3 --version","judge python %s Exec/%s",0},
     {"py","python2 --version","judge python2 %s Exec/%s",0},
 };
 static void InitCompiler(){
@@ -24,7 +24,8 @@ static void InitCompiler(){
             Compiler[i].usable=1;
     }
 }
-static int Compile(string pathto,string problem,int terminal) {
+
+static int Compile(string pathto,string problem,int terminal, int optimize) {
     if (!Inited)
         InitCompiler();
     int dot;
@@ -42,8 +43,10 @@ static int Compile(string pathto,string problem,int terminal) {
     if (TEMP.SafetyCheck(pathto+problem+"."+Compiler[dot].suffix))
         return 1;
     string tmp=Compiler[dot].cmd;
+    if (optimize)
+        tmp += " -O2";
     if (!terminal)
-        tmp+=" 2>.ejudge.tmp";
+        tmp += " 2>.ejudge.tmp";
     char str[512];
     sprintf(str,tmp.c_str(),(pathto+problem+"."+Compiler[dot].suffix).c_str(),("./"+problem).c_str());
     int tmpint;

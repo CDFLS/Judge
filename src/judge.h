@@ -20,23 +20,24 @@ using namespace std;
 
 class Contest;
 
-namespace JudgeSettings {
-    static char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error","File Error"};
-    static char Status_Short[]="AW-TMRF";
-    static int Status_Backround=white;
-    static int Status_Color[]={green,red,yellow,red,red,yellow,yellow};//输出Accepted等提示信息的颜色
-    static TrieTree Func, Header, Const;
-    //Function模式会检测括号，Header模式只在include中查询，Const模式直接匹配。都会忽略空格。
-    static double Default_timelimit=1;
-    static int Default_memorylimit=128000;
-    static int FileIO=0;
-    static string PrintDevice;
-    static int use_freopen=0,Terminal=1,PrinttoCSV=-1,UseCUI=0;
-    int ConverttoInt(string colorname);
-    void SourceProblem(string name,ifstream &fin,Contest *x);
-    void ReadSettings(const char *settingsfile,Contest *x);
-    int ReadFromArgv(int c,char *v[]);
-    void InitTrieTree();
+const char Status[][40]={"Accepted","Wrong Answer","Compile Error","Time Limit Exceeded","Memory Limit Exceeded","Runtime Error","File Error"};
+const char Status_Short[]="AW-TMRF";
+const int Status_Color[]={green, red, yellow, red, red, yellow, yellow};//输出Accepted等提示信息的颜色
+class JudgeSettings {
+    public:
+        int Status_Background=white;
+        TrieTree Func, Header, Const;
+        //Function模式会检测括号，Header模式只在include中查询，Const模式直接匹配。都会忽略空格。
+        double Default_timelimit=1;
+        int Default_memorylimit=128000;
+        int FileIO=0;
+        string PrintDevice;
+        int use_freopen=0, Terminal=1, PrinttoCSV=-1, UseCUI=0, O2opti = 0;
+        int ConverttoInt(string colorname);
+        void SourceProblem(string name,ifstream &fin,Contest *x);
+        void ReadSettings(const char *settingsfile,Contest *x);
+        int ReadFromArgv(int c,char *v[]);
+        void InitTrieTree();
 };
 
 class JudgeResult{
@@ -77,7 +78,10 @@ class Problem {
 };
 
 class Contest {
+    private:
+        JudgeSettings* conf;
     public:
+        Contest(JudgeSettings &settings);
         vector<Contestant> oier;
         vector<Problem> problem;
         void InitSPJ();

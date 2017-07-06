@@ -18,7 +18,11 @@
 #include "lang/language.h"
 #endif
 
+namespace GlobalConfig {
+    JudgeSettings* conf;
+};
 using namespace std;
+using namespace GlobalConfig;
 
 bool cmp(char *str,int s,char *word) {//比较字符串，从str的第s个和word的第1个字符开始比较
     int pos=0;
@@ -81,7 +85,7 @@ int JudgeSettings::ConverttoInt(string colorname) {
 }
 
 void JudgeSettings::InitTrieTree() {
-    Func=TrieTree((vector<string>){"system", "folk", "exec"});
+    Func=TrieTree((vector<string>){"system(", "folk(", "exec("});
     Header=TrieTree((vector<string>){"windows.h"});
     Const=TrieTree((vector<string>){"cerr<<", "stderr", "/dev/", "/proc/"});
 }
@@ -111,11 +115,11 @@ bool HeadersCheck(string str,int line,string filename) {//检查一行include是
     }
     int k;
     for (int i=0;i<head.size();i++)
-        if (JudgeSettings::Const.query(head.substr(i,head.size()-i))!=-1)
+        if (conf->Const.query(head.substr(i,head.size()-i))!=-1)
             goto PRINTERR;
-    if (wrong||(((k=JudgeSettings::Header.query(head))!=-1)&&(k==head.length()))) {
+    if (wrong||(((k=conf->Header.query(head))!=-1)&&(k==head.length()))) {
         PRINTERR:;
-        if (JudgeSettings::Terminal) {
+        if (conf->Terminal) {
             ClearColor();
             HighLight();
         }
@@ -203,7 +207,7 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
     if (!fin)
         return ;
     string l;
-    vector<TrieTree*> lis={&JudgeSettings::Func,&JudgeSettings::Header};
+    vector<TrieTree*> lis={&conf->Func,&conf->Header};
     int p;
     Problem *Pro;
     int type=0;//配置全局变量还是单个问题
@@ -215,7 +219,7 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
         else if (type==0) {
             if (l=="background"||l=="bg") {
                 getline(fin,l,')');
-                JudgeSettings::Status_Backround=ConverttoInt(l);
+                conf->Status_Background=ConverttoInt(l);
             }
             else if (l=="SourceProblem"||l=="source"||l=="s") {
                 string pathto;
@@ -232,9 +236,16 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
             else if (l=="file"||l=="FileIO") {
                 GetLine(fin,l,')');
                 if (l=="true")
-                    JudgeSettings::FileIO=1;
+                    conf->FileIO=1;
                 if (l=="false")
-                    JudgeSettings::FileIO=-1;
+                    conf->FileIO=-1;
+            }
+            else if (l == "optimize" || l == "O2") {
+                GetLine(fin, l, ')');
+                if (l == "true")
+                    conf->O2opti = 1;
+                if (l == "false")
+                    conf->O2opti = 0;
             }
             else if (l=="Func"||l=="f")
                 p=0;
@@ -276,7 +287,7 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
                             break;
                         l.push_back(ch);
                     }
-                    if (lis[p]==&JudgeSettings::Func)
+                    if (lis[p]==&conf->Func)
                         l+='(';
                     lis[p]->add(l);
                     if (ch==')')
@@ -289,13 +300,12 @@ void JudgeSettings::ReadSettings(const char *settingsfile,Contest *x) {
 }
 
 int JudgeSettings::ReadFromArgv(int c,char *v[]) {
-    for (int i=1;i<c;i++)
-        if (v[i][0]=='-') {
-            i++;
+    for (int i=1;i<=c;i++)
+        if (v[i-1][0]=='-') {
             if (cmp(v[i-1],0,(char *)"-t")&&(strlen(v[i-1])==2)&&(i<c))//时间
-                sscanf(v[i],"%lf",&JudgeSettings::Default_timelimit);
+                sscanf(v[i],"%lf",&conf->Default_timelimit);
             else if (cmp(v[i-1],0,(char *)"-m")&&(strlen(v[i-1])==2)&&(i<c))//内存
-                sscanf(v[i],"%d",&JudgeSettings::Default_memorylimit);
+                sscanf(v[i],"%d",&conf->Default_memorylimit);
             else if (cmp(v[i-1],0,(char *)"-f")&&(strlen(v[i-1])>=2)&&(i<c)) {//添加禁用函数，如-f3表示添加接下的的三个单词，-f与-f1等效
                 int t;
                 if (sscanf(v[i-1],"-f%d",&t)==-1)
@@ -304,7 +314,7 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
                     char str[256];
                     sprintf(str,"%s",v[i]),i++;
                     string tmp=(string)str+"(";
-                    JudgeSettings::Func.add(tmp);
+                    conf->Func.add(tmp);
                 }
                 i--;
             }
@@ -316,16 +326,18 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
                     char str[256];
                     sprintf(str,"%s",v[i]),i++;
                     string tmp=str;
-                    JudgeSettings::Header.add(tmp);
+                    conf->Header.add(tmp);
                 }
                 i--;
             }
             else if ((string)v[i-1]==(string)"--csv")
-                JudgeSettings::PrinttoCSV=1;
+                conf->PrinttoCSV=1;
             else if ((string)v[i-1]==(string)"--nocsv")
-                JudgeSettings::PrinttoCSV=0;
+                conf->PrinttoCSV=0;
             else if (((string)v[i-1]==(string)"-c")||((string)v[i-1]==(string)"--cli"))
-                JudgeSettings::UseCUI=1;
+                conf->UseCUI=1;
+            else if ((string)v[i - 1] == (string)"-o")
+                conf->O2opti = 1;
             else if ((cmp(v[i-1],0,(char *)"--help")&&(strlen(v[i-1])==6))) {
                 Context::PrintHelp();
                 return 1;
@@ -356,6 +368,7 @@ bool TestPoint::operator < (TestPoint x) {
     for (int i=0;i<stdInput.length();i++)
         if (stdInput[i]!=x.stdInput[i])
             return stdInput[i]<x.stdInput[i];
+    return false;
 }
 
 JudgeResult Exec(string input,string output,string bin,double timelimit,int memorylimit) {
@@ -378,7 +391,7 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,in
     //int RunAsRoot=WEXITSTATUS(system("if [[ $EUID -eq 0 ]]; then exit 1;fi"));
     char str[1024];
     JudgeResult res;
-    if ((JudgeSettings::use_freopen&&JudgeSettings::FileIO==0)||(JudgeSettings::FileIO==1)) {
+    if ((conf->use_freopen&&conf->FileIO==0)||(conf->FileIO==1)) {
         system(("cp "+stdInput+" "+bin+".in").c_str());
         res=Exec("/dev/null","/dev/null","Exec/"+bin,timelimit,memorylimit);
         system(("rm "+bin+".in").c_str());
@@ -427,11 +440,11 @@ bool Contestant::operator < (const Contestant &x) const {
 }
 
 bool Problem::SafetyCheck(string filename) {
-    JudgeSettings::use_freopen=0;
+    conf->use_freopen=0;
     ifstream fin;
     fin.open(filename);
     if (!fin) {
-        if (JudgeSettings::Terminal) {
+        if (conf->Terminal) {
             ClearColor();
             HighLight();
         }
@@ -530,35 +543,35 @@ bool Problem::SafetyCheck(string filename) {
                         para_alias="";
                     }
                 }
-                JudgeSettings::use_freopen=1;
+                conf->use_freopen=1;
             }
             else {
                 int k;
-                if ((k=JudgeSettings::Func.query(str,i))!=-1) {
-                    if (JudgeSettings::Terminal) {
+                if ((k=conf->Func.query(str,i))!=-1) {
+                    if (conf->Terminal) {
                         ClearColor();
                         HighLight();
                     }
                     printf("%s:%d: ",filename.c_str(),line+extraline);
                     JudgeOutput::PrintError();
-                    printf("%s:%s\n",Context::InvalidWordFound,(str.substr(i,k-i)).c_str());
+                    printf("%s:%s\n",Context::InvalidWordFound,(str.substr(i,k-i-1)).c_str());
                     return true;
                 }
-                if ((k=JudgeSettings::Const.query(str,i))!=-1) {
-                    if (JudgeSettings::Terminal) {
+                if ((k=conf->Const.query(str,i))!=-1) {
+                    if (conf->Terminal) {
                         ClearColor();
                         HighLight();
                     }
                     printf("%s:%d: ",filename.c_str(),line+extraline);
                     JudgeOutput::PrintError();
-                    printf("%s:%s\n",Context::InvalidConstFound,(str.substr(i,k-i)).c_str());
+                    printf("%s:%s\n",Context::InvalidConstFound,(str.substr(i,k-i-1)).c_str());
                     return true;
                 }
             }
     }
     fin.close();
-    if ((JudgeSettings::use_freopen==1 && (!(InputFile&&OutputFile))) || (JudgeSettings::use_freopen==1 && JudgeSettings::FileIO==-1)||(JudgeSettings::use_freopen==0 && JudgeSettings::FileIO==1))
-        JudgeSettings::use_freopen=2;//赋值2表示可能文件错误
+    if ((conf->use_freopen==1 && (!(InputFile&&OutputFile))) || (conf->use_freopen==1 && conf->FileIO==-1)||(conf->use_freopen==0 && conf->FileIO==1))
+        conf->use_freopen=2;//赋值2表示可能文件错误
     return false;
 }
 
@@ -579,8 +592,8 @@ void Problem::InitProblem() {
         }
         point.push_back(tmp);
     }
-    memorylimit=JudgeSettings::Default_memorylimit;
-    timelimit=JudgeSettings::Default_timelimit;
+    memorylimit=conf->Default_memorylimit;
+    timelimit=conf->Default_timelimit;
     sort(point.begin(),point.end());
     if (point.size()&&eachscore==0)
         eachscore=100/point.size();
@@ -593,8 +606,8 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
     tot.memo=-1;
     tot.time=-1;
     putchar('\n');
-    if (Compile(oier.name,name_to_print,JudgeSettings::Terminal)) {
-        if (!JudgeSettings::Terminal) {
+    if (Compile(oier.name, name_to_print, conf->Terminal, conf->O2opti)) {
+        if (!conf->Terminal) {
             fstream fin;
             fin.open(".ejudge.tmp");
             string line;
@@ -607,7 +620,7 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
             sub.push_back((JudgeResult){CE,0,0,0});
         return (JudgeResult){CE,0,0,0,sub};
     }
-    bool MaybeFileError=(JudgeSettings::use_freopen==2);
+    bool MaybeFileError=(conf->use_freopen==2);
     int maxlength=-(1<<30);
     for (int i=0;i<point.size();i++)
         maxlength=max(maxlength,(int)BaseName(point[i].stdInput).length());
@@ -638,6 +651,12 @@ JudgeResult Problem::JudgeProblem(Contestant &oier){
     return tot;
 }
 
+Contest::Contest(JudgeSettings &settings) {
+    GlobalConfig::conf = &settings;
+    Contest::conf = &settings;
+    InitLang(settings);
+}
+
 void Contest::InitSPJ() {
     for (int i=0;i<problem.size();i++)
         if ((exist(problem[i].name+"spj.cpp"))&&(!exist(problem[i].name+"spj")))
@@ -645,9 +664,9 @@ void Contest::InitSPJ() {
 }
 
 void Contest::InitContest() {
-    if (!PrinttoTerminal(JudgeSettings::PrintDevice))
-        JudgeSettings::Terminal=0;
-    if (JudgeSettings::UseCUI&&exist("judge.log")) {
+    if (!PrinttoTerminal(conf->PrintDevice))
+        conf->Terminal=0;
+    if (conf->UseCUI&&exist("judge.log")) {
         Config::Readfrom(this,"judge.log");
         return ;
     }
@@ -695,28 +714,28 @@ void Contest::InitContest() {
             problem.push_back(tmp);
     }
 
-    if (JudgeSettings::PrinttoCSV==-1) {
+    if (conf->PrinttoCSV==-1) {
         if (problem.size()>1)
-            JudgeSettings::PrinttoCSV=1;
+            conf->PrinttoCSV=1;
         else
-            JudgeSettings::PrinttoCSV=0;
+            conf->PrinttoCSV=0;
     }
 }
 
 void Contest::JudgeContest() {
-    if (JudgeSettings::UseCUI&&exist("judge.log")) {
+    if (conf->UseCUI&&exist("judge.log")) {
         Judge_CUI();
         return ;
     }
 
     for (int i=0;i<oier.size();i++) {
         for (int j=0;j<problem.size();j++) {
-            if (JudgeSettings::Terminal)
+            if (conf->Terminal)
                 foreground(yellow);
             else
                 cout << Context::Contestant+" " << i+1 << ':' << oier[i].name_to_print << " "+Context::Problem+" " << j+1 << ':' << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']';
             cerr << Context::Contestant+" " << i+1 << ':' << oier[i].name_to_print << " "+Context::Problem+" " << j+1 << ':' << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']' << endl;
-            if (JudgeSettings::Terminal)
+            if (conf->Terminal)
                 ClearColor();
             while (oier[i].problem.size()<=j)
                 oier[i].problem.push_back((JudgeResult){});
@@ -729,23 +748,23 @@ void Contest::JudgeContest() {
     }
 
     Config::Saveto(this,"judge.log");
-    if (JudgeSettings::UseCUI)
+    if (conf->UseCUI)
         Contest::Judge_CUI();
 }
 
 void JudgeOutput::PrintStatus(int st) {
-    if (JudgeSettings::Terminal) {
-        color(JudgeSettings::Status_Color[st],JudgeSettings::Status_Backround);
+    if (conf->Terminal) {
+        color(Status_Color[st], conf->Status_Background);
         HighLight();
-        printf("%s",JudgeSettings::Status[st]);
+        printf("%s",Status[st]);
         ClearColor();
     }
     else
-        printf("|%s|",JudgeSettings::Status[st]);
+        printf("|%s|",Status[st]);
 }
 
 void JudgeOutput::PrintError() {
-    if (JudgeSettings::Terminal) {
+    if (conf->Terminal) {
         foreground(red);
         HighLight();
         cout << Context::Error;
@@ -756,7 +775,7 @@ void JudgeOutput::PrintError() {
 }
 
 void JudgeOutput::PrintResult(JudgeResult &x) {
-    if (JudgeSettings::Terminal) {
+    if (conf->Terminal) {
         foreground(green);
         printf("%s:",Context::Time);
         foreground(yellow);
@@ -807,9 +826,9 @@ void JudgeOutput::Print_zh_CN(string str,int len) {//修复输出问题
 }
 
 void JudgeOutput::OutputContest(Contest &test) {
-    if (JudgeSettings::PrinttoCSV)
+    if (conf->PrinttoCSV)
         ConverttoCSV(test,(string)"result.csv");
-    if (JudgeSettings::UseCUI||(test.oier.size()<=1&&test.problem.size()<=1))
+    if (conf->UseCUI||(test.oier.size()<=1&&test.problem.size()<=1))
         return ;
     sort(test.oier.begin(),test.oier.end());
     int len=6;
@@ -843,7 +862,7 @@ void JudgeOutput::ConverttoCSV(Contest &test,string csv) {
         fout << "\"" << test.oier[i].name_to_print << "\"," << test.oier[i].sum << ",";
         for (int j=0;j<test.problem.size();j++) {
             for (int k=0;k<test.oier[i].problem[j].subresult.size();k++)
-                fout << JudgeSettings::Status_Short[test.oier[i].problem[j].subresult[k].st];
+                fout << Status_Short[test.oier[i].problem[j].subresult[k].st];
             fout << ',' << test.oier[i].problem[j].score << ',';
         }
         fout << endl;
@@ -852,7 +871,7 @@ void JudgeOutput::ConverttoCSV(Contest &test,string csv) {
     for (int i=0;i<3+test.problem.size()*2;i++)
         fout << ',';
     fout << "\"" << Context::SymbolExplanation << endl;
-    for (int i=0;i<strlen(JudgeSettings::Status_Short);i++)
-        fout << JudgeSettings::Status_Short[i] << ":" << JudgeSettings::Status[i] << endl;
+    for (int i=0;i<strlen(Status_Short);i++)
+        fout << Status_Short[i] << ":" << Status[i] << endl;
     fout << "\"," << endl;
 }

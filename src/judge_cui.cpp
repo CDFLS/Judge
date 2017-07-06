@@ -113,6 +113,14 @@ void ShowMenu() {
     ShowPage[page()].rever();
 }
 
+void Exit(Contest* x) {
+    Config::Saveto(x, "judge.log");
+    unhidecursor();
+    ClearColor();
+    puts("");
+    system("clear");
+}
+
 void Contest::Judge_CUI() {
     struct winsize size;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &size);
@@ -125,8 +133,8 @@ void Contest::Judge_CUI() {
         string l1, l2;
         for (auto i : ColorScheme::c) {
             fin >> l1 >> l2;
-            i.first = JudgeSettings::ConverttoInt(l1);
-            i.second = JudgeSettings::ConverttoInt(l2);
+            i.first = conf->ConverttoInt(l1);
+            i.second = conf->ConverttoInt(l2);
         }
         fin.close();
     }
@@ -188,11 +196,7 @@ void Contest::Judge_CUI() {
         if (ch == '\t')
             Tab = (Tab + 1) % Menu.size();
         if (ch == 'q') {
-            Config::Saveto(this,"judge.log");
-            unhidecursor();
-            ClearColor();
-            puts("");
-            system("clear");
+            Exit(this);
             return ;
         }
         while (Select < 0)
@@ -252,7 +256,7 @@ void Contest::Judge_CUI() {
                         JudgeOutput::PrintResult(P->problem[i].subresult[j]);
                     }
                 else
-                    Compile(P->name,problem[i].name_to_print,1);
+                    Compile(P->name, problem[i].name_to_print, 1, conf->O2opti);
                 JudgeOutput::PrintResult(P->problem[i]);
                 printf("%s:%d\n\n",Context::Score,P->problem[i].score);
             }
@@ -264,9 +268,5 @@ void Contest::Judge_CUI() {
             ShowContestants(oier);
         }
     }
-    Config::Saveto(this,"judge.log");
-    unhidecursor();
-    ClearColor();
-    puts("");
-    system("clear");
+    Exit(this);
 }

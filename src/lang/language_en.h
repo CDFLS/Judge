@@ -5,6 +5,12 @@
 #include <sstream>
 #include <iostream>
 using namespace std;
+
+static JudgeSettings config;
+static void InitLang(JudgeSettings& settings) {
+    config = settings;
+}
+
 namespace Context {
 	static string CUIhelp="tab: switch modes|'w''s': move|'a''d': turn page|enter: confirm|'q': quit";
 	static void PrintHelp() {
@@ -21,11 +27,12 @@ It will use these commands to compile:\n";
     -f[NUMBER] [STRING]...    [NUMBER] forbidden functions in sources\n\
     -h [STRING]               Forbidden headers in sources\n\
     -h[NUMBER] [STRING]...    [NUMBER] forbidden headers in sources\n\
-    -t [TIME]                 Limit time (" + CTS::DoubleToString(JudgeSettings::Default_timelimit) + "s by default)\n\
-    -m [MEMORY]               Limit memory (" + CTS::IntToString(JudgeSettings::Default_memorylimit) + "KB by default)\n\
+    -t [TIME]                 Limit time (" + CTS::DoubleToString(config.Default_timelimit) + "s by default)\n\
+    -m [MEMORY]               Limit memory (" + CTS::IntToString(config.Default_memorylimit) + "KB by default)\n\
     --csv                     Output result to result.csv after judging. Used by default when there is more than one contestant\n\
     --nocsv                   Turn off csv output(even if there is more than one contestant)\n\
     -c, --cli                 Use a simple CLI to manage a contest\n\
+    -o                        Add -O2 option when compiling\n\
     --help                    Print this help message and exit\n\
 \n\
 Global config:\n\

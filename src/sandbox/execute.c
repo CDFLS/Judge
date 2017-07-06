@@ -27,7 +27,7 @@
  */
 
 int execute(const char* input_file_name, const char* output_file_name,
-            const char* execute_file_name, int time_limit, int memory_limit,
+            const char* execute_file_name, double time_limit, int memory_limit,
             int output_limit, int* run_memory, double* cputime_ptr) {
     int pid, timer_pid, ret_pid;
     int sig;

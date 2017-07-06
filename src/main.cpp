@@ -9,29 +9,30 @@
 using namespace std;
 
 int main(int argc,char *argv[]) {
-    if (argc==4&&(string)argv[1]=="python") {
+    if (argc>=4&&(string)argv[1]=="python") {
         system(("echo \"#!/bin/python\" > "+(string)argv[3]).c_str());
         system(("cat "+(string)argv[2]+" >> "+(string)argv[3]).c_str());
         system(("chmod +x "+(string)argv[3]).c_str());
         return 0;
     }
-    if (argc==4&&(string)argv[1]=="python2") {
+    if (argc>=4&&(string)argv[1]=="python2") {
         system(("echo \"#!/bin/python2\" > "+(string)argv[3]).c_str());
         system(("cat "+(string)argv[2]+" >> "+(string)argv[3]).c_str());
         system(("chmod +x "+(string)argv[3]).c_str());
         return 0;
     }
     system("mkdir Exec 2>/dev/null");
-    Contest x;
-    if (JudgeSettings::ReadFromArgv(argc,argv)) {
+    JudgeSettings conf;
+    conf.InitTrieTree();
+    Contest x(conf);
+    if (conf.ReadFromArgv(argc,argv)) {
         system("rm Exec -rf");
         return 0;
     }
     x.InitContest();
     x.InitSPJ();
-    JudgeSettings::InitTrieTree();
-    JudgeSettings::ReadSettings(GetJudgerc().c_str(),&x);
-    JudgeSettings::ReadSettings("judge.conf",&x);
+    conf.ReadSettings(GetJudgerc().c_str(),&x);
+    conf.ReadSettings("judge.conf",&x);
     x.JudgeContest();
     ClearFile();
     JudgeOutput::OutputContest(x);
