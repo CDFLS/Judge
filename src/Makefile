@@ -1,4 +1,4 @@
-FLAG=--std=c++11 -Wno-write-strings -Dlinux -g
+FLAG=--std=c++11 -Wno-write-strings -Dlinux -O2
 ifdef MAKE_EN
 	FLAG += -DEN
 endif

@@ -125,7 +125,7 @@ void Contest::Judge_CUI() {
     struct winsize size;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &size);
     W = size.ws_col - 9;
-    L = size.ws_row - 3;
+    L = size.ws_row - 2;
     //experimental feature
     if (exist("judgecolor.conf")) {
         ifstream fin;
@@ -267,6 +267,15 @@ void Contest::Judge_CUI() {
             ShowMenu();
             ShowContestants(oier);
         }
+
+        //ioctl(STDIN_FILENO, TIOCGWINSZ, &size);
+        //if (W != size.ws_col - 9 || L != size.ws_row - 2) {
+            //W = size.ws_col - 9;
+            //L = size.ws_row - 2;
+            //ShowContestants(oier);
+            //ShowMenu();
+        //}
+        //TODO: Auto resize
     }
     Exit(this);
 }
