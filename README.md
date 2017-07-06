@@ -2,15 +2,15 @@
 ![demo1](https://github.com/Heptagon196/Judge/blob/pic/demo1.png)
 </br>
 </br>
-一个简单的OI程序评测系统，目前只支持Linux，将来也不会支持Windows。</br>
-通过调用time与timeout运行程序，当以root运行时会使用chroot来实现一个简单的沙盒。</br>
+一个简单的OI程序评测程序，目前只支持Linux，将来也不会支持Windows。</br>
+当以root运行时会使用chroot来实现一个简单的沙盒。</br>
 拥有一个简单的CLI，结果可导出至CSV文件</br>
 可将执行过程重定向到文件(将会显示进度)</br>
 会判定freopen是否写错，如果写错且爆0将给出FileError(但不一定准确，可能只是单纯地写了个freopen("./bala.in", "r", stdin)然后WA了而已，不过我不觉得有这种非主流)</br>
 </br>
 运行make构建，运行make en构建英文版。</br>
 
-Arch Linux 64位上g++ 6.3.1编译成功。
+Arch Linux 64位上g++ 7.1.1编译成功。
 
 # 安全性
 对于一份代码，首先会在副本中删除所有include行(同时检查头文件)，然后对g++ -E -P -DEJUDGE的输出进行字符串搜索(从而防止使用宏定义避免搜索)。然后检测是否以root运行，是则使用chroot。
@@ -31,6 +31,7 @@ Arch Linux 64位上g++ 6.3.1编译成功。
 # 已知 Bug
 终端宽度不够时CLI陷入死循环。</br>
 时间限制小于一秒时可能出错。</br>
+测试出的内存与 lemon 略有出入。</br>
 
 # Help
 如果你初次接触，可以在一次考试的根目录下运行 judge -g 命令生成 judge.conf 配置文件
