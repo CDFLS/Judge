@@ -571,9 +571,9 @@ bool Problem::SafetyCheck(string filename) {
                         ClearColor();
                         HighLight();
                     }
-                    printf("%s:%d: ",filename.c_str(),line+extraline);
+                    printf("%s: %d: ",filename.c_str(),line+extraline);
                     JudgeOutput::PrintError();
-                    printf("%s:%s\n",Context::InvalidWordFound,(str.substr(i,k-i-1)).c_str());
+                    printf("%s: %s\n",Context::InvalidWordFound,(str.substr(i,k-i-1)).c_str());
                     return true;
                 }
                 if ((k=conf->Const.query(str,i))!=-1) {
@@ -581,9 +581,9 @@ bool Problem::SafetyCheck(string filename) {
                         ClearColor();
                         HighLight();
                     }
-                    printf("%s:%d: ",filename.c_str(),line+extraline);
+                    printf("%s: %d: ",filename.c_str(),line+extraline);
                     JudgeOutput::PrintError();
-                    printf("%s:%s\n",Context::InvalidConstFound,(str.substr(i,k-i-1)).c_str());
+                    printf("%s: %s\n",Context::InvalidConstFound,(str.substr(i,k-i-1)).c_str());
                     return true;
                 }
             }
@@ -752,8 +752,8 @@ void Contest::JudgeContest() {
             if (conf->Terminal)
                 foreground(yellow);
             else
-                cout << Context::Contestant+" " << i+1 << ':' << oier[i].name_to_print << " "+Context::Problem+" " << j+1 << ':' << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']';
-            cerr << Context::Contestant+" " << i+1 << ':' << oier[i].name_to_print << " "+Context::Problem+" " << j+1 << ':' << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']' << endl;
+                cout << Context::Contestant+" " << i+1 << ": " << oier[i].name_to_print << " "+Context::Problem+" " << j+1 << ": " << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']';
+            cerr << Context::Contestant+" " << i+1 << ": " << oier[i].name_to_print << " "+Context::Problem+" " << j+1 << ": " << problem[j].name_to_print << " [" << i*problem.size()+j+1 << '/' << oier.size()*problem.size() << ']' << endl;
             if (conf->Terminal)
                 ClearColor();
             while (oier[i].problem.size()<=j)
@@ -761,7 +761,7 @@ void Contest::JudgeContest() {
             oier[i].problem[j]=problem[j].JudgeProblem(oier[i]);
             printf("\n%s ",oier[i].name_to_print.c_str());
             JudgeOutput::PrintResult(oier[i].problem[j]);
-            printf("%s:%d\n\n",Context::Score,oier[i].problem[j].score);
+            printf("%s: %d\n\n",Context::Score,oier[i].problem[j].score);
         }
         oier[i].sumup();
     }

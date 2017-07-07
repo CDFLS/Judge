@@ -224,11 +224,11 @@ void Contest::Judge_CUI() {
             puts("");
             system("clear");
             for (int i=0;i<problem.size();i++) {
-                cout << Context::Contestant+" " << ':' << P->name_to_print << " "+Context::Problem+" " << i+1 << ':' << problem[i].name_to_print << " [" << i+1 << '/' << problem.size() << ']' << endl;
+                cout << Context::Contestant << ": " << P->name_to_print << " "+Context::Problem+" " << i+1 << ": " << problem[i].name_to_print << " [" << i+1 << '/' << problem.size() << ']' << endl;
                 P->problem[i]=problem[i].JudgeProblem(oier[Select]);
                 printf("\n%s ",P->name_to_print.c_str());
                 JudgeOutput::PrintResult(P->problem[i]);
-                printf("%s:%d\n\n",Context::Score,P->problem[i].score);
+                printf("%s: %d\n\n",Context::Score,P->problem[i].score);
             }
             Context::PressToContinue();
             system("clear");
@@ -244,7 +244,7 @@ void Contest::Judge_CUI() {
             puts("");
             system("clear");
             for (int i=0;i<problem.size();i++) {
-                cout << Context::Contestant+" " << ':' << P->name_to_print << " "+Context::Problem+" " << i+1 << ':' << problem[i].name_to_print << " [" << i+1 << '/' << problem.size() << ']' << endl;
+                cout << Context::Contestant << ": " << P->name_to_print << " "+Context::Problem+" " << i+1 << ": " << problem[i].name_to_print << " [" << i+1 << '/' << problem.size() << ']' << endl;
                 int maxlength=0;
                 for (int j=0;j<problem[i].point.size();j++)
                     maxlength=max(maxlength,(int)BaseName(problem[i].point[j].stdInput).length());
@@ -258,7 +258,7 @@ void Contest::Judge_CUI() {
                 else
                     Compile(P->name, problem[i].name_to_print, 1, conf->O2opti);
                 JudgeOutput::PrintResult(P->problem[i]);
-                printf("%s:%d\n\n",Context::Score,P->problem[i].score);
+                printf("%s: %d\n\n",Context::Score,P->problem[i].score);
             }
             Context::PressToContinue();
             system("clear");
