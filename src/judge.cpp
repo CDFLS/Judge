@@ -129,9 +129,9 @@ bool HeadersCheck(string str,int line,string filename) {//检查一行include是
             ClearColor();
             HighLight();
         }
-        printf("%s:%d: ",filename.c_str(),line);
+        printf("%s: %d: ",filename.c_str(),line);
         JudgeOutput::PrintError();
-        printf("%s:%s\n",Context::InvalidHeaderFound,head.c_str());
+        printf("%s: %s\n",Context::InvalidHeaderFound,head.c_str());
         return true;
     }
     return false;
@@ -583,7 +583,7 @@ bool Problem::SafetyCheck(string filename) {
                     }
                     printf("%s: %d: ",filename.c_str(),line+extraline);
                     JudgeOutput::PrintError();
-                    printf("%s: %s\n",Context::InvalidConstFound,(str.substr(i,k-i-1)).c_str());
+                    printf("%s: %s\n",Context::InvalidConstFound,(str.substr(i,k-i)).c_str());
                     return true;
                 }
             }
