@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include "sandbox/execute.h"
 #include "ConfGen.h"
+#include "JudgeScript.h"
+#include "ConfigJudge.h"
 using namespace std;
 
 int main(int argc,char *argv[]) {
@@ -36,6 +38,14 @@ int main(int argc,char *argv[]) {
     conf.ReadSettings("judge.conf",&x);
     if (conf.GenerateConf) {
         GenConf(&conf, &x);
+        ClearFile();
+        system("rm Exec -rf 2>/dev/null");
+        return 0;
+    }
+    if (argc == 3 && (string)argv[1] == "-s") {
+        Config::Readfrom(&x, "judge.log");
+        ExecuteScript(&x, (string)argv[2]);
+        Config::Saveto(&x, "judge.log");
         ClearFile();
         system("rm Exec -rf 2>/dev/null");
         return 0;

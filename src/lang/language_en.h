@@ -34,6 +34,7 @@ It will use these commands to compile:\n";
     -c, --cli                 Use a simple CLI to manage a contest\n\
     -o                        Add -O2 option when compiling\n\
     -g                        Generate default judge.conf\n\
+    -s                        Execute a script\n\
     --help                    Print this help message and exit\n\
 \n\
 Global config:\n\

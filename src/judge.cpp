@@ -156,7 +156,7 @@ int SourceProblem_Deal(Contest *x,Problem *p,ifstream &fin,string l) {
         fin >> m;
         p->memorylimit=m;
     }
-    else if (l=="rename"||l=="ren"||l=="r") {
+    else if (l == "rename" || l == "ren" || l == "r" || l == "name") {
         l.clear();
         char ch;
         while (fin >> ch) {
@@ -361,6 +361,7 @@ int JudgeSettings::ReadFromArgv(int c,char *v[]) {
                 Context::PrintHelp();
                 return 1;
             }
+            else if ((string)v[i - 1] == (string)"-s") {}
             else{
                 Context::WrongArgument(v[i-1]);
                 return 1;
@@ -714,15 +715,6 @@ void Contest::InitContest() {
         }
     }
 
-    filelist=GetFile(".",".in");
-    if (filelist.size()) {
-        Problem Default;
-        Default.name="./";
-        Default.name_to_print=GetName();
-        Default.InitProblem();
-        if (Default.point.size())
-            problem.push_back(Default);
-    }
     filelist=GetDir("./data");
     for (int i=0;i<filelist.size();i++) {
         Problem tmp;
@@ -731,6 +723,18 @@ void Contest::InitContest() {
         tmp.InitProblem();
         if (tmp.point.size()!=0)
             problem.push_back(tmp);
+    }
+
+    if (!filelist.size()) {
+        filelist=GetFile(".",".in");
+        if (filelist.size()) {
+            Problem Default;
+            Default.name="./";
+            Default.name_to_print=GetName();
+            Default.InitProblem();
+            if (Default.point.size())
+                problem.push_back(Default);
+        }
     }
 
     if (conf->PrinttoCSV==-1) {

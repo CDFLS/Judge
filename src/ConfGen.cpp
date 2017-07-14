@@ -73,6 +73,7 @@ void GenConf(JudgeSettings *conf, Contest* x) {
     fout << "O2(" << boolstr(conf->O2opti) << ")" << endl << endl;
     for (auto i : x->problem) {
         fout << "enter(" << encode(i.name_to_print) << ")" << endl;
+        fout << "    name(" << encode(i.name_to_print) << ")" << endl;
         fout << "    time(" << i.timelimit << ")" << endl;
         fout << "    memo(" << i.memorylimit << ")" << endl;
         fout << "    score(" << i.eachscore << ")" << endl;

@@ -35,6 +35,7 @@ namespace Context {
     -c, --cli                 使用一个简单的CLI管理一次考试\n\
     -o                        开启 O2 优化\n\
     -g                        生成一份配置文件方便修改\n\
+    -s                        执行脚本\n\
     --help                    显示本帮助\n\
 \n\
 全局配置文件：\n\
