@@ -65,7 +65,7 @@ namespace Config {
         int size;
         fin >> size;
         while (x->problem.size()<size)
-            x->problem.push_back((Problem){});
+            x->problem.push_back(Problem());
         for (int i=0;i<x->problem.size();i++) {
             Problem *p=&x->problem[i];
             fin >> p->name_to_print
@@ -75,7 +75,7 @@ namespace Config {
                 >> p->eachscore
                 >> size;
             while (p->point.size()<size)
-                p->point.push_back((TestPoint){});
+                p->point.push_back(TestPoint());
             for (int j=0;j<p->point.size();j++) {
                 TestPoint *q=&p->point[j];
                 fin >> q->stdInput
@@ -84,7 +84,7 @@ namespace Config {
         }
         fin >> size;
         while (x->oier.size()<size)
-            x->oier.push_back((Contestant){});
+            x->oier.push_back(Contestant());
         for (int i=0;i<x->oier.size();i++) {
             Contestant *p=&x->oier[i];
             fin >> p->name_to_print
@@ -92,13 +92,13 @@ namespace Config {
                 >> p->sum
                 >> size;
             while (p->problem.size()<size)
-                p->problem.push_back((JudgeResult){});
+                p->problem.push_back(JudgeResult());
             for (int j=0;j<p->problem.size();j++) {
                 JudgeResult *q=&p->problem[j];
                 FScanfResult(fin,q);
                 fin >> size;
                 while (q->subresult.size()<size)
-                    q->subresult.push_back((JudgeResult){});
+                    q->subresult.push_back(JudgeResult());
                 for (int k=0;k<q->subresult.size();k++)
                     FScanfResult(fin,&q->subresult[k]);
             }

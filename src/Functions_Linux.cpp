@@ -28,7 +28,7 @@ vector<string> GetFile(const char * path,const char * grep) {
     struct dirent *ent;
     pDir=opendir(path);
     if (pDir==NULL)
-        return (vector<string>){};
+        return vector<string>();
     while ((ent=readdir(pDir))!=NULL)
         if (!(ent->d_type & DT_DIR)) {
             string tmp=ent->d_name;
@@ -45,7 +45,7 @@ vector<string> GetDir(const char *path) {
     struct dirent *ent;
     pDir=opendir(path);
     if (pDir==NULL)
-        return (vector<string>){};
+        return vector<string>();
     while ((ent=readdir(pDir))!=NULL)
         if ((ent->d_type & DT_DIR)&&((string)ent->d_name!=".")&&((string)ent->d_name)!="..")
             ans.push_back((string)ent->d_name);

@@ -48,6 +48,8 @@ class JudgeResult{
         int score;
         vector<JudgeResult> subresult;
         string ExtraInfo;
+        JudgeResult();
+        JudgeResult(int st, int memo, double time, int score, vector<JudgeResult> subresult = vector<JudgeResult>(), string ExtraInfo = "");
 };
 
 class TestPoint {

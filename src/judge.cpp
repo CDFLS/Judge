@@ -439,7 +439,7 @@ JudgeResult TestPoint::JudgePoint(string bin,double timelimit,int memorylimit,in
         if (fin) getline(fin,extrainfo,'\n');
         fin.close();
         system("rm .ejudge.tmp");
-        return (JudgeResult){((score==MaxScore)?(AC):(WA)),res.memo,res.time,score,(vector<JudgeResult>){},extrainfo};
+        return JudgeResult(((score==MaxScore)?(AC):(WA)),res.memo,res.time,score,vector<JudgeResult>(),extrainfo);
     }
     sprintf(str,"timeout 1s diff -b -B -Z .ejudge.tmp %s > /dev/null 2>/dev/null && rm .ejudge.tmp",stdOutput.c_str());//比较输出，忽略由空格数不同造成的差异，忽略任何因空行而造成的差异，忽略每行末端的空格。更多用法用法参见diff --help，此设置应在大多数情况下有效。
     int tmpint;
@@ -761,7 +761,7 @@ void Contest::JudgeContest() {
             if (conf->Terminal)
                 ClearColor();
             while (oier[i].problem.size()<=j)
-                oier[i].problem.push_back((JudgeResult){});
+                oier[i].problem.push_back(JudgeResult());
             oier[i].problem[j]=problem[j].JudgeProblem(oier[i]);
             printf("\n%s ",oier[i].name_to_print.c_str());
             JudgeOutput::PrintResult(oier[i].problem[j]);
@@ -898,3 +898,7 @@ void JudgeOutput::ConverttoCSV(Contest &test,string csv) {
         fout << Status_Short[i] << ":" << Status[i] << endl;
     fout << "\"," << endl;
 }
+
+JudgeResult::JudgeResult() {}
+JudgeResult::JudgeResult(int st, int memo, double time, int score, vector<JudgeResult> subresult, string ExtraInfo)
+                        : st(st), memo(memo), time(time), score(score), subresult(subresult), ExtraInfo(ExtraInfo) {}
