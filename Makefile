@@ -8,3 +8,5 @@ uninstall:
 	rm /usr/bin/judge
 remove:
 	make uninstall
+clean:
+	cd src&&make clean

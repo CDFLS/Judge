@@ -21,8 +21,11 @@ namespace Context {
 当以root权限运行judge时，将调用chroot实现一个简单的沙盒。\n\
 代码检测仅检测C与C++\n\
 编译使用命令:\n";
-		for (int i=0;i<Compiler.size();i++)
-			help+=Compiler[i].cmd+"\n";
+		for (int i = 0; i < Compiler.size(); i++) {
+            if (!((Compiler[i].cmd.length() >= strlen("judge")) && (Compiler[i].cmd.substr(0, strlen("judge")) == (string)"judge"))) {
+                help+=Compiler[i].cmd+"\n";
+            }
+        }
 		help+="\n\
     -f [STRING]               禁止源文件中出现该函数\n\
     -f[NUMBER] [STRING]...    禁止源文件中出现以下NUMBER个函数\n\
@@ -72,7 +75,7 @@ namespace Context {
     rename, ren, r            重命名问题\n\
   示例同上。\n\
 \n\
-CLI模式：\n"+CUIhelp+"\n\
+CLI模式：\n"+CUIhelp+"\n\n\
 SPJ说明：\n\
 将SPJ编译，放在data对应题目目录下，命名为spj(或者将spj.cpp放在该目录下，将会被自动编译)\n\
 SPJ参数：\n\

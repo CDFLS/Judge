@@ -10,11 +10,11 @@ struct COMPILER {
 };
 static int Inited=0;
 static vector<COMPILER> Compiler={
-    {"cpp","g++ -dumpversion","timeout 10s g++ -static -std=c++11 -s -lm -DEJUDGE %s -o Exec/%s",0},
-    {"c","gcc -dumpversion","timeout 10s gcc -static -std=c99 -fno-asm -s -lm -DEJUDGE %s -o Exec/%s",0},
-    {"pas","fpc -iV","timeout 10s fpc -Xs -Sgic -dEJUDGE %s -oExec/%s",0},
-    {"py","python3 --version","judge python %s Exec/%s",0},
     {"py","python2 --version","judge python2 %s Exec/%s",0},
+    {"py","python3 --version","judge python %s Exec/%s",0},
+    {"pas","fpc -iV","timeout 10s fpc -Xs -Sgic -dEJUDGE %s -oExec/%s",0},
+    {"c","gcc -dumpversion","timeout 10s gcc -static -std=c99 -fno-asm -s -lm -DEJUDGE %s -o Exec/%s",0},
+    {"cpp","g++ -dumpversion","timeout 10s g++ -static -std=c++11 -s -lm -DEJUDGE %s -o Exec/%s",0},
 };
 static void InitCompiler(){
     Inited=1;
@@ -30,7 +30,7 @@ static int Compile(string pathto,string problem,int terminal, int optimize) {
         InitCompiler();
     int dot;
     bool found=false;
-    for (int i=0;i<Compiler.size();i++) {
+    for (int i=Compiler.size()-1;i>=0;i--) {
         if (exist(pathto+problem+"."+Compiler[i].suffix)&&(Compiler[i].usable)) {
             dot=i;
             found=true;

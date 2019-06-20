@@ -2,6 +2,7 @@
 #define LANG
 #include "../judge.h"
 #include "../ConverttoString.h"
+#include "../MultiCompiler.h"
 #include <sstream>
 #include <iostream>
 using namespace std;
@@ -12,16 +13,19 @@ static void InitLang(JudgeSettings& settings) {
 }
 
 namespace Context {
-	static string CUIhelp="tab: switch modes|'w''s': move|'a''d': turn page|enter: confirm|'q': quit";
+	static string CUIhelp = "tab: switch modes|'w''s': move|'a''d': turn page|enter: confirm|'q': quit";
 	static void PrintHelp() {
-		string help=
+		string help =
 "Usage:judge [Options]...\n\
-Judge OI contest. Compile sources in directory ./ and source/[Contestant name], and use the data in directory ./ and data/[Problem name] automatically to judge. Also detect freopen.\n\
-When you run judge as root, it will automatically use chroot to run programs, like a simple sandbox.\n\
-Judge will only search for invalid functions or headers in C and C++\n\
-It will use these commands to compile:\n";
-		for (int i=0;i<Compiler.size();i++)
-			help+=Compiler[i].cmd+"\n";
+This program can judge an OI contest. It compiles codes in directory ./ and source/[Contestant name], and uses the data in directory ./ and data/[Problem name] automatically to judge. It also checks whether freopen is used.\n\
+When you run this program as root, it will automatically use chroot to run programs as a simple sandbox.\n\
+It searches for invalid functions or headers in C and C++\n\
+It uses these commands to compile:\n";
+		for (int i = 0; i < Compiler.size(); i++) {
+            if (!((Compiler[i].cmd.length() >= strlen("judge")) && (Compiler[i].cmd.substr(0, strlen("judge")) == (string)"judge"))) {
+                help+=Compiler[i].cmd+"\n";
+            }
+        }
 		help+="\n\
     -f [STRING]               Forbidden functions in sources\n\
     -f[NUMBER] [STRING]...    [NUMBER] forbidden functions in sources\n\
@@ -45,7 +49,7 @@ This program will read settings from ~/.judgerc and ./judge.conf. The format is 
     background, bg            Set the background when print WA,AC,etc. : black green red blue yellow cyan white purple\n\
     FileIO, file              Use file input/output forcibly; 'true' or 'false'\n\
     O2, optimize              Add -O2 option when compiling; 'true' or 'false'\n\
-	enter                     Config the problem specified, use the rule of problem config file to analyse the command below, end with command 'quit'\n\
+	enter                     Start to configurate the problem specified, use the rule of problem config file to analyse the command below, end with command 'quit'\n\
   With two arguments:\n\
     SourceProblem, source, s  Configure problem [Value1] with the problem config file(which will be introduced later)[Value2]\n\
   With one or more arguments:\n\
@@ -70,7 +74,8 @@ Problem config file:\n\
     score, s                  Max score for each test point\n\
     rename, ren, r            Rename this problem\n\
 \n\
-CLI mode:\n"+CUIhelp+"SPJ:\n\
+CLI mode:\n"+CUIhelp+"\n\n\
+SPJ:\n\
 Put your spj program in the data directory of that problem, rename it as 'spj'(or you can put 'spj.cpp' in that directory, and it will be compiled automatically)\n\
 SPJ arguments：\n\
     - argv[1]: Standard input file\n\
