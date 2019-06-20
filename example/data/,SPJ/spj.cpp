@@ -20,6 +20,6 @@ int main(int argc, char **argv) {
 	if (ans==out)
 		fprintf(fp, "又强又劲！");
 	else
-		fprintf(fp, "Read %d, but %d is expected\n", out, ans);
+		fprintf(fp, "读到 %d, 期望 %d", out, ans);
 	return 0;
 }
